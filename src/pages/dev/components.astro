@@ -1,0 +1,237 @@
+---
+import Alert from '@components/ui/Alert.astro';
+import Badge from '@components/ui/Badge.astro';
+import Button from '@components/ui/Button.astro';
+import Card from '@components/ui/Card.astro';
+import Input from '@components/ui/Input.astro';
+import Pagination from '@components/ui/Pagination.astro';
+import CtaBand from '@components/content/CtaBand.astro';
+import Hero from '@components/content/Hero.astro';
+import MediaFigure from '@components/content/MediaFigure.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import { STRUCTURED_DATA } from '@constants';
+import '@styles/global.css';
+import '@styles/typography.css';
+
+export const prerender = true;
+
+const {
+  '@context': _organizationContext,
+  '@type': _organizationType,
+  ...organizationData
+} = STRUCTURED_DATA.organization;
+const {
+  '@context': _websiteContext,
+  '@type': _websiteType,
+  ...websiteData
+} = STRUCTURED_DATA.website;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Seo
+      title="Component Preview"
+      description="Internal visual preview of the frozen Kasbah3000 Day 3 design system components."
+      lang="en"
+      canonical="/dev/components"
+      noindex
+    />
+    <JsonLd type="Organization" data={organizationData} />
+    <JsonLd type="WebSite" data={websiteData} />
+  </head>
+  <body class="bg-background text-text-body">
+    <a
+      href="#main-content"
+      class="fixed start-5 top-4 z-toast -translate-y-24 bg-background-dark px-5 py-3 font-sans text-button uppercase tracking-label text-ink-inverse transition-transform duration-fast focus:translate-y-0"
+    >
+      Skip to components
+    </a>
+
+    <main id="main-content" tabindex="-1">
+      <PageHero
+        title="Kasbah3000 component system"
+        description="Internal visual reference for the frozen Day 3 primitives. This route is excluded from indexing and the sitemap."
+      />
+
+      <section id="preview-start" class="border-b border-border py-14 md:py-20 lg:py-30">
+        <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+          <SectionTitle eyebrow="T-11 · UI primitives" title="Actions, surfaces, and form states" />
+
+          <div class="mt-12 space-y-14">
+            <div>
+              <h3 class="type-h4 text-ink">Buttons</h3>
+              <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Button variant="primary-dark" href="#preview-start">Primary dark</Button>
+                <Button variant="outline" href="#preview-start">Outline</Button>
+                <Button variant="primary-dark" disabled>Disabled</Button>
+              </div>
+              <div class="mt-6 bg-background-dark p-5 md:p-7">
+                <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Button variant="primary-light" href="#preview-start">Primary light</Button>
+                  <Button variant="outline" href="#preview-start" onDark>Outline on dark</Button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="type-h4 text-ink">Badges</h3>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <Badge color="clay">Architecture</Badge>
+                <Badge color="cedar">Regeneration</Badge>
+                <Badge color="sun">Energy</Badge>
+                <Badge color="water">Water</Badge>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="type-h4 text-ink">Cards</h3>
+              <div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card>
+                  <p class="type-eyebrow text-muted">Static surface</p>
+                  <h4 class="type-h4 mt-4 text-ink">Architectural structure</h4>
+                  <p class="mt-4 text-sm leading-6">
+                    A flat surface structured by whitespace and a single hairline.
+                  </p>
+                </Card>
+                <Card href="#preview-start" ariaLabel="Interactive card example">
+                  <p class="type-eyebrow text-muted">Linked surface</p>
+                  <h4 class="type-h4 mt-4 text-ink">One clear destination</h4>
+                  <p class="mt-4 text-sm leading-6">
+                    The complete card uses one tab stop and a restrained hover tint.
+                  </p>
+                </Card>
+                <Card bordered={false} class="bg-background-alt">
+                  <p class="type-eyebrow text-muted">Borderless surface</p>
+                  <h4 class="type-h4 mt-4 text-ink">Alternate background</h4>
+                  <p class="mt-4 text-sm leading-6">
+                    A second permitted background tone without elevation or shadow.
+                  </p>
+                </Card>
+              </div>
+            </div>
+
+            <form class="grid gap-6 md:grid-cols-2" action="#preview-start">
+              <Input
+                type="text"
+                name="preview-name"
+                label="Name"
+                placeholder="Your name"
+                autocomplete="name"
+                required
+              />
+              <Input
+                type="email"
+                name="preview-email"
+                label="Email"
+                value="invalid@example"
+                error="Enter a complete email address."
+                autocomplete="email"
+                required
+              />
+              <Input
+                type="select"
+                name="preview-topic"
+                label="Area of interest"
+                options={['Architecture', 'Energy', 'Water', 'Food']}
+                helperText="Choose the system most relevant to your work."
+              />
+              <Input
+                type="textarea"
+                name="preview-message"
+                label="Message"
+                placeholder="Tell us about your interest"
+                rows={4}
+              />
+            </form>
+
+            <div class="grid gap-4 lg:grid-cols-3">
+              <Alert type="success"><strong>Success:</strong> The content has been saved.</Alert>
+              <Alert type="warning"><strong>Notice:</strong> Review the highlighted details.</Alert>
+              <Alert type="error" dismissible dismissLabel="Dismiss">
+                <strong>Error:</strong> The request could not be completed.
+              </Alert>
+            </div>
+
+            <Pagination
+              currentPage={2}
+              totalPages={4}
+              basePath="/dev/components"
+              previousLabel="Previous"
+              nextLabel="Next"
+              ariaLabel="Component preview pagination"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-border py-14 md:py-20 lg:py-30">
+        <div
+          class="mx-auto grid max-w-content gap-12 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:px-12"
+        >
+          <SectionTitle eyebrow="T-12 · Typography" title="Editorial rhythm and readable prose" />
+          <Prose>
+            <p>
+              Kasbah3000 combines ancestral building knowledge with contemporary ecological
+              engineering. The typography remains calm, clear, and rooted.
+            </p>
+            <h3>A structured reading experience</h3>
+            <p>
+              Body copy stays within a measured column, while headings use the approved display
+              serif. <a href="#preview-start">Text links remain identifiable</a> without decorative motion.
+            </p>
+            <ul>
+              <li>Sixteen pixels between paragraphs</li>
+              <li>Eight pixels between list items</li>
+              <li>One consistent hairline language</li>
+            </ul>
+            <blockquote>
+              <p>Every output becomes an input for the next generation.</p>
+            </blockquote>
+          </Prose>
+        </div>
+      </section>
+
+      <section class="border-b border-border py-14 md:py-20 lg:py-30">
+        <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+          <SectionTitle eyebrow="T-13 · Media" title="Figure and arch crop" centered />
+          <MediaFigure
+            src="/brand/logo.jpeg"
+            alt="Kasbah3000 badge with kasbah, sun, leaf, and water motifs"
+            width={907}
+            height={768}
+            aspectRatio="907 / 768"
+            archCrop
+            caption="Approved full-colour Kasbah3000 badge used as preview media."
+            class="mx-auto mt-12 max-w-prose"
+          />
+        </div>
+      </section>
+
+      <Hero
+        eyebrow="Content primitive"
+        headline="A patient architecture"
+        headlineAccent="for a regenerative future"
+        description="The full-bleed hero preserves a calm lower-left reading zone and accessible contrast."
+        primaryCta={{ label: 'Primary action', href: '#preview-start' }}
+        secondaryCta={{ label: 'Secondary action', href: '#preview-start' }}
+        headingLevel="h2"
+      />
+
+      <CtaBand
+        eyebrow="Shared call to action"
+        title="Build with patience, clarity, and purpose."
+        primaryCta={{ label: 'Primary action', href: '#preview-start' }}
+        secondaryCta={{ label: 'Secondary action', href: '#preview-start' }}
+        variant="dark"
+      />
+    </main>
+  </body>
+</html>

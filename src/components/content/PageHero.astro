@@ -1,0 +1,76 @@
+---
+import '@styles/typography.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  headingLevel?: 'h1' | 'h2';
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  imageSrc,
+  imageAlt = '',
+  headingLevel = 'h1',
+  class: className,
+} = Astro.props;
+const Heading = headingLevel;
+---
+
+<section
+  class:list={[
+    'relative overflow-hidden',
+    imageSrc ? 'aspect-[4/3] bg-background-dark md:aspect-[21/9]' : 'bg-background-alt',
+    className,
+  ]}
+  aria-labelledby="page-hero-title"
+>
+  {
+    imageSrc && (
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        loading="eager"
+        decoding="async"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    )
+  }
+  {imageSrc && <div class="page-hero-scrim absolute inset-0" aria-hidden="true" />}
+
+  <div
+    class:list={[
+      'relative z-10 mx-auto flex max-w-content flex-col items-center justify-center px-5 text-center md:px-8 lg:px-12',
+      imageSrc ? 'h-full' : 'py-14 md:py-20 lg:py-30',
+    ]}
+  >
+    <Heading
+      id="page-hero-title"
+      class:list={['type-h2 text-balance', imageSrc ? 'text-ink-inverse' : 'text-ink']}
+    >
+      {title}
+    </Heading>
+    {
+      description && (
+        <p
+          class:list={[
+            'mt-6 max-w-prose text-base leading-7',
+            imageSrc ? 'text-sand-200' : 'text-text-body',
+          ]}
+        >
+          {description}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .page-hero-scrim {
+    background: rgba(43, 36, 32, 0.64);
+  }
+</style>

@@ -5,7 +5,9 @@ Components organized by domain for scalability and maintainability.
 ## Directory Structure
 
 ### `/layout` (9 components)
+
 Global layout components used across all pages:
+
 - `BaseLayout.astro` — Root HTML shell
 - `PageLayout.astro` — Standard page wrapper
 - `Header.astro` — Site header with sticky behavior
@@ -17,7 +19,9 @@ Global layout components used across all pages:
 - `SkipLink.astro` — Accessibility bypass link
 
 ### `/ui` (6 components)
+
 Reusable UI primitives (zero-JS):
+
 - `Button.astro` — CTA button (3 variants)
 - `Card.astro` — Content container
 - `Badge.astro` — Pill tags
@@ -26,7 +30,9 @@ Reusable UI primitives (zero-JS):
 - `Pagination.astro` — Page navigation
 
 ### `/content` (19 components)
+
 Content-specific display components:
+
 - `Hero.astro` — Full-bleed homepage hero
 - `HeroVideo.astro` — Background video
 - `PageHero.astro` — Interior page hero
@@ -46,17 +52,23 @@ Content-specific display components:
 - `CtaBand.astro` — Call-to-action section
 
 ### `/sections`
+
 Page-specific section components (Day 4+):
+
 - Will contain: `VisionSection.astro`, `SystemsSection.astro`, etc.
 - Domain-specific compositions of content components
 
 ### `/forms`
+
 Form-specific components (Day 10):
+
 - Will contain form field wrappers, validation displays
 - Complements islands (ContactForm, NewsletterForm)
 
 ### `/islands` (6 Preact components ONLY)
+
 Interactive components requiring JavaScript:
+
 - `ProjectMap.tsx` — MapLibre map (`client:visible`)
 - `Lightbox.tsx` — Gallery viewer (`client:visible`)
 - `ContactForm.tsx` — Contact form (`client:visible`)
@@ -67,7 +79,9 @@ Interactive components requiring JavaScript:
 **Rule:** No additional islands without approval. Prefer Astro components.
 
 ### `/seo` (2 components)
+
 SEO and metadata components:
+
 - `Seo.astro` — Meta tags, OG, hreflang
 - `JsonLd.astro` — Structured data
 
@@ -91,6 +105,7 @@ import { Header } from '@components/layout/Header.astro';
 ## Future Scalability
 
 This structure supports Phase 2+ features without reorganization:
+
 - `/sections` for complex page compositions
 - `/forms` for form field patterns
 - Additional `/ui` primitives as needed
@@ -99,6 +114,7 @@ This structure supports Phase 2+ features without reorganization:
 ## Phase 2 Readiness
 
 Structure prepared for (without implementing):
+
 - AI Agent components (chatbot UI)
 - Community features (profile cards, forum threads)
 - Marketplace components (product cards, checkout)

@@ -1,0 +1,53 @@
+---
+interface Props {
+  type: 'success' | 'error' | 'warning';
+  dismissible?: boolean;
+  dismissLabel?: string;
+  class?: string;
+}
+
+const {
+  type,
+  dismissible = false,
+  dismissLabel = 'Dismiss message',
+  class: className,
+} = Astro.props;
+const variantClasses = {
+  success: 'border-success bg-cedar-50 text-cedar-800',
+  error: 'border-error bg-clay-50 text-clay-900',
+  warning: 'border-warning bg-sun-50 text-sun-900',
+} as const;
+const role = type === 'success' ? 'status' : 'alert';
+const classes = ['relative border p-5 pe-10 text-sm leading-6', variantClasses[type], className];
+---
+
+{
+  dismissible ? (
+    <details open class:list={classes}>
+      <summary class="absolute end-3 top-3 min-h-11 cursor-pointer list-none px-2 py-3 font-sans text-[0.6875rem] font-semibold uppercase tracking-label">
+        {dismissLabel}
+      </summary>
+      <div role={role}>
+        <slot />
+      </div>
+    </details>
+  ) : (
+    <div class:list={classes} role={role}>
+      <slot />
+    </div>
+  )
+}
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::marker {
+    content: '';
+  }
+
+  details:not([open]) {
+    display: none;
+  }
+</style>

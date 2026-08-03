@@ -1,0 +1,72 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+  previousLabel: string;
+  nextLabel: string;
+  ariaLabel: string;
+  class?: string;
+}
+
+const {
+  currentPage,
+  totalPages,
+  basePath,
+  previousLabel,
+  nextLabel,
+  ariaLabel,
+  class: className,
+} = Astro.props;
+const pages = Array.from({ length: Math.max(totalPages, 0) }, (_, index) => index + 1);
+const normalizedBasePath = basePath === '/' ? '' : basePath.replace(/\/$/, '');
+const pageHref = (page: number) =>
+  page === 1 ? normalizedBasePath || '/' : `${normalizedBasePath}/page/${page}`;
+const linkClasses =
+  'inline-flex min-h-11 min-w-11 items-center justify-center px-3 font-sans text-xs font-semibold uppercase tracking-label text-ink transition-colors duration-fast hover:text-link';
+---
+
+{
+  totalPages > 1 && (
+    <nav aria-label={ariaLabel} class:list={['border-t border-border pt-5', className]}>
+      <div class="flex items-center justify-between gap-4">
+        {currentPage > 1 ? (
+          <a href={pageHref(currentPage - 1)} class={linkClasses} rel="prev">
+            {previousLabel}
+          </a>
+        ) : (
+          <span class:list={[linkClasses, 'text-muted-faint']} aria-disabled="true">
+            {previousLabel}
+          </span>
+        )}
+
+        <ol class="hidden items-center gap-1 sm:flex">
+          {pages.map((page) => (
+            <li>
+              <a
+                href={pageHref(page)}
+                aria-current={page === currentPage ? 'page' : undefined}
+                class:list={[
+                  'inline-flex min-h-11 min-w-11 items-center justify-center border-b font-serif text-lg transition-colors duration-fast hover:text-link',
+                  page === currentPage ? 'border-link text-link' : 'border-transparent text-ink',
+                ]}
+              >
+                {page}
+              </a>
+            </li>
+          ))}
+        </ol>
+
+        {currentPage < totalPages ? (
+          <a href={pageHref(currentPage + 1)} class={linkClasses} rel="next">
+            {nextLabel}
+          </a>
+        ) : (
+          <span class:list={[linkClasses, 'text-muted-faint']} aria-disabled="true">
+            {nextLabel}
+          </span>
+        )}
+      </div>
+    </nav>
+  )
+}

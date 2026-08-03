@@ -1,0 +1,43 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  aspectRatio?: string;
+  archCrop?: boolean;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  width,
+  height,
+  aspectRatio = '3 / 2',
+  archCrop = false,
+  loading = 'lazy',
+  class: className,
+} = Astro.props;
+---
+
+<figure class={className}>
+  <div
+    class:list={['overflow-hidden bg-background-alt', archCrop && 'rounded-arch']}
+    style={`aspect-ratio: ${aspectRatio};`}
+  >
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding="async"
+      class="h-full w-full object-cover"
+    />
+  </div>
+  {caption && <figcaption class="mt-3 text-[0.8125rem] leading-5 text-muted">{caption}</figcaption>}
+</figure>

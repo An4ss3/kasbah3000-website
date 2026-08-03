@@ -1,0 +1,18 @@
+---
+type SchemaType = 'Organization' | 'WebSite' | 'Article' | 'FAQPage' | 'BreadcrumbList';
+
+interface Props {
+  type: SchemaType;
+  data: Record<string, unknown>;
+}
+
+const { type, data } = Astro.props;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': type,
+  ...data,
+};
+const serializedSchema = JSON.stringify(schema).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" set:html={serializedSchema} is:inline />

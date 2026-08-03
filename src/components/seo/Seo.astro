@@ -1,0 +1,61 @@
+---
+import { SEO_DEFAULTS, SITE } from '@constants';
+import { getLocalizedPath } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: Language;
+  canonical?: string;
+  ogImage?: string;
+  article?: boolean;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  lang,
+  canonical,
+  ogImage = SEO_DEFAULTS.openGraph.images.url,
+  article = false,
+  noindex = false,
+} = Astro.props;
+const pageTitle = title.includes(SITE.name) ? title : `${title} — ${SITE.name}`;
+const canonicalUrl = new URL(canonical ?? Astro.url.pathname, SITE.url);
+const canonicalPath = canonicalUrl.pathname;
+const imageUrl = new URL(ogImage, SITE.url);
+const frenchUrl = new URL(getLocalizedPath(canonicalPath, 'fr'), SITE.url);
+const englishUrl = new URL(getLocalizedPath(canonicalPath, 'en'), SITE.url);
+const locale = lang === 'fr' ? 'fr_FR' : 'en_US';
+const alternateLocale = lang === 'fr' ? 'en_US' : 'fr_FR';
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<link rel="canonical" href={canonicalUrl} />
+<link rel="alternate" hreflang="fr" href={frenchUrl} />
+<link rel="alternate" hreflang="en" href={englishUrl} />
+<link rel="alternate" hreflang="x-default" href={frenchUrl} />
+
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content={String(SEO_DEFAULTS.openGraph.images.width)} />
+<meta property="og:image:height" content={String(SEO_DEFAULTS.openGraph.images.height)} />
+<meta property="og:image:alt" content={pageTitle} />
+<meta property="og:locale" content={locale} />
+<meta property="og:locale:alternate" content={alternateLocale} />
+
+<meta name="twitter:card" content={SEO_DEFAULTS.twitter.card} />
+<meta name="twitter:site" content={SEO_DEFAULTS.twitter.site} />
+<meta name="twitter:creator" content={SEO_DEFAULTS.twitter.creator} />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={pageTitle} />

@@ -1,0 +1,66 @@
+---
+import '@styles/typography.css';
+import Button from '@components/ui/Button.astro';
+
+interface Cta {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  primaryCta?: Cta;
+  secondaryCta?: Cta;
+  variant?: 'light' | 'dark';
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  primaryCta,
+  secondaryCta,
+  variant = 'light',
+  class: className,
+} = Astro.props;
+const isDark = variant === 'dark';
+---
+
+<section
+  class:list={[
+    'px-5 py-14 text-center md:px-8 md:py-20 lg:px-12 lg:py-30',
+    isDark ? 'bg-background-dark' : 'bg-background-alt',
+    className,
+  ]}
+>
+  <div class="mx-auto max-w-headline">
+    {
+      eyebrow && (
+        <p class:list={['type-eyebrow mb-5', isDark ? 'text-accent-on-dark' : 'text-muted']}>
+          {eyebrow}
+        </p>
+      )
+    }
+    <h2 class:list={['type-h2 text-balance', isDark ? 'text-ink-inverse' : 'text-ink']}>
+      {title}
+    </h2>
+
+    {
+      (primaryCta || secondaryCta) && (
+        <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+          {primaryCta && (
+            <Button variant={isDark ? 'primary-light' : 'primary-dark'} href={primaryCta.href}>
+              {primaryCta.label}
+            </Button>
+          )}
+          {secondaryCta && (
+            <Button variant="outline" href={secondaryCta.href} onDark={isDark}>
+              {secondaryCta.label}
+            </Button>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>

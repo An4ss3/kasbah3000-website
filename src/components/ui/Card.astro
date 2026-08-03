@@ -1,0 +1,28 @@
+---
+interface Props {
+  href?: string;
+  bordered?: boolean;
+  ariaLabel?: string;
+  class?: string;
+}
+
+const { href, bordered = true, ariaLabel, class: className } = Astro.props;
+const classes = [
+  'block bg-surface p-5 md:p-7 lg:p-9',
+  bordered && 'border border-border',
+  href && 'transition-colors duration-200 ease-out hover:bg-background-alt',
+  className,
+];
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} aria-label={ariaLabel}>
+      <slot />
+    </a>
+  ) : (
+    <div class:list={classes}>
+      <slot />
+    </div>
+  )
+}

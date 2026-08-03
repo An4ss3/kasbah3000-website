@@ -1,0 +1,103 @@
+---
+import type { HeroProps } from '@types';
+import '@styles/typography.css';
+import Button from '@components/ui/Button.astro';
+
+interface Props extends HeroProps {
+  headingLevel?: 'h1' | 'h2';
+  class?: string;
+}
+
+const {
+  eyebrow,
+  headline,
+  headlineAccent,
+  description,
+  primaryCta,
+  secondaryCta,
+  headingLevel = 'h1',
+  class: className,
+} = Astro.props;
+const Heading = headingLevel;
+---
+
+<section
+  class:list={[
+    'hero relative h-[88svh] overflow-hidden bg-background-dark md:h-[80vh] lg:h-[92vh] lg:min-h-[680px]',
+    className,
+  ]}
+  aria-labelledby="hero-title"
+>
+  <div class="hero-media absolute inset-0" aria-hidden="true">
+    <slot name="media" />
+  </div>
+  <div class="hero-warmth absolute inset-0" aria-hidden="true"></div>
+  <div class="hero-scrim absolute inset-0" aria-hidden="true"></div>
+
+  <div
+    class="relative z-10 mx-auto flex h-full max-w-wide flex-col justify-end px-5 pb-14 md:px-8 md:pb-20 lg:px-12 lg:pb-22"
+  >
+    {
+      eyebrow && (
+        <div class="mb-5 flex items-center gap-4">
+          <span class="h-px w-14 bg-warning" aria-hidden="true" />
+          <p class="type-eyebrow text-accent-on-dark">{eyebrow}</p>
+        </div>
+      )
+    }
+
+    <Heading id="hero-title" class="type-display max-w-headline text-balance text-ink-inverse">
+      <span class="block">{headline}</span>
+      {headlineAccent && <em class="block font-medium text-clay-200">{headlineAccent}</em>}
+    </Heading>
+
+    {
+      (description || primaryCta || secondaryCta) && (
+        <div class="mt-7 flex flex-col gap-9 lg:flex-row lg:items-end lg:justify-between">
+          {description && (
+            <p class="max-w-prose text-base leading-7 text-sand-200 md:text-[1.0625rem]">
+              {description}
+            </p>
+          )}
+
+          {(primaryCta || secondaryCta) && (
+            <div class="flex shrink-0 flex-col gap-3 sm:flex-row">
+              {primaryCta && (
+                <Button variant="primary-light" href={primaryCta.href}>
+                  {primaryCta.label}
+                </Button>
+              )}
+              {secondaryCta && (
+                <Button variant="outline" href={secondaryCta.href} onDark>
+                  {secondaryCta.label}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .hero-warmth {
+    background: radial-gradient(at 50% 100%, rgba(177, 90, 58, 0.28), transparent 55%);
+  }
+
+  .hero-scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(43, 36, 32, 0.55) 0%,
+      rgba(43, 36, 32, 0.2) 40%,
+      rgba(43, 36, 32, 0.82) 100%
+    );
+  }
+
+  .hero-media :global(img),
+  .hero-media :global(video) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

@@ -1,0 +1,119 @@
+---
+interface Props {
+  type: 'text' | 'email' | 'tel' | 'url' | 'textarea' | 'select';
+  name: string;
+  label: string;
+  required?: boolean;
+  error?: string;
+  helperText?: string;
+  options?: string[];
+  value?: string;
+  placeholder?: string;
+  autocomplete?: string;
+  disabled?: boolean;
+  rows?: number;
+  class?: string;
+}
+
+const {
+  type,
+  name,
+  label,
+  required = false,
+  error,
+  helperText,
+  options = [],
+  value,
+  placeholder,
+  autocomplete,
+  disabled = false,
+  rows = 5,
+  class: className,
+} = Astro.props;
+const fieldId = `field-${name}`;
+const errorId = `${fieldId}-error`;
+const helperId = `${fieldId}-helper`;
+const describedBy = error ? errorId : helperText ? helperId : undefined;
+const fieldClasses = [
+  'min-h-11 w-full border bg-background px-3.5 py-3 font-sans text-[0.9375rem] text-ink transition-colors duration-200 ease-out placeholder:text-muted-faint focus:border-ink disabled:cursor-not-allowed disabled:bg-background-alt disabled:text-muted-faint',
+  error ? 'border-error' : 'border-sand-300',
+];
+---
+
+<div class:list={['w-full', className]}>
+  <label
+    for={fieldId}
+    class="mb-2 block font-sans text-xs font-semibold uppercase tracking-meta text-text-body"
+  >
+    {label}
+    {
+      required && (
+        <span class="text-error" aria-hidden="true">
+          {' '}
+          *
+        </span>
+      )
+    }
+  </label>
+
+  {
+    type === 'textarea' ? (
+      <textarea
+        id={fieldId}
+        name={name}
+        rows={rows}
+        required={required}
+        disabled={disabled}
+        placeholder={placeholder}
+        autocomplete={autocomplete}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
+        class:list={[fieldClasses, 'resize-y']}
+      >
+        {value}
+      </textarea>
+    ) : type === 'select' ? (
+      <select
+        id={fieldId}
+        name={name}
+        required={required}
+        disabled={disabled}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
+        class:list={fieldClasses}
+      >
+        {options.map((option) => (
+          <option value={option} selected={option === value}>
+            {option}
+          </option>
+        ))}
+      </select>
+    ) : (
+      <input
+        id={fieldId}
+        name={name}
+        type={type}
+        value={value}
+        required={required}
+        disabled={disabled}
+        placeholder={placeholder}
+        autocomplete={autocomplete}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
+        class:list={fieldClasses}
+      />
+    )
+  }
+
+  {
+    error ? (
+      <p id={errorId} class="mt-2 text-[0.8125rem] leading-5 text-error">
+        {error}
+      </p>
+    ) : helperText ? (
+      <p id={helperId} class="mt-2 text-[0.8125rem] leading-5 text-muted">
+        {helperText}
+      </p>
+    ) : null
+  }
+</div>

@@ -1,0 +1,24 @@
+---
+interface Props {
+  color?: 'clay' | 'cedar' | 'sun' | 'water';
+  class?: string;
+}
+
+const { color = 'clay', class: className } = Astro.props;
+const colorClasses = {
+  clay: 'bg-clay-100 text-clay-800',
+  cedar: 'bg-cedar-100 text-cedar-800',
+  sun: 'bg-sun-100 text-sun-800',
+  water: 'bg-water-100 text-water-800',
+} as const;
+---
+
+<span
+  class:list={[
+    'inline-flex rounded-pill px-3.5 py-1.5 font-sans text-[0.6875rem] font-semibold leading-normal uppercase tracking-label',
+    colorClasses[color],
+    className,
+  ]}
+>
+  <slot />
+</span>

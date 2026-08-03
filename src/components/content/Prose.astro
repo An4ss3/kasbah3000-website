@@ -1,0 +1,115 @@
+---
+import '@styles/typography.css';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['prose-kasbah max-w-prose', className]}>
+  <slot />
+</div>
+
+<style>
+  .prose-kasbah {
+    color: #5a4a38;
+    font-family: Manrope, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .prose-kasbah :global(p + p) {
+    margin-block-start: 1rem;
+  }
+
+  .prose-kasbah :global(h2),
+  .prose-kasbah :global(h3),
+  .prose-kasbah :global(h4) {
+    color: #2b2420;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+
+  .prose-kasbah :global(h2) {
+    margin-block: 3rem 1.5rem;
+    font-size: clamp(2.125rem, 4vw, 3.25rem);
+    line-height: 1.15;
+  }
+
+  .prose-kasbah :global(h3) {
+    margin-block: 2.5rem 1.25rem;
+    font-size: clamp(1.625rem, 3vw, 2.375rem);
+    line-height: 1.4;
+  }
+
+  .prose-kasbah :global(h4) {
+    margin-block: 2rem 1rem;
+    font-size: clamp(1.5rem, 2vw, 1.75rem);
+    line-height: 1.2;
+  }
+
+  .prose-kasbah :global(ul),
+  .prose-kasbah :global(ol) {
+    margin-block: 1.5rem;
+    padding-inline-start: 1.25rem;
+  }
+
+  .prose-kasbah :global(li + li) {
+    margin-block-start: 0.5rem;
+  }
+
+  .prose-kasbah :global(li::marker) {
+    color: #96482d;
+  }
+
+  .prose-kasbah :global(a) {
+    color: #96482d;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color 150ms ease-out;
+  }
+
+  .prose-kasbah :global(a:hover) {
+    color: #7a3a24;
+  }
+
+  .prose-kasbah :global(blockquote) {
+    margin-block: 2.5rem;
+    color: #2b2420;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(1.5rem, 3vw, 2.125rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .prose-kasbah :global(blockquote::before) {
+    display: block;
+    width: 3.5rem;
+    height: 1px;
+    margin-block-end: 1.25rem;
+    background: #d9a441;
+    content: '';
+  }
+
+  .prose-kasbah :global(blockquote p) {
+    margin: 0;
+  }
+
+  .prose-kasbah :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-block: 2.5rem;
+  }
+
+  .prose-kasbah :global(hr) {
+    margin-block: 3rem;
+    border: 0;
+    border-block-start: 1px solid #e6dacb;
+  }
+</style>

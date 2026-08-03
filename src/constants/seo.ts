@@ -9,7 +9,7 @@ export const SEO_DEFAULTS = {
   title: SITE.title,
   description: SITE.description,
   canonicalURL: SITE.url,
-  
+
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
@@ -22,7 +22,7 @@ export const SEO_DEFAULTS = {
       alt: SITE.title,
     },
   },
-  
+
   twitter: {
     card: 'summary_large_image',
     site: '@kasbah3000', // Update when available
@@ -36,14 +36,14 @@ export const STRUCTURED_DATA = {
     '@type': 'Organization',
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/brand/logo.png`,
+    logo: `${SITE.url}/brand/logo.jpeg`,
     sameAs: [
       'https://linkedin.com/company/kasbah3000',
       'https://youtube.com/@kasbah3000',
       'https://instagram.com/kasbah3000',
     ],
   },
-  
+
   website: {
     '@context': 'https://schema.org',
     '@type': 'WebSite',

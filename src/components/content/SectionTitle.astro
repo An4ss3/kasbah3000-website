@@ -1,0 +1,17 @@
+---
+import '@styles/typography.css';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  centered?: boolean;
+  class?: string;
+}
+
+const { eyebrow, title, centered = false, class: className } = Astro.props;
+---
+
+<div class:list={['max-w-headline', centered && 'mx-auto text-center', className]}>
+  {eyebrow && <p class="type-eyebrow mb-5 text-muted">{eyebrow}</p>}
+  <h2 class="type-h2 text-balance text-ink">{title}</h2>
+</div>

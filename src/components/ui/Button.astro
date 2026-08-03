@@ -1,0 +1,58 @@
+---
+interface Props {
+  variant: 'primary-dark' | 'primary-light' | 'outline';
+  href?: string;
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+  onDark?: boolean;
+  ariaLabel?: string;
+  external?: boolean;
+  class?: string;
+}
+
+const {
+  variant,
+  href,
+  type = 'button',
+  disabled = false,
+  onDark = false,
+  ariaLabel,
+  external = false,
+  class: className,
+} = Astro.props;
+
+const baseClasses =
+  'inline-flex min-h-11 w-full items-center justify-center border px-8 py-3.5 font-sans text-button uppercase tracking-label transition-colors duration-200 ease-out sm:w-auto';
+const variantClasses = {
+  'primary-dark':
+    'border-background-dark bg-background-dark text-ink-inverse hover:border-link hover:bg-link',
+  'primary-light': 'border-background bg-background text-ink hover:border-warning hover:bg-warning',
+  outline: onDark
+    ? 'border-sand-50/55 bg-transparent text-ink-inverse hover:border-sand-50'
+    : 'border-border-strong bg-transparent text-ink hover:border-ink',
+} as const;
+const disabledClasses = disabled
+  ? 'pointer-events-none border-border bg-sand-200 text-muted-faint'
+  : '';
+const classes = [baseClasses, variantClasses[variant], disabledClasses, className];
+---
+
+{
+  href ? (
+    <a
+      href={disabled ? undefined : href}
+      class:list={classes}
+      aria-label={ariaLabel}
+      aria-disabled={disabled ? 'true' : undefined}
+      tabindex={disabled ? -1 : undefined}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noreferrer' : undefined}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class:list={classes} disabled={disabled} aria-label={ariaLabel}>
+      <slot />
+    </button>
+  )
+}
