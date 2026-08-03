@@ -1,0 +1,42 @@
+---
+import type { NavItem } from '@constants';
+import { getLocalizedPath, isPathActive } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+  currentPath: string;
+  items: readonly NavItem[];
+  ariaLabel: string;
+}
+
+const { lang, currentPath, items, ariaLabel } = Astro.props;
+---
+
+<nav aria-label={ariaLabel}>
+  <ul class="flex items-center gap-6 xl:gap-8">
+    {
+      items.map((item) => {
+        const href = item.external ? item.href : getLocalizedPath(item.href, lang);
+        const isActive = !item.external && isPathActive(currentPath, item.href, lang);
+
+        return (
+          <li>
+            <a
+              href={href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noreferrer' : undefined}
+              aria-current={isActive ? 'page' : undefined}
+              class:list={[
+                'flex min-h-11 items-center border-b border-transparent font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link',
+                isActive && 'border-link text-link',
+              ]}
+            >
+              {item.label[lang]}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>

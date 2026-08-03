@@ -1,0 +1,137 @@
+---
+import { FOOTER_NAV, SITE, SOCIAL_LINKS } from '@constants';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+const socialLinks = [
+  { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin },
+  { label: 'YouTube', href: SOCIAL_LINKS.youtube },
+  { label: 'Instagram', href: SOCIAL_LINKS.instagram },
+] as const;
+---
+
+<footer
+  class="border-t border-border-dark bg-background-dark text-text-body-dark"
+  aria-label={t(lang, 'footer.label')}
+>
+  <div class="mx-auto max-w-content px-5 py-14 md:px-8 md:py-20 lg:px-12 lg:py-30">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+      <div>
+        <a
+          href={getLocalizedPath('/', lang)}
+          class="inline-flex min-h-11 items-center"
+          aria-label={SITE.name}
+        >
+          <span class="font-serif text-3xl font-medium text-ink-inverse">{SITE.name}</span>
+        </a>
+        <p class="mt-5 max-w-xs text-sm leading-7 text-text-body-dark">
+          {SITE.title.replace(`${SITE.name} — `, '')}
+        </p>
+      </div>
+
+      <nav aria-labelledby="footer-discover">
+        <h2 id="footer-discover" class="font-sans text-eyebrow uppercase text-accent-on-dark">
+          {t(lang, 'footer.discover')}
+        </h2>
+        <ul class="mt-5 space-y-1">
+          {
+            FOOTER_NAV.discover.map((item) => (
+              <li>
+                <a
+                  href={getLocalizedPath(item.href, lang)}
+                  class="inline-flex min-h-11 items-center text-sm text-text-body-dark transition-colors duration-fast hover:text-ink-inverse"
+                >
+                  {item.label[lang]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-resources">
+        <h2 id="footer-resources" class="font-sans text-eyebrow uppercase text-accent-on-dark">
+          {t(lang, 'footer.resources')}
+        </h2>
+        <ul class="mt-5 space-y-1">
+          {
+            FOOTER_NAV.resources.map((item) => (
+              <li>
+                <a
+                  href={getLocalizedPath(item.href, lang)}
+                  class="inline-flex min-h-11 items-center text-sm text-text-body-dark transition-colors duration-fast hover:text-ink-inverse"
+                >
+                  {item.label[lang]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="font-sans text-eyebrow uppercase text-accent-on-dark">
+          {t(lang, 'footer.newsletter')}
+        </h2>
+        <p class="mt-5 text-sm leading-7 text-text-body-dark">
+          {t(lang, 'footer.newsletterDescription')}
+        </p>
+        <div class="mt-6">
+          <slot name="newsletter" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-border-dark">
+    <div
+      class="mx-auto flex max-w-content flex-col gap-6 px-5 py-6 text-xs text-text-body-dark md:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12"
+    >
+      <p>© {year} {SITE.name}. {t(lang, 'footer.rights')}</p>
+
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        <nav aria-label={t(lang, 'footer.legal')}>
+          <ul class="flex flex-wrap gap-x-5 gap-y-2">
+            {
+              FOOTER_NAV.legal.map((item) => (
+                <li>
+                  <a
+                    href={getLocalizedPath(item.href, lang)}
+                    class="inline-flex min-h-11 items-center transition-colors duration-fast hover:text-ink-inverse"
+                  >
+                    {item.label[lang]}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <nav aria-label={t(lang, 'footer.follow')}>
+          <ul class="flex flex-wrap gap-x-5 gap-y-2">
+            {
+              socialLinks.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="inline-flex min-h-11 items-center transition-colors duration-fast hover:text-ink-inverse"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>

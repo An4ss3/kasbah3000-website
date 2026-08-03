@@ -1,0 +1,25 @@
+---
+import type { PageLayoutProps } from '@types';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props extends PageLayoutProps {}
+
+const { lang, title, description, showHero = true } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  {
+    showHero && (
+      <div class="border-b border-border">
+        <slot name="hero" />
+      </div>
+    )
+  }
+
+  <div class="mx-auto max-w-content px-5 py-14 md:px-8 md:py-20 lg:px-12 lg:py-30">
+    <slot />
+  </div>
+
+  <slot name="full-width" />
+  <slot name="newsletter" slot="newsletter" />
+</BaseLayout>

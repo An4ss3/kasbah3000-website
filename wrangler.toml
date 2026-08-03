@@ -1,0 +1,19 @@
+name = "kasbah3000"
+compatibility_date = "2026-08-02"
+compatibility_flags = ["global_fetch_strictly_public"]
+main = "@astrojs/cloudflare/entrypoints/server"
+
+[observability]
+enabled = true
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+# R2 bucket binding for video and heavy media
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "kasbah3000-media"  # Update with actual bucket name
+
+# Environment variables are configured in Cloudflare Pages dashboard
+# See .env.example for required variables

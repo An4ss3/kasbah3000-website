@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+@config "../../tailwind.config.mjs";
+
+/* Fonts will be self-hosted in /public/fonts/ */
+/* @font-face declarations will be added when fonts are available */
+
+/* Font loading strategy: 
+   - Cormorant Garamond: weights 500, 500 italic, 600
+   - Manrope: weights 400, 500, 600, 700
+   - Subset to Latin (FR/EN)
+   - font-display: swap
+*/
+
+/* Base styles */
+@layer base {
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Respect user preferences */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: #eac5b1; /* clay-200 */
+    color: #2b2420; /* ink */
+  }
+
+  /* Body defaults */
+  body {
+    font-family: Manrope, 'Helvetica Neue', Arial, sans-serif;
+    color: #5a4a38; /* text-body */
+    background-color: #faf6f0; /* background */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus visible (WCAG AA requirement) */
+  *:focus-visible {
+    outline: 2px solid #96482d; /* clay-600 */
+    outline-offset: 2px;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  /* Text balance for headlines */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Logical properties for RTL support */
+  .ms-auto {
+    margin-inline-start: auto;
+  }
+
+  .me-auto {
+    margin-inline-end: auto;
+  }
+}

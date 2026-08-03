@@ -1,0 +1,83 @@
+---
+import { PRIMARY_NAV } from '@constants';
+import { getLocalizedPath, isPathActive, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+  currentPath: string;
+}
+
+const { lang, currentPath } = Astro.props;
+---
+
+<details class="mobile-nav lg:hidden">
+  <summary
+    class="flex min-h-11 cursor-pointer list-none items-center gap-3 font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link"
+  >
+    <span class="menu-icon" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    {t(lang, 'navigation.menu')}
+  </summary>
+
+  <div
+    class="fixed inset-x-0 bottom-0 top-16 overflow-y-auto border-t border-border bg-background px-5 py-8 md:top-18 md:px-8"
+  >
+    <nav aria-label={t(lang, 'navigation.mobileLabel')}>
+      <ul class="divide-y divide-border border-y border-border">
+        {
+          PRIMARY_NAV.map((item) => {
+            const isActive = isPathActive(currentPath, item.href, lang);
+
+            return (
+              <li>
+                <a
+                  href={getLocalizedPath(item.href, lang)}
+                  aria-current={isActive ? 'page' : undefined}
+                  class:list={[
+                    'flex min-h-14 items-center justify-between font-serif text-2xl font-medium text-ink transition-colors duration-fast hover:text-link',
+                    isActive && 'text-link',
+                  ]}
+                >
+                  {item.label[lang]}
+                  <span class="font-sans text-sm text-muted" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </div>
+</details>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::marker {
+    content: '';
+  }
+
+  .menu-icon {
+    display: grid;
+    width: 20px;
+    gap: 4px;
+  }
+
+  .menu-icon span {
+    display: block;
+    height: 1px;
+    background: currentColor;
+  }
+
+  details[open] .menu-icon span:nth-child(2) {
+    opacity: 0;
+  }
+</style>

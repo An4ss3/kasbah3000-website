@@ -1,0 +1,17 @@
+---
+import { t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+---
+
+<a
+  href="#main-content"
+  class="fixed start-5 top-4 z-toast -translate-y-24 bg-background-dark px-5 py-3 font-sans text-button uppercase tracking-label text-ink-inverse transition-transform duration-fast focus:translate-y-0"
+>
+  {t(lang, 'accessibility.skipToContent')}
+</a>

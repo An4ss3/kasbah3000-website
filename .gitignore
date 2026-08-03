@@ -1,8 +1,3 @@
-# build output
-dist/
-# generated types
-.astro/
-
 # dependencies
 node_modules/
 
@@ -11,14 +6,35 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
+lerna-debug.log*
 
 # environment variables
 .env
 .env.production
+.env.local
+.env*.local
 
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# Windows-specific files
+Thumbs.db
+
+# build output
+dist/
+.astro/
+
+# generated types
+.astro/
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
 .idea/
+*.swp
+*.swo
+*~
+
+# Wrangler
+.wrangler/
+wrangler.toml.local
