@@ -1,0 +1,183 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import GalleryGrid from '@components/content/GalleryGrid.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import Lightbox from '@components/islands/Lightbox';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import { SITE } from '@constants';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { isVideoAsset, resolveMediaUrl, resolvePosterUrl } from '@lib/utils/media';
+import type { Language, MediaAsset } from '@types';
+
+interface Props {
+  lang: Language;
+  assets: MediaAsset[];
+  albums: string[];
+  activeAlbum?: string;
+}
+
+const { lang, assets, albums, activeAlbum } = Astro.props;
+const baseGalleryPath = getLocalizedPath('/gallery', lang);
+const galleryPath = getLocalizedPath(activeAlbum ? `/gallery/${activeAlbum}` : '/gallery', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const projectPath = getLocalizedPath('/project', lang);
+const lightboxRootId = `gallery-grid-${lang}-${activeAlbum ?? 'all'}`;
+const albumLabels: Record<string, string> = {
+  territoire: t(lang, 'gallery.album.territoire'),
+  conception: t(lang, 'gallery.album.conception'),
+};
+const currentTitle = activeAlbum ? (albumLabels[activeAlbum] ?? activeAlbum) : undefined;
+const lightboxItems = assets.map((asset) => ({
+  src: resolveMediaUrl(asset),
+  poster: resolvePosterUrl(asset),
+  title: asset.title[lang],
+  isVideo: isVideoAsset(asset),
+}));
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'gallery.hero.title'),
+      item: new URL(baseGalleryPath, SITE.url).href,
+    },
+    ...(activeAlbum
+      ? [
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: currentTitle,
+            item: new URL(galleryPath, SITE.url).href,
+          },
+        ]
+      : []),
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'gallery.hero.title')}
+  description={t(lang, 'gallery.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'gallery.hero.title')}
+    description={t(lang, 'gallery.hero.description')}
+    lang={lang}
+    canonical={galleryPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'gallery.hero.title')}
+    description={t(lang, 'gallery.hero.description')}
+    imageSrc="/images/placeholders/principles-header.svg"
+    imageAlt={t(lang, 'gallery.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="gallery-intro-title">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+      <SectionTitle
+        id="gallery-intro-title"
+        eyebrow={t(lang, 'gallery.intro.eyebrow')}
+        title={t(lang, 'gallery.intro.title')}
+      />
+      <Prose>
+        <p>{t(lang, 'gallery.intro.body')}</p>
+      </Prose>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section class="border-t border-border bg-background py-14 md:py-20 lg:py-30">
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <nav aria-label={t(lang, 'gallery.filter.label')}>
+          <ul class="flex flex-wrap gap-3">
+            <li>
+              <a
+                href={baseGalleryPath}
+                aria-current={!activeAlbum ? 'page' : undefined}
+                class:list={[
+                  'inline-flex min-h-11 items-center rounded-pill border border-border px-4 py-2 text-[0.8125rem] leading-5 text-text-body transition-colors duration-200 hover:border-link hover:text-link',
+                  !activeAlbum && 'border-link text-link',
+                ]}
+              >
+                {t(lang, 'gallery.filter.all')}
+              </a>
+            </li>
+            {
+              albums.map((album) => {
+                const isActive = album === activeAlbum;
+                return (
+                  <li>
+                    <a
+                      href={getLocalizedPath(`/gallery/${album}`, lang)}
+                      aria-current={isActive ? 'page' : undefined}
+                      class:list={[
+                        'inline-flex min-h-11 items-center rounded-pill border border-border px-4 py-2 text-[0.8125rem] leading-5 text-text-body transition-colors duration-200 hover:border-link hover:text-link',
+                        isActive && 'border-link text-link',
+                      ]}
+                    >
+                      {albumLabels[album] ?? album}
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="gallery-grid-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <h2 id="gallery-grid-title" class="sr-only">{t(lang, 'gallery.grid.title')}</h2>
+        <div id={lightboxRootId}>
+          <GalleryGrid
+            assets={assets}
+            lang={lang}
+            openLabel={t(lang, 'gallery.item.openLabel')}
+            videoLabel={t(lang, 'gallery.item.videoLabel')}
+          />
+        </div>
+        <Lightbox
+          client:visible
+          items={lightboxItems}
+          rootId={lightboxRootId}
+          lang={lang}
+          label={t(lang, 'gallery.lightbox.label')}
+          closeLabel={t(lang, 'gallery.lightbox.close')}
+          previousLabel={t(lang, 'gallery.lightbox.previous')}
+          nextLabel={t(lang, 'gallery.lightbox.next')}
+          zoomInLabel={t(lang, 'gallery.lightbox.zoomIn')}
+          zoomOutLabel={t(lang, 'gallery.lightbox.zoomOut')}
+          counterLabel={t(lang, 'gallery.lightbox.counter')}
+        />
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'gallery.cta.eyebrow')}
+      title={t(lang, 'gallery.cta.title')}
+      primaryCta={{ label: t(lang, 'gallery.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'gallery.cta.secondary'), href: projectPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

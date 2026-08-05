@@ -1,0 +1,9 @@
+---
+import PartnersPage from '@components/pages/PartnersPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<PartnersPage lang={lang} />

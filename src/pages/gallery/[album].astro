@@ -1,0 +1,33 @@
+---
+import GalleryPage from '@components/pages/GalleryPage.astro';
+import { getGallery } from '@lib/content/gallery';
+import { getAlbums } from '@lib/utils/media';
+import type { MediaAsset } from '@types';
+
+export const prerender = true;
+
+interface Props {
+  assets: MediaAsset[];
+  albums: string[];
+  activeAlbum: string;
+}
+
+export async function getStaticPaths() {
+  const allAssets = await getGallery();
+  const albums = getAlbums(allAssets);
+
+  return albums.map((album) => ({
+    params: { album },
+    props: {
+      assets: allAssets.filter((asset) => asset.album === album),
+      albums,
+      activeAlbum: album,
+    },
+  }));
+}
+
+const lang = 'fr' as const;
+const { assets, albums, activeAlbum } = Astro.props;
+---
+
+<GalleryPage lang={lang} assets={assets} albums={albums} activeAlbum={activeAlbum} />

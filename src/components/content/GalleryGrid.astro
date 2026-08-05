@@ -1,0 +1,108 @@
+---
+import { isVideoAsset, resolveMediaUrl, resolvePosterUrl } from '@lib/utils/media';
+import type { Language, MediaAsset } from '@types';
+
+interface Props {
+  assets: MediaAsset[];
+  lang: Language;
+  openLabel: string;
+  videoLabel: string;
+  class?: string;
+}
+
+const { assets, lang, openLabel, videoLabel, class: className } = Astro.props;
+---
+
+<ul class:list={['grid gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-12', className]}>
+  {
+    assets.map((asset, index) => {
+      const title = asset.title[lang];
+      const isVideo = isVideoAsset(asset);
+      const imageSrc = isVideo ? resolvePosterUrl(asset) : resolveMediaUrl(asset);
+
+      return (
+        <li>
+          <figure class="gallery-grid__item group relative">
+            <button
+              type="button"
+              data-lightbox-index={index}
+              aria-label={`${openLabel} — ${title}`}
+              class="block min-h-11 w-full p-0 text-left"
+            >
+              <span class="relative block aspect-[4/3] overflow-hidden border border-border bg-background-alt">
+                {imageSrc && (
+                  <img
+                    src={imageSrc}
+                    alt={title}
+                    width="1200"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                    class="gallery-grid__image h-full w-full object-cover"
+                  />
+                )}
+                {isVideo && (
+                  <span
+                    class="absolute bottom-3 right-3 border border-border-dark bg-background-dark px-3 py-2 text-[0.8125rem] leading-5 text-ink-inverse"
+                    aria-hidden="true"
+                  >
+                    <span class="mr-2 inline-block" aria-hidden="true">
+                      ▶
+                    </span>
+                    {videoLabel}
+                  </span>
+                )}
+              </span>
+            </button>
+            <figcaption class="gallery-grid__caption mt-3 text-[0.8125rem] leading-5 text-muted lg:text-ink-inverse">
+              {title}
+            </figcaption>
+          </figure>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .gallery-grid__image {
+    transition: transform 400ms ease-out;
+  }
+
+  .gallery-grid__item:hover .gallery-grid__image,
+  .gallery-grid__item:focus-within .gallery-grid__image {
+    transform: scale(1.03);
+  }
+
+  @media (min-width: 1024px) {
+    .gallery-grid__caption {
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+      margin: 0;
+      padding: 1rem;
+      background: rgba(43, 36, 32, 0.82);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease-out;
+    }
+
+    .gallery-grid__item:hover .gallery-grid__caption,
+    .gallery-grid__item:focus-within .gallery-grid__caption {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-grid__image {
+      transition: none;
+    }
+
+    .gallery-grid__item:hover .gallery-grid__image,
+    .gallery-grid__item:focus-within .gallery-grid__image {
+      transform: none;
+    }
+  }
+</style>

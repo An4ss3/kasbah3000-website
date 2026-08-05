@@ -1,0 +1,38 @@
+---
+import GalleryPage from '@components/pages/GalleryPage.astro';
+import { SITE } from '@constants';
+import { getGallery } from '@lib/content/gallery';
+import { getAlbums } from '@lib/utils/media';
+import type { Language, MediaAsset } from '@types';
+
+export const prerender = true;
+
+interface Props {
+  lang: Language;
+  assets: MediaAsset[];
+  albums: string[];
+  activeAlbum: string;
+}
+
+export async function getStaticPaths() {
+  const allAssets = await getGallery();
+  const albums = getAlbums(allAssets);
+  const languages = SITE.languages.filter((language) => language !== SITE.defaultLanguage);
+
+  return languages.flatMap((lang) =>
+    albums.map((album) => ({
+      params: { lang, album },
+      props: {
+        lang,
+        assets: allAssets.filter((asset) => asset.album === album),
+        albums,
+        activeAlbum: album,
+      },
+    }))
+  );
+}
+
+const { lang, assets, albums, activeAlbum } = Astro.props;
+---
+
+<GalleryPage lang={lang} assets={assets} albums={albums} activeAlbum={activeAlbum} />

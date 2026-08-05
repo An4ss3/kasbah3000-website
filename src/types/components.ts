@@ -3,7 +3,7 @@
  * Shared prop interfaces for Astro/Preact components
  */
 
-import type { Language, ImageAsset, Breadcrumb } from './common';
+import type { Language, Breadcrumb } from './common';
 
 // Layout Components
 export interface BaseLayoutProps {
@@ -88,9 +88,24 @@ export interface ProjectMapProps {
   fallbackText?: string;
 }
 
+export interface LightboxItem {
+  src: string;
+  poster?: string;
+  title: string;
+  isVideo: boolean;
+}
+
 export interface LightboxProps {
-  images: ImageAsset[];
-  initialIndex?: number;
+  items: LightboxItem[];
+  rootId: string;
+  lang: Language;
+  label: string;
+  closeLabel: string;
+  previousLabel: string;
+  nextLabel: string;
+  zoomInLabel: string;
+  zoomOutLabel: string;
+  counterLabel: string;
 }
 
 export interface FormProps {

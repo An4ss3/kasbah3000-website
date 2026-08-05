@@ -1,0 +1,13 @@
+---
+import GalleryPage from '@components/pages/GalleryPage.astro';
+import { getGallery } from '@lib/content/gallery';
+import { getAlbums } from '@lib/utils/media';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+const assets = await getGallery();
+const albums = getAlbums(assets);
+---
+
+<GalleryPage lang={lang} assets={assets} albums={albums} />

@@ -1,0 +1,27 @@
+---
+import GalleryPage from '@components/pages/GalleryPage.astro';
+import { SITE } from '@constants';
+import { getGallery } from '@lib/content/gallery';
+import { isLanguage } from '@lib/utils/i18n';
+import { getAlbums } from '@lib/utils/media';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return SITE.languages
+    .filter((language) => language !== SITE.defaultLanguage)
+    .map((language) => ({ params: { lang: language } }));
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+const assets = await getGallery();
+const albums = getAlbums(assets);
+---
+
+<GalleryPage lang={lang} assets={assets} albums={albums} />

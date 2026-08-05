@@ -1,0 +1,158 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import PartnerGrid from '@components/content/PartnerGrid.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import { SITE } from '@constants';
+import { getPartners } from '@lib/content/partners';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language, Partner } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const partnersPath = getLocalizedPath('/partners', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const aboutPath = getLocalizedPath('/about', lang);
+
+const partners = await getPartners();
+
+const categoryLabels: Record<Partner['category'], string> = {
+  academic: t(lang, 'partners.category.academic'),
+  corporate: t(lang, 'partners.category.corporate'),
+  government: t(lang, 'partners.category.government'),
+  ngo: t(lang, 'partners.category.ngo'),
+  other: t(lang, 'partners.category.other'),
+};
+
+const tiers = [
+  {
+    title: t(lang, 'partners.tiers.item1.title'),
+    body: t(lang, 'partners.tiers.item1.body'),
+  },
+  {
+    title: t(lang, 'partners.tiers.item2.title'),
+    body: t(lang, 'partners.tiers.item2.body'),
+  },
+  {
+    title: t(lang, 'partners.tiers.item3.title'),
+    body: t(lang, 'partners.tiers.item3.body'),
+  },
+];
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'partners.hero.title'),
+      item: new URL(partnersPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'partners.hero.title')}
+  description={t(lang, 'partners.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'partners.hero.title')}
+    description={t(lang, 'partners.hero.description')}
+    lang={lang}
+    canonical={partnersPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'partners.hero.title')}
+    description={t(lang, 'partners.hero.description')}
+    imageSrc="/images/placeholders/principles-header.svg"
+    imageAlt={t(lang, 'partners.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="partners-intro-title">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+      <div>
+        <p class="type-eyebrow mb-5 text-muted">{t(lang, 'partners.intro.eyebrow')}</p>
+        <h2 id="partners-intro-title" class="type-h2 text-balance text-ink">
+          {t(lang, 'partners.intro.title')}
+        </h2>
+      </div>
+      <Prose>
+        <p>{t(lang, 'partners.intro.body')}</p>
+      </Prose>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="partners-grid-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <h2 id="partners-grid-title" class="sr-only">{t(lang, 'partners.grid.title')}</h2>
+        <PartnerGrid
+          partners={partners}
+          lang={lang}
+          categoryLabels={categoryLabels}
+          websiteLabel={t(lang, 'partners.card.websiteLabel')}
+        />
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background py-14 md:py-20 lg:py-30"
+      aria-labelledby="partners-tiers-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <SectionTitle
+          id="partners-tiers-title"
+          eyebrow={t(lang, 'partners.tiers.eyebrow')}
+          title={t(lang, 'partners.tiers.title')}
+          centered
+        />
+
+        <ul
+          class="mt-12 grid gap-10 border-t border-border pt-10 md:grid-cols-3 md:gap-12 lg:mt-16"
+        >
+          {
+            tiers.map((tier, index) => (
+              <li class="border-t border-border pt-6 first:border-t-0 first:pt-0 md:border-t-0 md:pt-0">
+                <span class="type-caption text-muted" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 class="type-h4 mt-4 text-balance text-ink">{tier.title}</h3>
+                <p class="mt-4 text-sm leading-6 text-text-body">{tier.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'partners.cta.eyebrow')}
+      title={t(lang, 'partners.cta.title')}
+      primaryCta={{ label: t(lang, 'partners.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'partners.cta.secondary'), href: aboutPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

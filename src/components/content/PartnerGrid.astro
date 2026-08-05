@@ -1,0 +1,55 @@
+---
+import PartnerCard from '@components/content/PartnerCard.astro';
+import type { Language, Partner } from '@types';
+
+interface Props {
+  partners: Partner[];
+  lang: Language;
+  categoryLabels: Record<Partner['category'], string>;
+  websiteLabel: string;
+  class?: string;
+}
+
+const { partners, lang, categoryLabels, websiteLabel, class: className } = Astro.props;
+const categoryOrder: Partner['category'][] = [
+  'academic',
+  'corporate',
+  'government',
+  'ngo',
+  'other',
+];
+const groups = categoryOrder
+  .map((category) => ({
+    category,
+    partners: partners.filter((partner) => partner.category === category),
+  }))
+  .filter((group) => group.partners.length > 0);
+---
+
+<div class={className}>
+  {
+    groups.map((group, index) => (
+      <section
+        class:list={[index > 0 && 'mt-14 lg:mt-20']}
+        aria-labelledby={`partner-category-${group.category}`}
+      >
+        <div class="border-t border-border pt-6">
+          <h3 id={`partner-category-${group.category}`} class="type-eyebrow text-muted">
+            {categoryLabels[group.category]}
+          </h3>
+        </div>
+        <ul class="mt-10 grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-14">
+          {group.partners.map((partner) => (
+            <PartnerCard
+              partner={partner}
+              lang={lang}
+              categoryLabel={categoryLabels[group.category]}
+              websiteLabel={websiteLabel}
+              headingLevel="h4"
+            />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

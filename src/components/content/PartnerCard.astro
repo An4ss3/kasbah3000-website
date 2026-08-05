@@ -1,0 +1,62 @@
+---
+import '@styles/typography.css';
+import type { Language, Partner } from '@types';
+
+interface Props {
+  partner: Partner;
+  lang: Language;
+  categoryLabel: string;
+  websiteLabel: string;
+  headingLevel?: 'h3' | 'h4';
+  class?: string;
+}
+
+const {
+  partner,
+  lang,
+  categoryLabel,
+  websiteLabel,
+  headingLevel = 'h3',
+  class: className,
+} = Astro.props;
+const description = partner.description[lang];
+const Heading = headingLevel;
+---
+
+<li class:list={['group', className]}>
+  <div
+    class="flex aspect-[3/2] items-center justify-center overflow-hidden border border-border bg-surface transition-colors duration-200 ease-out group-hover:border-ink group-focus-within:border-ink"
+  >
+    {
+      partner.logoPath ? (
+        <img
+          src={partner.logoPath}
+          alt={partner.name}
+          class="h-full w-full object-contain p-6 md:p-8"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span class="p-6 text-center font-serif text-xl text-ink md:p-8">{partner.name}</span>
+      )
+    }
+  </div>
+
+  <Heading class="type-h4 mt-6 text-balance text-ink">{partner.name}</Heading>
+  <p class="type-caption mt-2 text-muted">{categoryLabel}</p>
+  <p class="mt-4 text-sm leading-6 text-text-body">{description}</p>
+
+  {
+    partner.websiteUrl && (
+      <a
+        href={partner.websiteUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`${websiteLabel} — ${partner.name}`}
+        class="mt-5 inline-flex min-h-11 items-center border-t border-border pt-3 font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link"
+      >
+        {websiteLabel}
+      </a>
+    )
+  }
+</li>
