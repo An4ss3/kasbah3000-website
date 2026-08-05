@@ -5,9 +5,13 @@ import BaseLayout from './BaseLayout.astro';
 interface Props extends PageLayoutProps {}
 
 const { lang, title, description, showHero = true } = Astro.props;
+const hasSeoSlot = Astro.slots.has('seo');
+const hasHeadSlot = Astro.slots.has('head');
 ---
 
 <BaseLayout lang={lang} title={title} description={description}>
+  {hasSeoSlot && <slot name="seo" slot="seo" />}
+  {hasHeadSlot && <slot name="head" slot="head" />}
   {
     showHero && (
       <div class="border-b border-border">

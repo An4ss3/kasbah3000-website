@@ -1,0 +1,122 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import PillarList from '@components/content/PillarList.astro';
+import Prose from '@components/content/Prose.astro';
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Badge from '@components/ui/Badge.astro';
+import { SITE } from '@constants';
+import { t } from '@lib/utils/i18n';
+
+export const prerender = true;
+
+type PrincipleEntry = CollectionEntry<'principles'>;
+
+interface Props {
+  entry: PrincipleEntry;
+  principles: PrincipleEntry[];
+}
+
+export async function getStaticPaths() {
+  const principles = await getCollection('principles', ({ data }) => data.lang === 'en');
+  principles.sort((a, b) => a.data.order - b.data.order);
+
+  return principles.map((entry) => ({
+    params: { lang: 'en', slug: entry.data.slug },
+    props: { entry, principles },
+  }));
+}
+
+const lang = 'en' as const;
+const { entry, principles } = Astro.props;
+const { Content } = await render(entry);
+const currentIndex = principles.findIndex(({ data }) => data.slug === entry.data.slug);
+const previous = currentIndex > 0 ? principles[currentIndex - 1] : undefined;
+const next = currentIndex < principles.length - 1 ? principles[currentIndex + 1] : undefined;
+const canonical = `/${lang}/principles/${entry.data.slug}`;
+const structuredData = {
+  headline: entry.data.title,
+  description: entry.data.excerpt,
+  url: new URL(canonical, SITE.url).href,
+  inLanguage: lang,
+};
+---
+
+<BaseLayout lang={lang} title={entry.data.title} description={entry.data.excerpt}>
+  <Seo
+    slot="head"
+    title={entry.data.title}
+    description={entry.data.excerpt}
+    lang={lang}
+    canonical={canonical}
+    article
+  />
+  <JsonLd slot="head" type="Article" data={structuredData} />
+
+  <PageHero title={entry.data.title} description={entry.data.excerpt} />
+
+  <section class="border-b border-border py-14 md:py-20 lg:py-30">
+    <div
+      class="mx-auto grid max-w-content gap-12 px-5 md:px-8 lg:grid-cols-[280px_1fr] lg:gap-20 lg:px-12"
+    >
+      <aside>
+        <h2 class="type-eyebrow mb-5 text-muted">
+          {t(lang, 'principles.detail.relatedTitle')}
+        </h2>
+        <PillarList
+          principles={principles.map(({ data }) => data)}
+          currentSlug={entry.data.slug}
+          lang={lang}
+        />
+      </aside>
+
+      <article class="min-w-0">
+        <Badge color="clay">{entry.data.icon ?? entry.data.slug}</Badge>
+        <Prose class="mt-8"><Content /></Prose>
+
+        <nav
+          class="mt-14 grid grid-cols-2 gap-6 border-t border-border pt-8"
+          aria-label={t(lang, 'principles.detail.navigationLabel')}
+        >
+          <div>
+            {
+              previous && (
+                <a
+                  href={`/${lang}/principles/${previous.data.slug}`}
+                  class="group block text-sm text-text-body focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+                >
+                  <span class="type-eyebrow text-muted">
+                    {t(lang, 'principles.detail.previous')}
+                  </span>
+                  <span class="mt-2 block font-serif text-xl text-ink transition-colors duration-fast group-hover:text-clay-600">
+                    {previous.data.title}
+                  </span>
+                </a>
+              )
+            }
+          </div>
+          <div class="text-right">
+            {
+              next && (
+                <a
+                  href={`/${lang}/principles/${next.data.slug}`}
+                  class="group block text-sm text-text-body focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+                >
+                  <span class="type-eyebrow text-muted">{t(lang, 'principles.detail.next')}</span>
+                  <span class="mt-2 block font-serif text-xl text-ink transition-colors duration-fast group-hover:text-clay-600">
+                    {next.data.title}
+                  </span>
+                </a>
+              )
+            }
+          </div>
+        </nav>
+      </article>
+    </div>
+  </section>
+
+  <CtaBand title={t(lang, 'principles.cta.title')} variant="dark" />
+</BaseLayout>

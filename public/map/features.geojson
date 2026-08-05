@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.6038, 30.4025]
+      },
+      "properties": {
+        "name": {
+          "fr": "Site pilote Kasbah3000",
+          "en": "Kasbah3000 pilot site"
+        },
+        "type": "architecture",
+        "description": {
+          "fr": "Le cœur du village démonstrateur, conçu selon les principes de l’architecture bioclimatique marocaine.",
+          "en": "The demonstrator village core, designed around Moroccan bioclimatic architecture principles."
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.6162, 30.4094]
+      },
+      "properties": {
+        "name": {
+          "fr": "Ferme solaire",
+          "en": "Solar farm"
+        },
+        "type": "energy",
+        "description": {
+          "fr": "Une production photovoltaïque locale dimensionnée pour les besoins essentiels et le stockage partagé.",
+          "en": "Local photovoltaic generation sized for essential needs and shared energy storage."
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.5921, 30.4132]
+      },
+      "properties": {
+        "name": {
+          "fr": "Traitement circulaire de l’eau",
+          "en": "Circular water treatment"
+        },
+        "type": "water",
+        "description": {
+          "fr": "Collecte, traitement et réutilisation de l’eau pour préserver les ressources locales.",
+          "en": "Water collection, treatment and reuse designed to protect local resources."
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.5847, 30.3948]
+      },
+      "properties": {
+        "name": {
+          "fr": "Jardins nourriciers",
+          "en": "Productive gardens"
+        },
+        "type": "food",
+        "description": {
+          "fr": "Des parcelles agroécologiques adaptées au climat pour rapprocher la production alimentaire des habitants.",
+          "en": "Climate-adapted agroecological plots that bring food production closer to residents."
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.6079, 30.3915]
+      },
+      "properties": {
+        "name": {
+          "fr": "Maison de la communauté",
+          "en": "Community house"
+        },
+        "type": "community",
+        "description": {
+          "fr": "Un lieu multigénérationnel pour apprendre, décider, cuisiner et se retrouver.",
+          "en": "A multigenerational place for learning, decision-making, cooking and gathering."
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.6208, 30.3976]
+      },
+      "properties": {
+        "name": {
+          "fr": "Pôle de mobilité partagée",
+          "en": "Shared mobility hub"
+        },
+        "type": "mobility",
+        "description": {
+          "fr": "Le point de connexion des navettes, vélos et véhicules partagés avec le territoire voisin.",
+          "en": "The connection point for shuttles, bicycles and shared vehicles serving nearby communities."
+        }
+      }
+    }
+  ]
+}

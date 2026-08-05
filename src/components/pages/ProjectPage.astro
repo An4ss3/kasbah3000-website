@@ -1,0 +1,247 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import GoalsGrid from '@components/content/GoalsGrid.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import Timeline from '@components/content/Timeline.astro';
+import ProjectMap from '@components/islands/ProjectMap';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Card from '@components/ui/Card.astro';
+import { SITE } from '@constants';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const projectPath = getLocalizedPath('/project', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const principlesPath = getLocalizedPath('/principles', lang);
+
+const challengeSolutionPairs = [
+  {
+    challengeTitle: t(lang, 'project.challenges.item1.title'),
+    challengeBody: t(lang, 'project.challenges.item1.body'),
+    solutionTitle: t(lang, 'project.solutions.item1.title'),
+    solutionBody: t(lang, 'project.solutions.item1.body'),
+  },
+  {
+    challengeTitle: t(lang, 'project.challenges.item2.title'),
+    challengeBody: t(lang, 'project.challenges.item2.body'),
+    solutionTitle: t(lang, 'project.solutions.item2.title'),
+    solutionBody: t(lang, 'project.solutions.item2.body'),
+  },
+  {
+    challengeTitle: t(lang, 'project.challenges.item3.title'),
+    challengeBody: t(lang, 'project.challenges.item3.body'),
+    solutionTitle: t(lang, 'project.solutions.item3.title'),
+    solutionBody: t(lang, 'project.solutions.item3.body'),
+  },
+];
+
+const goals = [
+  {
+    timeframe: '5y' as const,
+    title: t(lang, 'project.goals.5y.title'),
+    items: [
+      t(lang, 'project.goals.5y.item1'),
+      t(lang, 'project.goals.5y.item2'),
+      t(lang, 'project.goals.5y.item3'),
+    ],
+  },
+  {
+    timeframe: '20y' as const,
+    title: t(lang, 'project.goals.20y.title'),
+    items: [
+      t(lang, 'project.goals.20y.item1'),
+      t(lang, 'project.goals.20y.item2'),
+      t(lang, 'project.goals.20y.item3'),
+    ],
+  },
+];
+
+const phases = [
+  {
+    id: 'studies-community',
+    title: t(lang, 'project.timeline.phase1.title'),
+    period: t(lang, 'project.timeline.phase1.period'),
+    description: t(lang, 'project.timeline.phase1.description'),
+    status: 'current' as const,
+  },
+  {
+    id: 'prototype',
+    title: t(lang, 'project.timeline.phase2.title'),
+    period: t(lang, 'project.timeline.phase2.period'),
+    description: t(lang, 'project.timeline.phase2.description'),
+    status: 'upcoming' as const,
+  },
+  {
+    id: 'development',
+    title: t(lang, 'project.timeline.phase3.title'),
+    period: t(lang, 'project.timeline.phase3.period'),
+    description: t(lang, 'project.timeline.phase3.description'),
+    status: 'upcoming' as const,
+  },
+];
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'project.hero.title'),
+      item: new URL(projectPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'project.hero.title')}
+  description={t(lang, 'project.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'project.hero.title')}
+    description={t(lang, 'project.hero.description')}
+    lang={lang}
+    canonical={projectPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'project.hero.title')}
+    description={t(lang, 'project.hero.description')}
+    imageSrc="/images/placeholders/principles-header.svg"
+    imageAlt={t(lang, 'project.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="project-intro-title">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+      <div>
+        <p class="type-eyebrow mb-5 text-muted">{t(lang, 'project.intro.eyebrow')}</p>
+        <h2 id="project-intro-title" class="type-h2 text-balance text-ink">
+          {t(lang, 'project.intro.title')}
+        </h2>
+      </div>
+      <Prose>
+        <p>{t(lang, 'project.intro.body')}</p>
+      </Prose>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30">
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <div class="grid gap-10 md:grid-cols-2 md:gap-12 lg:gap-20">
+          <SectionTitle
+            eyebrow={t(lang, 'project.challenges.eyebrow')}
+            title={t(lang, 'project.challenges.title')}
+          />
+          <SectionTitle
+            eyebrow={t(lang, 'project.solutions.eyebrow')}
+            title={t(lang, 'project.solutions.title')}
+          />
+        </div>
+
+        <ol class="mt-12 divide-y divide-border border-y border-border lg:mt-16">
+          {
+            challengeSolutionPairs.map((pair) => (
+              <li class="grid md:grid-cols-2">
+                <Card bordered={false} class="h-full bg-surface md:p-9 lg:p-12">
+                  <p class="type-eyebrow text-muted">{t(lang, 'project.challenges.itemLabel')}</p>
+                  <h3 class="type-h4 mt-4 text-balance text-ink">{pair.challengeTitle}</h3>
+                  <p class="mt-4 text-base leading-7 text-text-body">{pair.challengeBody}</p>
+                </Card>
+                <Card
+                  bordered={false}
+                  class="h-full border-t border-border bg-background md:border-s md:border-t-0 md:p-9 lg:p-12"
+                >
+                  <p class="type-eyebrow text-link">{t(lang, 'project.solutions.itemLabel')}</p>
+                  <h3 class="type-h4 mt-4 text-balance text-ink">{pair.solutionTitle}</h3>
+                  <p class="mt-4 text-base leading-7 text-text-body">{pair.solutionBody}</p>
+                </Card>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background py-14 md:py-20 lg:py-30"
+      aria-labelledby="project-goals-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <SectionTitle
+          id="project-goals-title"
+          eyebrow={t(lang, 'project.goals.eyebrow')}
+          title={t(lang, 'project.goals.title')}
+        />
+        <GoalsGrid goals={goals} class="mt-12 border-y border-border py-10 lg:mt-16 lg:py-12" />
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="project-timeline-title"
+    >
+      <div
+        class="mx-auto grid max-w-content gap-10 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:px-12"
+      >
+        <SectionTitle
+          id="project-timeline-title"
+          eyebrow={t(lang, 'project.timeline.eyebrow')}
+          title={t(lang, 'project.timeline.title')}
+        />
+        <Timeline phases={phases} />
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background py-14 md:py-20 lg:py-30"
+      aria-labelledby="project-map-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <SectionTitle
+          id="project-map-title"
+          eyebrow={t(lang, 'project.map.eyebrow')}
+          title={t(lang, 'project.map.title')}
+        />
+        <div class="mt-12 aspect-video overflow-hidden border border-border lg:mt-16">
+          <ProjectMap
+            client:visible
+            featuresUrl="/map/features.geojson"
+            center={[-9.6, 30.4]}
+            zoom={12}
+            lang={lang}
+            ariaLabel={t(lang, 'project.map.title')}
+            fallbackText={t(lang, 'project.map.fallback')}
+          />
+        </div>
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'project.cta.eyebrow')}
+      title={t(lang, 'project.cta.title')}
+      primaryCta={{ label: t(lang, 'project.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'project.cta.secondary'), href: principlesPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

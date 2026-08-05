@@ -1,46 +1,9 @@
 ---
-import PageLayout from '@components/layout/PageLayout.astro';
-import { t } from '@lib/utils/i18n';
+import HomePage from '@components/content/HomePage.astro';
 
 export const prerender = true;
 
 const lang = 'fr' as const;
 ---
 
-<PageLayout
-  lang={lang}
-  title={t(lang, 'home.title')}
-  description={t(lang, 'home.description')}
-  showHero={false}
->
-  <div class="mx-auto max-w-headline text-center">
-    <h1 class="font-serif text-5xl font-medium tracking-display text-ink md:text-7xl lg:text-8xl">
-      {t(lang, 'home.title')}
-    </h1>
-    <p class="mt-6 font-serif text-2xl italic text-link md:text-3xl">
-      {t(lang, 'home.tagline')}
-    </p>
-    <p class="mx-auto mt-8 max-w-prose text-base leading-7 text-text-body md:text-lg">
-      {t(lang, 'home.description')}
-    </p>
-    <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-      <a
-        href="/project"
-        class="inline-flex min-h-11 items-center justify-center bg-background-dark px-8 py-3 font-sans text-button uppercase tracking-label text-ink-inverse transition-colors duration-200 hover:bg-link"
-      >
-        {t(lang, 'home.primaryCta')}
-      </a>
-      <a
-        href="/contact"
-        class="inline-flex min-h-11 items-center justify-center border border-border-strong px-8 py-3 font-sans text-button uppercase tracking-label text-ink transition-colors duration-200 hover:border-ink"
-      >
-        {t(lang, 'home.secondaryCta')}
-      </a>
-    </div>
-
-    <div class="mt-16 border-t border-border pt-16">
-      <p class="text-sm text-muted">{t(lang, 'home.progress')}</p>
-      <p class="mt-2 text-xs text-muted-faint">{t(lang, 'home.dayStatus')}</p>
-    </div>
-  </div>
-</PageLayout>
+<HomePage lang={lang} />

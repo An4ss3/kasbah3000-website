@@ -1,0 +1,54 @@
+---
+import '@styles/typography.css';
+
+interface Phase {
+  id: string;
+  title: string;
+  period: string;
+  description: string;
+  status: 'completed' | 'current' | 'upcoming';
+}
+
+interface Props {
+  phases: Phase[];
+  class?: string;
+}
+
+const { phases, class: className } = Astro.props;
+---
+
+<ol class:list={['w-full max-w-prose overflow-hidden', className]}>
+  {
+    phases.map((phase, index) => {
+      const isCurrent = phase.status === 'current';
+      const isUpcoming = phase.status === 'upcoming';
+      const isLast = index === phases.length - 1;
+
+      return (
+        <li
+          class="relative grid min-w-0 grid-cols-[1.25rem_minmax(0,1fr)] gap-5 pb-10 last:pb-0 md:gap-7 md:pb-12"
+          aria-current={isCurrent ? 'step' : undefined}
+        >
+          <div class="relative flex justify-center" aria-hidden="true">
+            {!isLast && (
+              <span class="absolute start-1/2 top-3 h-full w-px -translate-x-1/2 bg-sand-200" />
+            )}
+            <span
+              class:list={[
+                'relative z-10 mt-1 block shrink-0 rounded-pill border-2 border-background-alt',
+                isCurrent ? 'h-4 w-4 bg-clay-500' : 'h-3 w-3',
+                !isCurrent && (isUpcoming ? 'bg-sand-300' : 'bg-clay-500'),
+              ]}
+            />
+          </div>
+
+          <div class="min-w-0 pb-1">
+            <p class="type-eyebrow break-words text-muted">{phase.period}</p>
+            <h3 class="type-h4 mt-3 break-words text-balance text-ink">{phase.title}</h3>
+            <p class="mt-4 break-words text-base leading-7 text-text-body">{phase.description}</p>
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>

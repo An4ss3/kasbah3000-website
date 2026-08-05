@@ -1,6 +1,6 @@
 ---
+import Seo from '@components/seo/Seo.astro';
 import { SITE } from '@constants';
-import { getLocalizedPath } from '@lib/utils/i18n';
 import '@styles/global.css';
 import type { BaseLayoutProps } from '@types';
 import Footer from './Footer.astro';
@@ -11,10 +11,7 @@ interface Props extends BaseLayoutProps {}
 
 const { lang, title, description = SITE.description } = Astro.props;
 const currentPath = Astro.url.pathname;
-const pageTitle = title.includes(SITE.name) ? title : `${title} — ${SITE.name}`;
-const canonicalUrl = new URL(currentPath, SITE.url);
-const frenchUrl = new URL(getLocalizedPath(currentPath, 'fr'), SITE.url);
-const englishUrl = new URL(getLocalizedPath(currentPath, 'en'), SITE.url);
+const hasCustomSeo = Astro.slots.has('seo');
 ---
 
 <!doctype html>
@@ -22,13 +19,15 @@ const englishUrl = new URL(getLocalizedPath(currentPath, 'en'), SITE.url);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonicalUrl} />
-    <link rel="alternate" hreflang="fr" href={frenchUrl} />
-    <link rel="alternate" hreflang="en" href={englishUrl} />
-    <link rel="alternate" hreflang="x-default" href={frenchUrl} />
-    <title>{pageTitle}</title>
+    {
+      hasCustomSeo ? (
+        <slot name="seo" />
+      ) : (
+        <Seo title={title} description={description} lang={lang} />
+      )
+    }
+    <slot name="head" />
   </head>
   <body class="min-h-screen bg-background font-sans text-text-body">
     <SkipLink lang={lang} />

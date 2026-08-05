@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1100" role="img" aria-labelledby="title description">
+  <title id="title">Kasbah landscape placeholder</title>
+  <desc id="description">A quiet desert horizon with a low kasbah silhouette at dawn.</desc>
+  <rect width="2560" height="1100" fill="#D3C1A8"/>
+  <path d="M0 690C420 620 760 670 1110 625C1510 575 1850 610 2560 520V1100H0Z" fill="#B39F82"/>
+  <path d="M0 800C490 730 920 800 1360 735C1750 678 2170 735 2560 665V1100H0Z" fill="#937E64"/>
+  <path d="M860 685V540H1015V475H1190V540H1345V685H1465V785H740V685H860Z" fill="#5F2E1C"/>
+  <path d="M1015 685V590H1075V685M1190 685V590H1250V685" fill="#2B2420"/>
+</svg>

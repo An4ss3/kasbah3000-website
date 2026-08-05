@@ -1,0 +1,71 @@
+[
+  {
+    "id": "a1000001-3000-4a01-8001-000000000001",
+    "slug": "concevoir-un-village-pour-toutes-les-generations",
+    "type": "article",
+    "category": "community",
+    "title": {
+      "fr": "Concevoir un village pour toutes les générations",
+      "en": "Designing a village for every generation"
+    },
+    "excerpt": {
+      "fr": "Kasbah3000 explore une nouvelle manière d'associer logements privés, espaces communs et services d'entraide.",
+      "en": "Kasbah3000 explores a new way to combine private homes, shared spaces and mutual-aid services."
+    },
+    "body": {
+      "fr": "## Habiter et transmettre\n\nUn village multigénérationnel ne se résume pas à réunir plusieurs âges. Son architecture et sa gouvernance doivent faciliter les rencontres tout en respectant l'intimité de chacun.\n\nKasbah3000 teste ces principes avec les futurs habitants et les acteurs du territoire.",
+      "en": "## Living and learning together\n\nA multigenerational village is about more than bringing different ages together. Its architecture and governance must enable connection while respecting everyone's privacy.\n\nKasbah3000 is testing these principles with future residents and local stakeholders."
+    },
+    "coverPath": "/placeholder/articles/multigenerational-village.jpg",
+    "status": "published",
+    "publishedAt": "2026-04-18T09:00:00.000Z",
+    "createdAt": "2026-04-10T14:30:00.000Z",
+    "updatedAt": "2026-04-18T08:15:00.000Z"
+  },
+  {
+    "id": "a1000002-3000-4a02-8002-000000000002",
+    "slug": "premieres-etudes-hydriques-lancees",
+    "type": "news",
+    "category": "water",
+    "title": {
+      "fr": "Lancement des premières études hydriques",
+      "en": "First water studies launched"
+    },
+    "excerpt": {
+      "fr": "Une campagne de diagnostic préparera une gestion sobre et résiliente de l'eau sur le futur site.",
+      "en": "A diagnostic campaign will prepare efficient and resilient water management for the future site."
+    },
+    "body": {
+      "fr": "## Comprendre avant d'agir\n\nLes partenaires étudieront les ressources disponibles, les usages prévisionnels et les possibilités de réutilisation. Ces données orienteront les choix paysagers et techniques.\n\nLes résultats seront partagés avec la communauté lors d'un atelier public.",
+      "en": "## Understand before acting\n\nPartners will study available resources, projected uses and opportunities for reuse. The data will guide landscape and technical decisions.\n\nFindings will be shared with the community at a public workshop."
+    },
+    "coverPath": "/placeholder/articles/water-study.jpg",
+    "status": "published",
+    "publishedAt": "2026-05-27T11:00:00.000Z",
+    "createdAt": "2026-05-20T10:00:00.000Z",
+    "updatedAt": "2026-05-27T10:20:00.000Z"
+  },
+  {
+    "id": "a1000003-3000-4a03-8003-000000000003",
+    "slug": "kasbah3000-presente-sa-demarche-pilote",
+    "type": "press",
+    "category": "project",
+    "title": {
+      "fr": "Kasbah3000 présente sa démarche pilote",
+      "en": "Kasbah3000 presents its pilot approach"
+    },
+    "excerpt": {
+      "fr": "Le projet dévoile une méthode progressive pour tester, mesurer et partager des solutions d'habitat écologique au Maroc.",
+      "en": "The project unveils a step-by-step method to test, measure and share ecological living solutions in Morocco."
+    },
+    "body": {
+      "fr": "## Un démonstrateur ouvert\n\nKasbah3000 réunira architecture bioclimatique, énergies renouvelables, agroécologie et gouvernance participative sur un même site.\n\nLe prototype documentera ses performances afin de rendre ses enseignements utiles à d'autres territoires marocains.",
+      "en": "## An open demonstrator\n\nKasbah3000 will bring bioclimatic architecture, renewable energy, agroecology and participatory governance together on one site.\n\nThe prototype will document its performance so its lessons can support other Moroccan territories."
+    },
+    "coverPath": "/placeholder/articles/pilot-presentation.jpg",
+    "status": "published",
+    "publishedAt": "2026-06-12T08:30:00.000Z",
+    "createdAt": "2026-06-05T16:00:00.000Z",
+    "updatedAt": "2026-06-12T08:00:00.000Z"
+  }
+]

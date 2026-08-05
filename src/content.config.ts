@@ -1,8 +1,16 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
+
+const localizedId = ({ entry }: { entry: string }) => entry.replace(/\.(?:md|mdx)$/, '');
 
 // Pages collection (Home, About, etc.)
 const pagesCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/pages',
+    generateId: localizedId,
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -12,7 +20,11 @@ const pagesCollection = defineCollection({
 
 // Project collection
 const projectCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/project',
+    generateId: localizedId,
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -22,7 +34,11 @@ const projectCollection = defineCollection({
 
 // Principles collection (12 sustainability principles)
 const principlesCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/principles',
+    generateId: localizedId,
+  }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),
@@ -35,7 +51,11 @@ const principlesCollection = defineCollection({
 
 // About collection
 const aboutCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/about',
+    generateId: localizedId,
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -45,7 +65,11 @@ const aboutCollection = defineCollection({
 
 // Legal collection (privacy, terms, cookies)
 const legalCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/legal',
+    generateId: localizedId,
+  }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),

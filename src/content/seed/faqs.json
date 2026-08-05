@@ -1,0 +1,67 @@
+[
+  {
+    "id": "c3000001-3000-4c01-8001-000000000001",
+    "question": {
+      "fr": "Qu'est-ce que Kasbah3000 ?",
+      "en": "What is Kasbah3000?"
+    },
+    "answer": {
+      "fr": "Kasbah3000 est un projet d'établissement écologique multigénérationnel au Maroc. Il associe habitat, activités locales, apprentissage et gestion responsable des ressources.",
+      "en": "Kasbah3000 is a multigenerational ecological settlement project in Morocco. It combines housing, local activities, learning and responsible resource management."
+    },
+    "sortOrder": 1,
+    "isPublished": true
+  },
+  {
+    "id": "c3000002-3000-4c02-8002-000000000002",
+    "question": {
+      "fr": "Où le village sera-t-il construit ?",
+      "en": "Where will the village be built?"
+    },
+    "answer": {
+      "fr": "Le site définitif sera annoncé après les études territoriales, environnementales et hydriques. Le choix doit permettre une bonne intégration aux communes et écosystèmes voisins.",
+      "en": "The final site will be announced after territorial, environmental and water studies. The location must integrate well with neighbouring communities and ecosystems."
+    },
+    "sortOrder": 2,
+    "isPublished": true
+  },
+  {
+    "id": "c3000003-3000-4c03-8003-000000000003",
+    "question": {
+      "fr": "Comment rejoindre la communauté ?",
+      "en": "How can I join the community?"
+    },
+    "answer": {
+      "fr": "Les modalités d'accueil seront précisées pendant la phase pilote. Vous pouvez dès maintenant suivre les actualités et participer aux rencontres publiques annoncées sur le site.",
+      "en": "Participation details will be clarified during the pilot phase. You can already follow project updates and attend public meetings announced on this website."
+    },
+    "sortOrder": 3,
+    "isPublished": true
+  },
+  {
+    "id": "c3000004-3000-4c04-8004-000000000004",
+    "question": {
+      "fr": "Le projet cherche-t-il l'autonomie complète ?",
+      "en": "Is the project seeking complete self-sufficiency?"
+    },
+    "answer": {
+      "fr": "Kasbah3000 vise une forte résilience, mais reste relié à son territoire. Les échanges avec les producteurs, services publics, entreprises et habitants voisins font partie du modèle.",
+      "en": "Kasbah3000 aims for strong resilience while remaining connected to its territory. Exchange with nearby producers, public services, businesses and residents is part of the model."
+    },
+    "sortOrder": 4,
+    "isPublished": true
+  },
+  {
+    "id": "c3000005-3000-4c05-8005-000000000005",
+    "question": {
+      "fr": "Comment les résultats seront-ils mesurés ?",
+      "en": "How will results be measured?"
+    },
+    "answer": {
+      "fr": "Des indicateurs suivront notamment l'eau, l'énergie, les déchets, la biodiversité et la qualité de vie. Les enseignements du prototype seront documentés et partagés progressivement.",
+      "en": "Indicators will track water, energy, waste, biodiversity and quality of life. Lessons from the prototype will be documented and shared over time."
+    },
+    "sortOrder": 5,
+    "isPublished": true
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "e5000001-3000-4e01-8001-000000000001",
+    "name": "AUI",
+    "category": "academic",
+    "logoPath": "/placeholder/partners/aui.svg",
+    "description": {
+      "fr": "Université partenaire pressentie pour la recherche interdisciplinaire, l'innovation et l'implication des étudiants.",
+      "en": "A prospective university partner for interdisciplinary research, innovation and student engagement."
+    },
+    "websiteUrl": "https://www.aui.ma",
+    "sortOrder": 1,
+    "isPublished": true
+  },
+  {
+    "id": "e5000002-3000-4e02-8002-000000000002",
+    "name": "UM6P",
+    "category": "academic",
+    "logoPath": "/placeholder/partners/um6p.svg",
+    "description": {
+      "fr": "Partenaire académique pressenti pour explorer l'agriculture, les matériaux, l'énergie et les données territoriales.",
+      "en": "A prospective academic partner for work on agriculture, materials, energy and territorial data."
+    },
+    "websiteUrl": "https://www.um6p.ma",
+    "sortOrder": 2,
+    "isPublished": true
+  },
+  {
+    "id": "e5000003-3000-4e03-8003-000000000003",
+    "name": "GoSyaha",
+    "category": "corporate",
+    "logoPath": "/placeholder/partners/gosyaha.svg",
+    "description": {
+      "fr": "Partenaire potentiel pour développer une hospitalité responsable et des expériences liées au territoire.",
+      "en": "A potential partner for responsible hospitality and experiences connected to the local territory."
+    },
+    "websiteUrl": "https://www.gosyaha.ma",
+    "sortOrder": 3,
+    "isPublished": true
+  },
+  {
+    "id": "e5000004-3000-4e04-8004-000000000004",
+    "name": "OCP Foundation",
+    "category": "ngo",
+    "logoPath": "/placeholder/partners/ocp-foundation.svg",
+    "description": {
+      "fr": "Partenaire potentiel pour les programmes d'éducation, de développement territorial et d'entrepreneuriat local.",
+      "en": "A potential partner for education, territorial development and local entrepreneurship programmes."
+    },
+    "websiteUrl": "https://www.fondationocp.ma",
+    "sortOrder": 4,
+    "isPublished": true
+  },
+  {
+    "id": "e5000005-3000-4e05-8005-000000000005",
+    "name": "LafargeHolcim",
+    "category": "corporate",
+    "logoPath": "/placeholder/partners/lafargeholcim.svg",
+    "description": {
+      "fr": "Partenaire industriel potentiel pour tester des solutions constructives bas carbone adaptées au contexte marocain.",
+      "en": "A potential industrial partner for testing low-carbon construction solutions suited to Morocco."
+    },
+    "websiteUrl": "https://www.lafargeholcim.ma",
+    "sortOrder": 5,
+    "isPublished": true
+  }
+]

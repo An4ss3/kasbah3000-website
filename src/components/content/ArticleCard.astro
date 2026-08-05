@@ -1,0 +1,70 @@
+---
+import Badge from '@components/ui/Badge.astro';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Article, Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  article: Article;
+  lang: Language;
+}
+
+const { article, lang } = Astro.props;
+const title = article.title[lang];
+const excerpt = article.excerpt[lang];
+const date = new Date(article.publishedAt ?? article.createdAt);
+const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(date);
+const categoryLabels: Record<string, string> = {
+  community: t(lang, 'article.category.community'),
+  water: t(lang, 'article.category.water'),
+  project: t(lang, 'article.category.project'),
+};
+const category = article.category ? categoryLabels[article.category] : undefined;
+---
+
+<article class="group h-full">
+  <a
+    href={getLocalizedPath(`/blog/${article.slug}`, lang)}
+    class="flex h-full min-h-11 flex-col focus-visible:outline-offset-4"
+    aria-label={`${title} — ${formattedDate}`}
+  >
+    {
+      article.coverPath && (
+        <div class="aspect-[4/3] overflow-hidden bg-background-alt">
+          <img
+            src={article.coverPath}
+            alt={title}
+            class="h-full w-full object-cover transition-transform duration-reveal ease-out group-hover:scale-[1.03]"
+            loading="lazy"
+            decoding="async"
+            width="720"
+            height="540"
+          />
+        </div>
+      )
+    }
+
+    <div class="flex flex-1 flex-col pt-6">
+      <div class="flex flex-wrap items-center gap-3">
+        <time datetime={date.toISOString()} class="type-caption uppercase text-muted">
+          {formattedDate}
+        </time>
+        {
+          category && (
+            <Badge color={article.category === 'water' ? 'water' : 'clay'}>{category}</Badge>
+          )
+        }
+      </div>
+      <h3
+        class="type-h4 mt-4 text-balance text-ink transition-colors duration-200 group-hover:text-clay-600"
+      >
+        {title}
+      </h3>
+      <p class="mt-3 text-sm leading-7 text-text-body md:text-[0.9375rem]">{excerpt}</p>
+    </div>
+  </a>
+</article>

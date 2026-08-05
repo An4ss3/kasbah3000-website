@@ -1,0 +1,53 @@
+---
+import type { Language } from '@types';
+
+interface Principle {
+  slug: string;
+  title: string;
+  icon?: string;
+  order: number;
+}
+
+interface Props {
+  principles: Principle[];
+  currentSlug?: string;
+  lang: Language;
+}
+
+const { principles, currentSlug, lang } = Astro.props;
+const localePrefix = lang === 'fr' ? '' : `/${lang}`;
+---
+
+<ul class="border-t border-border">
+  {
+    principles.map((principle) => {
+      const isCurrent = principle.slug === currentSlug;
+      const order = String(principle.order).padStart(2, '0');
+      const content = (
+        <span class="flex items-center gap-3 py-2.5 text-xs leading-5">
+          <span class="w-6 shrink-0 text-[0.625rem] tracking-meta text-muted" aria-hidden="true">
+            {order}
+          </span>
+          <span class="min-w-0">{principle.title}</span>
+        </span>
+      );
+
+      return (
+        <li class="border-b border-border">
+          {isCurrent ? (
+            <span class="block font-semibold text-clay-600" aria-current="page">
+              {content}
+            </span>
+          ) : (
+            <a
+              href={`${localePrefix}/principles/${principle.slug}`}
+              class="block text-text-body transition-colors duration-fast ease-out hover:text-clay-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-600"
+            >
+              {content}
+            </a>
+          )}
+        </li>
+      );
+    })
+  }
+</ul>

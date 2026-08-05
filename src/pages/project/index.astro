@@ -1,0 +1,9 @@
+---
+import ProjectPage from '@components/pages/ProjectPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<ProjectPage lang={lang} />

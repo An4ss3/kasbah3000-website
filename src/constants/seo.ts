@@ -61,7 +61,12 @@ export const PRINCIPLES_SLUGS = [
   'architecture',
   'mobility',
   'governance',
-  // 6 more to be defined by client
+  'materials',
+  'waste',
+  'biodiversity',
+  'community',
+  'education',
+  'health',
 ] as const;
 
 export type PrincipleSlug = (typeof PRINCIPLES_SLUGS)[number];

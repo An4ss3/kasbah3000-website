@@ -83,6 +83,9 @@ export interface ProjectMapProps {
   featuresUrl: string;
   center?: [number, number];
   zoom?: number;
+  lang: Language;
+  ariaLabel?: string;
+  fallbackText?: string;
 }
 
 export interface LightboxProps {

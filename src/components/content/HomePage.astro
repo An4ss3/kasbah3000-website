@@ -1,0 +1,244 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import CtaBand from '@components/content/CtaBand.astro';
+import Hero from '@components/content/Hero.astro';
+import HeroVideo from '@components/content/HeroVideo.astro';
+import KeyFigures from '@components/content/KeyFigures.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Button from '@components/ui/Button.astro';
+import Card from '@components/ui/Card.astro';
+import { STRUCTURED_DATA } from '@constants';
+import { getArticles } from '@lib/content/articles';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const principles = (await getCollection('principles', ({ data }) => data.lang === lang))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+const articles = (await getArticles(lang)).slice(0, 3);
+
+const projectPath = getLocalizedPath('/project', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const principlesPath = getLocalizedPath('/principles', lang);
+const blogPath = getLocalizedPath('/blog', lang);
+
+const figures = [
+  { value: t(lang, 'home.figures.one.value'), label: t(lang, 'home.figures.one.label') },
+  { value: t(lang, 'home.figures.two.value'), label: t(lang, 'home.figures.two.label') },
+  { value: t(lang, 'home.figures.three.value'), label: t(lang, 'home.figures.three.label') },
+  { value: t(lang, 'home.figures.four.value'), label: t(lang, 'home.figures.four.label') },
+];
+const editorialSections = [
+  {
+    eyebrow: t(lang, 'home.vision.eyebrow'),
+    title: t(lang, 'home.vision.title'),
+    body: t(lang, 'home.vision.body'),
+  },
+  {
+    eyebrow: t(lang, 'home.mission.eyebrow'),
+    title: t(lang, 'home.mission.title'),
+    body: t(lang, 'home.mission.body'),
+  },
+  {
+    eyebrow: t(lang, 'home.values.eyebrow'),
+    title: t(lang, 'home.values.title'),
+    body: t(lang, 'home.values.body'),
+  },
+];
+const {
+  '@context': _organizationContext,
+  '@type': _organizationType,
+  ...organizationData
+} = STRUCTURED_DATA.organization;
+const {
+  '@context': _websiteContext,
+  '@type': _websiteType,
+  ...baseWebsiteData
+} = STRUCTURED_DATA.website;
+const websiteData = {
+  ...baseWebsiteData,
+  description: t(lang, 'home.description'),
+  inLanguage: lang,
+};
+---
+
+<BaseLayout lang={lang} title={t(lang, 'home.title')} description={t(lang, 'home.description')}>
+  <Seo
+    slot="seo"
+    title={t(lang, 'home.title')}
+    description={t(lang, 'home.description')}
+    lang={lang}
+    canonical={getLocalizedPath('/', lang)}
+  />
+  <Fragment slot="head">
+    <JsonLd type="Organization" data={organizationData} />
+    <JsonLd type="WebSite" data={websiteData} />
+  </Fragment>
+
+  <Hero
+    eyebrow={t(lang, 'home.hero.eyebrow')}
+    headline={t(lang, 'home.hero.headline')}
+    headlineAccent={t(lang, 'home.hero.headlineAccent')}
+    description={t(lang, 'home.hero.description')}
+    primaryCta={{ label: t(lang, 'home.primaryCta'), href: projectPath }}
+    secondaryCta={{ label: t(lang, 'home.secondaryCta'), href: contactPath }}
+  >
+    <HeroVideo
+      slot="media"
+      videoSrc="/placeholder/home/kasbah3000-hero.mp4"
+      videoSrcWebm="/placeholder/home/kasbah3000-hero.webm"
+      posterSrc="/placeholder/home/kasbah3000-hero-poster.jpg"
+      posterSrcMobile="/placeholder/home/kasbah3000-hero-poster-mobile.jpg"
+      alt={t(lang, 'home.hero.mediaAlt')}
+    />
+  </Hero>
+
+  <section class="border-b border-border bg-background" aria-label={t(lang, 'home.story.label')}>
+    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+      {
+        editorialSections.map((section, index) => (
+          <article
+            class:list={[
+              'grid gap-8 py-14 md:py-20 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:py-30',
+              index < editorialSections.length - 1 && 'border-b border-border',
+            ]}
+          >
+            <div>
+              <p class="type-eyebrow text-muted">{section.eyebrow}</p>
+              <h2 class="type-h2 mt-5 text-balance text-ink">{section.title}</h2>
+            </div>
+            <p class="max-w-prose text-base leading-8 text-text-body md:text-[1.0625rem]">
+              {section.body}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section
+    class="border-b border-border bg-background-alt py-14 md:py-20 lg:py-30"
+    aria-labelledby="figures-title"
+  >
+    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+      <div id="figures-title">
+        <SectionTitle
+          eyebrow={t(lang, 'home.figures.eyebrow')}
+          title={t(lang, 'home.figures.title')}
+        />
+      </div>
+      <KeyFigures figures={figures} class="mt-12 lg:mt-16" />
+    </div>
+  </section>
+
+  <section
+    class="border-b border-border bg-background py-14 md:py-20 lg:py-30"
+    aria-labelledby="principles-title"
+  >
+    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+      <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <div id="principles-title">
+          <SectionTitle
+            eyebrow={t(lang, 'home.principles.eyebrow')}
+            title={t(lang, 'home.principles.title')}
+          />
+        </div>
+        <Button variant="outline" href={principlesPath}>{t(lang, 'home.principles.viewAll')}</Button
+        >
+      </div>
+
+      <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-14">
+        {
+          principles.map((principle) => (
+            <Card
+              href={getLocalizedPath(`/principles/${principle.data.slug}`, lang)}
+              ariaLabel={principle.data.title}
+              class="h-full"
+            >
+              <p class="type-eyebrow text-clay-600">
+                {String(principle.data.order).padStart(2, '0')}
+              </p>
+              <h3 class="type-h4 mt-5 text-balance text-ink">{principle.data.title}</h3>
+              <p class="mt-4 text-sm leading-7 text-text-body">{principle.data.excerpt}</p>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="border-b border-border bg-background-alt py-14 md:py-20 lg:py-30"
+    aria-labelledby="articles-title"
+  >
+    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+      <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <div id="articles-title">
+          <SectionTitle
+            eyebrow={t(lang, 'home.articles.eyebrow')}
+            title={t(lang, 'home.articles.title')}
+          />
+        </div>
+        <Button variant="outline" href={blogPath}>{t(lang, 'home.articles.viewAll')}</Button>
+      </div>
+      <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-14">
+        {articles.map((article) => <ArticleCard article={article} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="bg-background-dark py-14 text-ink-inverse md:py-20 lg:py-30"
+    aria-labelledby="newsletter-title"
+  >
+    <div
+      class="mx-auto grid max-w-content gap-10 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:px-12"
+    >
+      <h2 id="newsletter-title" class="type-h2 max-w-headline text-balance text-ink-inverse">
+        {t(lang, 'home.newsletter.title')}
+      </h2>
+      <div>
+        <p class="max-w-prose text-base leading-8 text-text-body-dark">
+          {t(lang, 'home.newsletter.description')}
+        </p>
+        <form
+          class="mt-8 flex max-w-prose flex-col gap-3 sm:flex-row"
+          action="#"
+          method="post"
+          aria-label={t(lang, 'home.newsletter.formLabel')}
+        >
+          <label for="home-newsletter-email" class="sr-only"
+            >{t(lang, 'home.newsletter.emailLabel')}</label
+          >
+          <input
+            id="home-newsletter-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder={t(lang, 'home.newsletter.emailPlaceholder')}
+            class="min-h-11 w-full border border-sand-400 bg-transparent px-4 py-3 text-sm text-ink-inverse placeholder:text-sand-300 focus:border-sand-50"
+          />
+          <Button variant="primary-light" type="submit">{t(lang, 'home.newsletter.submit')}</Button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow={t(lang, 'home.cta.eyebrow')}
+    title={t(lang, 'home.cta.title')}
+    primaryCta={{ label: t(lang, 'home.primaryCta'), href: projectPath }}
+    secondaryCta={{ label: t(lang, 'home.secondaryCta'), href: contactPath }}
+  />
+</BaseLayout>

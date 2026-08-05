@@ -1,0 +1,104 @@
+[
+  {
+    "id": "d4000001-3000-4d01-8001-000000000001",
+    "fullName": "Othman",
+    "role": {
+      "fr": "Directeur général",
+      "en": "Chief Executive Officer"
+    },
+    "bio": {
+      "fr": "Othman porte la vision de Kasbah3000 et coordonne les alliances nécessaires à la réalisation du village pilote.",
+      "en": "Othman leads Kasbah3000's vision and coordinates the partnerships needed to deliver the pilot settlement."
+    },
+    "photoPath": "/placeholder/team/othman.jpg",
+    "linkedinUrl": "https://www.linkedin.com/in/placeholder-othman",
+    "skills": ["Strategy", "Leadership", "Partnerships"],
+    "sortOrder": 1,
+    "isPublished": true
+  },
+  {
+    "id": "d4000002-3000-4d02-8002-000000000002",
+    "fullName": "Lamia",
+    "role": {
+      "fr": "Nouvelles technologies, IA et données",
+      "en": "New Technology, AI and Data"
+    },
+    "bio": {
+      "fr": "Lamia conçoit l'approche numérique et les outils de données qui permettront de mesurer et d'améliorer les systèmes du projet.",
+      "en": "Lamia designs the digital approach and data tools used to measure and improve the project's systems."
+    },
+    "photoPath": "/placeholder/team/lamia.jpg",
+    "linkedinUrl": "https://www.linkedin.com/in/placeholder-lamia",
+    "skills": ["Artificial Intelligence", "Data", "Digital Innovation"],
+    "sortOrder": 2,
+    "isPublished": true
+  },
+  {
+    "id": "d4000003-3000-4d03-8003-000000000003",
+    "fullName": "Ahmed",
+    "role": {
+      "fr": "Opérations et développement",
+      "en": "Operations and Development"
+    },
+    "bio": {
+      "fr": "Ahmed transforme la feuille de route en opérations concrètes et accompagne le développement progressif du site pilote.",
+      "en": "Ahmed turns the roadmap into practical operations and supports the step-by-step development of the pilot site."
+    },
+    "photoPath": "/placeholder/team/ahmed.jpg",
+    "linkedinUrl": "https://www.linkedin.com/in/placeholder-ahmed",
+    "skills": ["Operations", "Project Development", "Delivery"],
+    "sortOrder": 3,
+    "isPublished": true
+  },
+  {
+    "id": "d4000004-3000-4d04-8004-000000000004",
+    "fullName": "Fatim Zahra",
+    "role": {
+      "fr": "Communication et marketing",
+      "en": "Communications and Marketing"
+    },
+    "bio": {
+      "fr": "Fatim Zahra raconte le projet, anime ses communautés et rend ses apprentissages accessibles aux publics marocains et internationaux.",
+      "en": "Fatim Zahra tells the project's story, engages its communities and makes its lessons accessible to Moroccan and international audiences."
+    },
+    "photoPath": "/placeholder/team/fatim-zahra.jpg",
+    "linkedinUrl": "https://www.linkedin.com/in/placeholder-fatim-zahra",
+    "skills": ["Communications", "Marketing", "Community Engagement"],
+    "sortOrder": 4,
+    "isPublished": true
+  },
+  {
+    "id": "d4000005-3000-4d05-8005-000000000005",
+    "fullName": "Imane",
+    "role": {
+      "fr": "Finance",
+      "en": "Finance"
+    },
+    "bio": {
+      "fr": "Imane structure les modèles financiers et le suivi budgétaire afin de soutenir un développement responsable et durable.",
+      "en": "Imane structures financial models and budget monitoring to support responsible, durable development."
+    },
+    "photoPath": "/placeholder/team/imane.jpg",
+    "linkedinUrl": "https://www.linkedin.com/in/placeholder-imane",
+    "skills": ["Finance", "Financial Modelling", "Impact"],
+    "sortOrder": 5,
+    "isPublished": true
+  },
+  {
+    "id": "d4000006-3000-4d06-8006-000000000006",
+    "fullName": "Anasse",
+    "role": {
+      "fr": "Web et intelligence artificielle",
+      "en": "Web and Artificial Intelligence"
+    },
+    "bio": {
+      "fr": "Anasse développe les expériences web et les usages responsables de l'IA qui facilitent l'information et la participation.",
+      "en": "Anasse develops web experiences and responsible AI applications that support information sharing and participation."
+    },
+    "photoPath": "/placeholder/team/anasse.jpg",
+    "linkedinUrl": "https://www.linkedin.com/in/placeholder-anasse",
+    "skills": ["Web Development", "Artificial Intelligence", "Product Design"],
+    "sortOrder": 6,
+    "isPublished": true
+  }
+]

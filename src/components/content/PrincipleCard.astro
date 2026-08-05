@@ -1,0 +1,43 @@
+---
+import type { Language } from '@types';
+import '@styles/typography.css';
+
+interface Principle {
+  slug: string;
+  title: string;
+  icon?: string;
+  excerpt: string;
+  order: number;
+}
+
+interface Props {
+  principle: Principle;
+  lang: Language;
+}
+
+const { principle, lang } = Astro.props;
+const localePrefix = lang === 'fr' ? '' : `/${lang}`;
+const href = `${localePrefix}/principles/${principle.slug}`;
+const order = String(principle.order).padStart(2, '0');
+---
+
+<a
+  href={href}
+  class="group block border-t border-border pt-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+>
+  <div class="flex items-center justify-between gap-5">
+    <span class="type-caption text-muted" aria-hidden="true">{order}</span>
+    <span
+      class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-[1.5px] border-border-strong px-1 text-center font-sans text-[0.5rem] leading-none text-muted"
+      aria-hidden="true"
+    >
+      {principle.icon}
+    </span>
+  </div>
+  <h3
+    class="type-h4 mt-8 text-ink transition-colors duration-[400ms] ease-out group-hover:text-clay-600"
+  >
+    {principle.title}
+  </h3>
+  <p class="mt-4 text-sm leading-6 text-text-body">{principle.excerpt}</p>
+</a>

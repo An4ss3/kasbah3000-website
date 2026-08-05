@@ -1,0 +1,77 @@
+---
+interface Props {
+  videoSrc: string;
+  videoSrcWebm?: string;
+  posterSrc: string;
+  posterSrcMobile?: string;
+  alt?: string;
+}
+
+const { videoSrc, videoSrcWebm, posterSrc, posterSrcMobile, alt = '' } = Astro.props;
+---
+
+<div class="hero-video absolute inset-0 overflow-hidden bg-background-dark" data-hero-video>
+  <picture class="absolute inset-0 block">
+    {posterSrcMobile && <source media="(max-width: 639px)" srcset={posterSrcMobile} />}
+    <img
+      src={posterSrc}
+      alt={alt}
+      class="h-full w-full object-cover"
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+  </picture>
+
+  <video
+    class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-slow ease-out"
+    poster={posterSrc}
+    preload="none"
+    muted
+    autoplay
+    loop
+    playsinline
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {videoSrcWebm && <source src={videoSrcWebm} type="video/webm" />}
+    <source src={videoSrc} type="video/mp4" />
+  </video>
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceData = window.matchMedia('(prefers-reduced-data: reduce)').matches;
+  const saveData =
+    'connection' in navigator && Boolean((navigator.connection as { saveData?: boolean }).saveData);
+
+  document.querySelectorAll<HTMLElement>('[data-hero-video]').forEach((container) => {
+    const video = container.querySelector('video');
+    if (!video) return;
+
+    if (reduceMotion || reduceData || saveData) {
+      video.remove();
+      return;
+    }
+
+    video.defaultMuted = true;
+    video.muted = true;
+    video.volume = 0;
+    video.addEventListener(
+      'canplaythrough',
+      () => {
+        video.classList.remove('opacity-0');
+        video.classList.add('opacity-100');
+      },
+      { once: true }
+    );
+  });
+</script>
+
+<style>
+  @media (prefers-reduced-motion: reduce), (prefers-reduced-data: reduce) {
+    video {
+      display: none;
+    }
+  }
+</style>
