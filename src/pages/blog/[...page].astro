@@ -1,0 +1,28 @@
+---
+import BlogPage from '@components/pages/BlogPage.astro';
+import { getArticles } from '@lib/content/articles';
+import { getArticleCategories } from '@lib/utils/blog-categories';
+import { paginate, type PaginatedProps } from '@lib/utils/pagination';
+import type { Article } from '@types';
+
+export const prerender = true;
+
+interface Props extends PaginatedProps<Article> {}
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return paginate(articles);
+}
+
+const lang = 'fr' as const;
+const { articles, currentPage, totalPages } = Astro.props;
+const categories = await getArticleCategories();
+---
+
+<BlogPage
+  lang={lang}
+  articles={articles}
+  currentPage={currentPage}
+  totalPages={totalPages}
+  categories={categories}
+/>

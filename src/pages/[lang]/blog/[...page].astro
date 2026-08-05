@@ -1,0 +1,43 @@
+---
+import BlogPage from '@components/pages/BlogPage.astro';
+import { SITE } from '@constants';
+import { getArticles } from '@lib/content/articles';
+import { getArticleCategories } from '@lib/utils/blog-categories';
+import { isLanguage } from '@lib/utils/i18n';
+import { paginate, type PaginatedProps } from '@lib/utils/pagination';
+import type { Article } from '@types';
+
+export const prerender = true;
+
+interface Props extends PaginatedProps<Article> {}
+
+export async function getStaticPaths() {
+  const languages = SITE.languages.filter((language) => language !== SITE.defaultLanguage);
+  const articles = await getArticles();
+
+  return languages.flatMap((language) =>
+    paginate(articles).map((entry) => ({
+      params: { lang: language, page: entry.params.page },
+      props: entry.props,
+    }))
+  );
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+const { articles, currentPage, totalPages } = Astro.props;
+const categories = await getArticleCategories();
+---
+
+<BlogPage
+  lang={lang}
+  articles={articles}
+  currentPage={currentPage}
+  totalPages={totalPages}
+  categories={categories}
+/>

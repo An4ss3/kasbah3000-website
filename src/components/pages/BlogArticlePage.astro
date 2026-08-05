@@ -1,0 +1,168 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import MediaFigure from '@components/content/MediaFigure.astro';
+import Prose from '@components/content/Prose.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Badge from '@components/ui/Badge.astro';
+import { SITE } from '@constants';
+import { getArticleCategoryLabel } from '@lib/utils/blog-categories';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { renderArticleBody } from '@lib/utils/markdown';
+import type { Article, Language } from '@types';
+
+interface Props {
+  lang: Language;
+  article: Article;
+  previous?: Article;
+  next?: Article;
+}
+
+const { lang, article, previous, next } = Astro.props;
+const title = article.title[lang];
+const excerpt = article.excerpt[lang];
+const bodyHtml = renderArticleBody(article.body[lang]);
+const date = new Date(article.publishedAt ?? article.createdAt);
+const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(date);
+
+const blogPath = getLocalizedPath('/blog', lang);
+const articlePath = getLocalizedPath(`/blog/${article.slug}`, lang);
+const contactPath = getLocalizedPath('/contact', lang);
+
+const categoryLabel = getArticleCategoryLabel(article.category, lang);
+
+const structuredData = {
+  headline: title,
+  description: excerpt,
+  image: article.coverPath ? new URL(article.coverPath, SITE.url).href : undefined,
+  datePublished: new Date(article.publishedAt ?? article.createdAt).toISOString(),
+  dateModified: new Date(article.updatedAt).toISOString(),
+  url: new URL(articlePath, SITE.url).href,
+  inLanguage: lang,
+  author: { '@type': 'Organization', name: SITE.name },
+};
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'blog.hero.title'),
+      item: new URL(blogPath, SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: new URL(articlePath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout lang={lang} title={title} description={excerpt} showHero={false}>
+  <Seo slot="seo" title={title} description={excerpt} lang={lang} canonical={articlePath} article />
+  <JsonLd slot="head" type="Article" data={structuredData} />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <article>
+    <div class="mx-auto max-w-prose">
+      <nav aria-label={t(lang, 'blog.detail.backLabel')} class="mb-8">
+        <a
+          href={blogPath}
+          class="inline-flex min-h-11 items-center text-sm text-muted transition-colors duration-fast hover:text-link"
+        >
+          ← {t(lang, 'blog.detail.back')}
+        </a>
+      </nav>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <time datetime={date.toISOString()} class="type-caption uppercase text-muted">
+          {formattedDate}
+        </time>
+        {
+          categoryLabel && (
+            <Badge color={article.category === 'water' ? 'water' : 'clay'}>{categoryLabel}</Badge>
+          )
+        }
+      </div>
+
+      <h1 class="type-h2 mt-6 text-balance text-ink">{title}</h1>
+      <p class="mt-6 text-lg leading-8 text-text-body">{excerpt}</p>
+    </div>
+
+    {
+      article.coverPath && (
+        <MediaFigure
+          src={article.coverPath}
+          alt={title}
+          aspectRatio="16 / 9"
+          loading="eager"
+          class="mx-auto mt-12 max-w-content"
+        />
+      )
+    }
+
+    <Prose class="mx-auto mt-12">
+      <div set:html={bodyHtml} />
+    </Prose>
+
+    <nav
+      class="mx-auto mt-14 grid max-w-prose grid-cols-2 gap-6 border-t border-border pt-8"
+      aria-label={t(lang, 'blog.detail.navigationLabel')}
+    >
+      <div>
+        {
+          previous && (
+            <a
+              href={getLocalizedPath(`/blog/${previous.slug}`, lang)}
+              class="group block text-sm text-text-body focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+            >
+              <span class="type-eyebrow text-muted">{t(lang, 'blog.detail.previous')}</span>
+              <span class="mt-2 block font-serif text-xl text-ink transition-colors duration-fast group-hover:text-clay-600">
+                {previous.title[lang]}
+              </span>
+            </a>
+          )
+        }
+      </div>
+      <div class="text-right">
+        {
+          next && (
+            <a
+              href={getLocalizedPath(`/blog/${next.slug}`, lang)}
+              class="group block text-sm text-text-body focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+            >
+              <span class="type-eyebrow text-muted">{t(lang, 'blog.detail.next')}</span>
+              <span class="mt-2 block font-serif text-xl text-ink transition-colors duration-fast group-hover:text-clay-600">
+                {next.title[lang]}
+              </span>
+            </a>
+          )
+        }
+      </div>
+    </nav>
+  </article>
+
+  <Fragment slot="full-width">
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'blog.cta.eyebrow')}
+      title={t(lang, 'blog.cta.title')}
+      primaryCta={{ label: t(lang, 'blog.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'blog.cta.secondary'), href: blogPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

@@ -1,0 +1,31 @@
+---
+import BlogArticlePage from '@components/pages/BlogArticlePage.astro';
+import { getArticles } from '@lib/content/articles';
+import type { Article } from '@types';
+
+export const prerender = true;
+
+interface Props {
+  article: Article;
+  previous?: Article;
+  next?: Article;
+}
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+
+  return articles.map((article, index) => ({
+    params: { slug: article.slug },
+    props: {
+      article,
+      previous: index > 0 ? articles[index - 1] : undefined,
+      next: index < articles.length - 1 ? articles[index + 1] : undefined,
+    },
+  }));
+}
+
+const lang = 'fr' as const;
+const { article, previous, next } = Astro.props;
+---
+
+<BlogArticlePage lang={lang} article={article} previous={previous} next={next} />

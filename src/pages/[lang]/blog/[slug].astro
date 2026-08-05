@@ -1,0 +1,42 @@
+---
+import BlogArticlePage from '@components/pages/BlogArticlePage.astro';
+import { SITE } from '@constants';
+import { getArticles } from '@lib/content/articles';
+import { isLanguage } from '@lib/utils/i18n';
+import type { Article } from '@types';
+
+export const prerender = true;
+
+interface Props {
+  article: Article;
+  previous?: Article;
+  next?: Article;
+}
+
+export async function getStaticPaths() {
+  const languages = SITE.languages.filter((language) => language !== SITE.defaultLanguage);
+  const articles = await getArticles();
+
+  return languages.flatMap((language) =>
+    articles.map((article, index) => ({
+      params: { lang: language, slug: article.slug },
+      props: {
+        article,
+        previous: index > 0 ? articles[index - 1] : undefined,
+        next: index < articles.length - 1 ? articles[index + 1] : undefined,
+      },
+    }))
+  );
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+const { article, previous, next } = Astro.props;
+---
+
+<BlogArticlePage lang={lang} article={article} previous={previous} next={next} />

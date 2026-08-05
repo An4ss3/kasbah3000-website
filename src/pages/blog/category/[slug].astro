@@ -1,0 +1,24 @@
+---
+import BlogPage from '@components/pages/BlogPage.astro';
+import { getArticles } from '@lib/content/articles';
+import { getArticleCategories } from '@lib/utils/blog-categories';
+
+export const prerender = true;
+
+interface Props {
+  category: string;
+}
+
+export async function getStaticPaths() {
+  const categories = await getArticleCategories();
+  return categories.map((category) => ({ params: { slug: category }, props: { category } }));
+}
+
+const lang = 'fr' as const;
+const { category } = Astro.props;
+const allArticles = await getArticles();
+const articles = allArticles.filter((article) => article.category === category);
+const categories = await getArticleCategories();
+---
+
+<BlogPage lang={lang} articles={articles} categories={categories} activeCategory={category} />

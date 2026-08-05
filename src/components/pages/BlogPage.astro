@@ -1,0 +1,193 @@
+---
+import ArticleCard from '@components/content/ArticleCard.astro';
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Pagination from '@components/ui/Pagination.astro';
+import { SITE } from '@constants';
+import { getArticleCategoryLabel } from '@lib/utils/blog-categories';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { pageSegment } from '@lib/utils/pagination';
+import type { Article, Language } from '@types';
+
+interface Props {
+  lang: Language;
+  articles: Article[];
+  categories: string[];
+  /** Omitted on category pages, which are not paginated. */
+  currentPage?: number;
+  totalPages?: number;
+  activeCategory?: string;
+}
+
+const { lang, articles, categories, currentPage, totalPages, activeCategory } = Astro.props;
+const baseBlogPath = getLocalizedPath('/blog', lang);
+const listPath = getLocalizedPath(
+  activeCategory ? `/blog/category/${activeCategory}` : '/blog',
+  lang
+);
+// Paginated pages must self-canonicalize, not point back to page 1.
+const canonicalPath = `${listPath}${pageSegment(currentPage ?? 1)}`;
+const contactPath = getLocalizedPath('/contact', lang);
+const projectPath = getLocalizedPath('/project', lang);
+const currentCategoryLabel = getArticleCategoryLabel(activeCategory, lang);
+const pagination =
+  typeof currentPage === 'number' && typeof totalPages === 'number'
+    ? { currentPage, totalPages }
+    : undefined;
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'blog.hero.title'),
+      item: new URL(baseBlogPath, SITE.url).href,
+    },
+    ...(activeCategory
+      ? [
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: currentCategoryLabel,
+            item: new URL(listPath, SITE.url).href,
+          },
+        ]
+      : []),
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'blog.hero.title')}
+  description={t(lang, 'blog.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'blog.hero.title')}
+    description={t(lang, 'blog.hero.description')}
+    lang={lang}
+    canonical={canonicalPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'blog.hero.title')}
+    description={t(lang, 'blog.hero.description')}
+    imageSrc="/images/placeholders/principles-header.svg"
+    imageAlt={t(lang, 'blog.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="blog-intro-title">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+      <SectionTitle
+        id="blog-intro-title"
+        eyebrow={t(lang, 'blog.intro.eyebrow')}
+        title={t(lang, 'blog.intro.title')}
+      />
+      <Prose>
+        <p>{t(lang, 'blog.intro.body')}</p>
+      </Prose>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section class="border-t border-border bg-background py-14 md:py-20 lg:py-30">
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <nav aria-label={t(lang, 'blog.filter.label')}>
+          <ul class="flex flex-wrap gap-3">
+            <li>
+              <a
+                href={baseBlogPath}
+                aria-current={!activeCategory ? 'page' : undefined}
+                class:list={[
+                  'inline-flex min-h-11 items-center rounded-pill border border-border px-4 py-2 text-[0.8125rem] leading-5 text-text-body transition-colors duration-200 hover:border-link hover:text-link',
+                  !activeCategory && 'border-link text-link',
+                ]}
+              >
+                {t(lang, 'blog.filter.all')}
+              </a>
+            </li>
+            {
+              categories.map((category) => {
+                const isActive = category === activeCategory;
+                return (
+                  <li>
+                    <a
+                      href={getLocalizedPath(`/blog/category/${category}`, lang)}
+                      aria-current={isActive ? 'page' : undefined}
+                      class:list={[
+                        'inline-flex min-h-11 items-center rounded-pill border border-border px-4 py-2 text-[0.8125rem] leading-5 text-text-body transition-colors duration-200 hover:border-link hover:text-link',
+                        isActive && 'border-link text-link',
+                      ]}
+                    >
+                      {getArticleCategoryLabel(category, lang) ?? category}
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="blog-grid-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <h2 id="blog-grid-title" class="sr-only">{t(lang, 'blog.grid.title')}</h2>
+
+        {
+          articles.length > 0 ? (
+            <ul class="grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-14">
+              {articles.map((article) => (
+                <li>
+                  <ArticleCard article={article} lang={lang} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="text-base leading-7 text-text-body">{t(lang, 'blog.empty')}</p>
+          )
+        }
+
+        {
+          pagination && (
+            <Pagination
+              class="mt-14 lg:mt-16"
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              basePath={listPath}
+              previousLabel={t(lang, 'blog.pagination.previous')}
+              nextLabel={t(lang, 'blog.pagination.next')}
+              ariaLabel={t(lang, 'blog.pagination.label')}
+            />
+          )
+        }
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'blog.cta.eyebrow')}
+      title={t(lang, 'blog.cta.title')}
+      primaryCta={{ label: t(lang, 'blog.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'blog.cta.secondary'), href: projectPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>
