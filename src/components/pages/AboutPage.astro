@@ -1,0 +1,153 @@
+---
+import { getCollection, render } from 'astro:content';
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import { SITE } from '@constants';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const aboutPath = getLocalizedPath('/about', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const teamPath = getLocalizedPath('/team', lang);
+
+const [entry] = await getCollection('about', ({ data }) => data.lang === lang);
+const { Content } = await render(entry);
+
+const values = [
+  {
+    title: t(lang, 'about.values.item1.title'),
+    body: t(lang, 'about.values.item1.body'),
+  },
+  {
+    title: t(lang, 'about.values.item2.title'),
+    body: t(lang, 'about.values.item2.body'),
+  },
+  {
+    title: t(lang, 'about.values.item3.title'),
+    body: t(lang, 'about.values.item3.body'),
+  },
+];
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'about.hero.title'),
+      item: new URL(aboutPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'about.hero.title')}
+  description={t(lang, 'about.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'about.hero.title')}
+    description={t(lang, 'about.hero.description')}
+    lang={lang}
+    canonical={aboutPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'about.hero.title')}
+    description={t(lang, 'about.hero.description')}
+    imageSrc="/images/placeholders/principles-header.svg"
+    imageAlt={t(lang, 'about.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="about-vision-title">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+      <div>
+        <p class="type-eyebrow mb-5 text-muted">{t(lang, 'about.vision.eyebrow')}</p>
+        <h2 id="about-vision-title" class="type-h2 text-balance text-ink">
+          {t(lang, 'about.vision.title')}
+        </h2>
+      </div>
+      <Prose>
+        <p>{t(lang, 'about.vision.body')}</p>
+      </Prose>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="about-story-title"
+    >
+      <div
+        class="mx-auto grid max-w-content gap-10 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:px-12"
+      >
+        <SectionTitle
+          id="about-story-title"
+          eyebrow={t(lang, 'about.story.eyebrow')}
+          title={t(lang, 'about.story.title')}
+        />
+        <Prose>
+          <Content />
+        </Prose>
+      </div>
+    </section>
+
+    <section
+      class="border-t border-border bg-background py-14 md:py-20 lg:py-30"
+      aria-labelledby="about-values-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <SectionTitle
+          id="about-values-title"
+          eyebrow={t(lang, 'about.values.eyebrow')}
+          title={t(lang, 'about.values.title')}
+          centered
+        />
+
+        <ul
+          class="mt-12 grid gap-10 border-t border-border pt-10 md:grid-cols-3 md:gap-12 lg:mt-16"
+        >
+          {
+            values.map((value, index) => (
+              <li class="border-t border-border pt-6 first:border-t-0 first:pt-0 md:border-t-0 md:pt-0">
+                <span class="type-caption text-muted" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 class="type-h4 mt-4 text-balance text-ink">{value.title}</h3>
+                <p class="mt-4 text-sm leading-6 text-text-body">{value.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'about.cta.eyebrow')}
+      title={t(lang, 'about.cta.title')}
+      primaryCta={{ label: t(lang, 'about.cta.primary'), href: teamPath }}
+      secondaryCta={{ label: t(lang, 'about.cta.secondary'), href: contactPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

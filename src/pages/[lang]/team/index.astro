@@ -1,0 +1,23 @@
+---
+import TeamPage from '@components/pages/TeamPage.astro';
+import { SITE } from '@constants';
+import { isLanguage } from '@lib/utils/i18n';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return SITE.languages
+    .filter((language) => language !== SITE.defaultLanguage)
+    .map((language) => ({ params: { lang: language } }));
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+---
+
+<TeamPage lang={lang} />

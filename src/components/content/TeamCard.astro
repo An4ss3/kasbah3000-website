@@ -1,0 +1,108 @@
+---
+import '@styles/typography.css';
+import MediaFigure from '@components/content/MediaFigure.astro';
+import type { Language, TeamMember } from '@types';
+
+interface Props {
+  member: TeamMember;
+  lang: Language;
+  bioLabel: string;
+  linkedinLabel: string;
+  skillsLabel: string;
+  class?: string;
+}
+
+const { member, lang, bioLabel, linkedinLabel, skillsLabel, class: className } = Astro.props;
+const role = member.role[lang];
+const bio = member.bio[lang];
+---
+
+<li class:list={['border-t border-border pt-6', className]}>
+  <MediaFigure
+    src={member.photoPath ?? '/images/placeholders/principles-header.svg'}
+    alt={member.fullName}
+    aspectRatio="4 / 5"
+    archCrop
+    loading="lazy"
+  />
+
+  <h3 class="type-h4 mt-6 text-balance text-ink">{member.fullName}</h3>
+  <p class="type-caption mt-2 text-muted">{role}</p>
+
+  {
+    member.skills && member.skills.length > 0 && (
+      <ul class="mt-4 flex flex-wrap gap-2" aria-label={skillsLabel}>
+        {member.skills.map((skill) => (
+          <li class="rounded-pill border border-border px-3.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-label text-muted">
+            {skill}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <details class="group mt-5">
+    <summary
+      class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 border-t border-border py-3 font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link"
+      aria-label={`${bioLabel} — ${member.fullName}`}
+    >
+      {bioLabel}
+      <span class="detail-icon" aria-hidden="true"></span>
+    </summary>
+    <p class="mt-4 text-sm leading-6 text-text-body">{bio}</p>
+  </details>
+
+  {
+    member.linkedinUrl && (
+      <a
+        href={member.linkedinUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`${linkedinLabel} — ${member.fullName}`}
+        class="mt-5 inline-flex min-h-11 items-center gap-2 border-t border-border pt-3 font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link"
+      >
+        {linkedinLabel}
+        <span aria-hidden="true">↗</span>
+      </a>
+    )
+  }
+</li>
+
+<style>
+  .detail-icon {
+    position: relative;
+    display: block;
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  .detail-icon::before,
+  .detail-icon::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: translateY(-50%);
+    transition: transform 300ms ease-out;
+  }
+
+  .detail-icon::after {
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  details[open] .detail-icon::after {
+    transform: translateY(-50%) rotate(0deg);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::marker {
+    content: '';
+  }
+</style>

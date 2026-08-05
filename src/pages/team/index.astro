@@ -1,0 +1,9 @@
+---
+import TeamPage from '@components/pages/TeamPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<TeamPage lang={lang} />

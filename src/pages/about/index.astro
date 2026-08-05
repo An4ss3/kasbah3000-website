@@ -1,0 +1,9 @@
+---
+import AboutPage from '@components/pages/AboutPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<AboutPage lang={lang} />

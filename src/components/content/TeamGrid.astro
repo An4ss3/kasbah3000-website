@@ -1,0 +1,29 @@
+---
+import TeamCard from '@components/content/TeamCard.astro';
+import type { Language, TeamMember } from '@types';
+
+interface Props {
+  members: TeamMember[];
+  lang: Language;
+  bioLabel: string;
+  linkedinLabel: string;
+  skillsLabel: string;
+  class?: string;
+}
+
+const { members, lang, bioLabel, linkedinLabel, skillsLabel, class: className } = Astro.props;
+---
+
+<ul class:list={['grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-14', className]}>
+  {
+    members.map((member) => (
+      <TeamCard
+        member={member}
+        lang={lang}
+        bioLabel={bioLabel}
+        linkedinLabel={linkedinLabel}
+        skillsLabel={skillsLabel}
+      />
+    ))
+  }
+</ul>
