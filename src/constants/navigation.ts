@@ -75,7 +75,7 @@ export const FOOTER_NAV = {
   legal: [
     {
       label: { fr: 'Confidentialité', en: 'Privacy' },
-      href: '/legal/privacy',
+      href: '/contact#privacy-notice',
     },
     {
       label: { fr: "Conditions d'utilisation", en: 'Terms of Use' },

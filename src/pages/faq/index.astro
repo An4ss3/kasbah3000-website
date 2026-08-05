@@ -1,0 +1,9 @@
+---
+import FaqPage from '@components/pages/FaqPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<FaqPage lang={lang} />

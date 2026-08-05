@@ -35,8 +35,6 @@ const hasCustomSeo = Astro.slots.has('seo');
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
-    <Footer lang={lang}>
-      <slot name="newsletter" slot="newsletter" />
-    </Footer>
+    <Footer lang={lang} />
   </body>
 </html>

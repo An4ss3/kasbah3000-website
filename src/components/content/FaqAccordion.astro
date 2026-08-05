@@ -1,0 +1,56 @@
+---
+import type { FAQ, Language } from '@types';
+
+interface Props {
+  faqs: FAQ[];
+  lang: Language;
+  label: string;
+}
+
+const { faqs, lang, label } = Astro.props;
+---
+
+<div class="border-y border-border" aria-label={label}>
+  {
+    faqs.map((faq) => (
+      <details class="group border-b border-border last:border-b-0">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-6 py-6 text-ink marker:content-none">
+          <span class="font-serif text-2xl font-medium leading-tight md:text-[1.75rem]">
+            {faq.question[lang]}
+          </span>
+          <span class="faq-icon relative h-6 w-6 shrink-0 text-link" aria-hidden="true" />
+        </summary>
+        <div class="max-w-prose pb-7 pe-10 text-base leading-8 text-text-body">
+          <p>{faq.answer[lang]}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-icon::before,
+  .faq-icon::after {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 2px;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    content: '';
+    transform-origin: center;
+  }
+
+  .faq-icon::after {
+    transform: rotate(90deg);
+    transition: transform 300ms ease-out;
+  }
+
+  details[open] .faq-icon::after {
+    transform: rotate(0deg);
+  }
+</style>

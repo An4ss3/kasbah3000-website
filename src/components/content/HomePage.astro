@@ -11,7 +11,9 @@ import JsonLd from '@components/seo/JsonLd.astro';
 import Seo from '@components/seo/Seo.astro';
 import Button from '@components/ui/Button.astro';
 import Card from '@components/ui/Card.astro';
+import NewsletterForm from '@components/islands/NewsletterForm';
 import { STRUCTURED_DATA } from '@constants';
+import { getNewsletterFormCopy } from '@lib/forms/copy';
 import { getArticles } from '@lib/content/articles';
 import { getLocalizedPath, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
@@ -26,6 +28,7 @@ const principles = (await getCollection('principles', ({ data }) => data.lang ==
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 6);
 const articles = (await getArticles(lang)).slice(0, 3);
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
 
 const projectPath = getLocalizedPath('/project', lang);
 const contactPath = getLocalizedPath('/contact', lang);
@@ -198,6 +201,7 @@ const websiteData = {
   </section>
 
   <section
+    id="newsletter"
     class="bg-background-dark py-14 text-ink-inverse md:py-20 lg:py-30"
     aria-labelledby="newsletter-title"
   >
@@ -211,26 +215,16 @@ const websiteData = {
         <p class="max-w-prose text-base leading-8 text-text-body-dark">
           {t(lang, 'home.newsletter.description')}
         </p>
-        <form
-          class="mt-8 flex max-w-prose flex-col gap-3 sm:flex-row"
-          action="#"
-          method="post"
-          aria-label={t(lang, 'home.newsletter.formLabel')}
-        >
-          <label for="home-newsletter-email" class="sr-only"
-            >{t(lang, 'home.newsletter.emailLabel')}</label
-          >
-          <input
-            id="home-newsletter-email"
-            name="email"
-            type="email"
-            required
-            autocomplete="email"
-            placeholder={t(lang, 'home.newsletter.emailPlaceholder')}
-            class="min-h-11 w-full border border-sand-400 bg-transparent px-4 py-3 text-sm text-ink-inverse placeholder:text-sand-300 focus:border-sand-50"
+        <div class="mt-8">
+          <NewsletterForm
+            client:visible
+            lang={lang}
+            turnstileSiteKey={turnstileSiteKey}
+            privacyHref={`${contactPath}#privacy-notice`}
+            placement="home"
+            copy={getNewsletterFormCopy(lang)}
           />
-          <Button variant="primary-light" type="submit">{t(lang, 'home.newsletter.submit')}</Button>
-        </form>
+        </div>
       </div>
     </div>
   </section>

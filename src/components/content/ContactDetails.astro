@@ -1,0 +1,82 @@
+---
+import { CONTACT, ORGANIZATION } from '@constants';
+import { t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+
+function getE164Number(value: string): string | null {
+  const trimmed = value.trim();
+  if (!/^\+[0-9\s().-]+$/.test(trimmed)) return null;
+
+  const digits = trimmed.replace(/\D/g, '');
+  return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : null;
+}
+
+const phoneNumber = getE164Number(ORGANIZATION.phone);
+const whatsappNumber = getE164Number(CONTACT.whatsapp);
+const addressLines = [
+  CONTACT.address.street,
+  CONTACT.address.city,
+  CONTACT.address.region,
+  t(lang, 'contact.details.country'),
+].filter(Boolean);
+---
+
+<section aria-labelledby="contact-details-title">
+  <h2 id="contact-details-title" class="type-h3 text-balance text-ink">
+    {t(lang, 'contact.details.title')}
+  </h2>
+  <ul class="mt-8 divide-y divide-border border-y border-border">
+    <li class="py-5">
+      <p class="type-eyebrow text-muted">{t(lang, 'contact.details.address')}</p>
+      <address class="mt-2 text-base not-italic leading-7 text-text-body">
+        {addressLines.map((line) => <span class="block">{line}</span>)}
+      </address>
+    </li>
+    <li class="py-5">
+      <p class="type-eyebrow text-muted">{t(lang, 'contact.details.email')}</p>
+      <a
+        class="mt-1 inline-flex min-h-11 items-center text-link underline transition-colors duration-fast hover:text-link-hover"
+        href={`mailto:${CONTACT.email}`}
+        aria-label={`${t(lang, 'contact.details.emailLink')} ${CONTACT.email}`}
+      >
+        {CONTACT.email}
+      </a>
+    </li>
+    {
+      phoneNumber && (
+        <li class="py-5">
+          <p class="type-eyebrow text-muted">{t(lang, 'contact.details.phone')}</p>
+          <a
+            class="mt-1 inline-flex min-h-11 items-center text-link underline transition-colors duration-fast hover:text-link-hover"
+            href={`tel:${phoneNumber}`}
+            aria-label={`${t(lang, 'contact.details.phoneLink')} ${ORGANIZATION.phone}`}
+          >
+            {ORGANIZATION.phone}
+          </a>
+        </li>
+      )
+    }
+    {
+      whatsappNumber && (
+        <li class="py-5">
+          <p class="type-eyebrow text-muted">{t(lang, 'contact.details.whatsapp')}</p>
+          <a
+            class="mt-1 inline-flex min-h-11 items-center text-link underline transition-colors duration-fast hover:text-link-hover"
+            href={`https://wa.me/${whatsappNumber.slice(1)}`}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={t(lang, 'contact.details.whatsappLink')}
+          >
+            {t(lang, 'contact.details.whatsappAction')}
+          </a>
+        </li>
+      )
+    }
+  </ul>
+</section>

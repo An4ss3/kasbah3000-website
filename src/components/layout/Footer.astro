@@ -1,5 +1,7 @@
 ---
+import NewsletterForm from '@components/islands/NewsletterForm';
 import { FOOTER_NAV, SITE, SOCIAL_LINKS } from '@constants';
+import { getNewsletterFormCopy } from '@lib/forms/copy';
 import { getLocalizedPath, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
 
@@ -9,6 +11,8 @@ interface Props {
 
 const { lang } = Astro.props;
 const year = new Date().getFullYear();
+const privacyHref = `${getLocalizedPath('/contact', lang)}#privacy-notice`;
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
 const socialLinks = [
   { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin },
   { label: 'YouTube', href: SOCIAL_LINKS.youtube },
@@ -83,7 +87,14 @@ const socialLinks = [
           {t(lang, 'footer.newsletterDescription')}
         </p>
         <div class="mt-6">
-          <slot name="newsletter" />
+          <NewsletterForm
+            client:visible
+            lang={lang}
+            turnstileSiteKey={turnstileSiteKey}
+            privacyHref={privacyHref}
+            placement="footer"
+            copy={getNewsletterFormCopy(lang)}
+          />
         </div>
       </div>
     </div>

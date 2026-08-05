@@ -1,0 +1,130 @@
+---
+import ContactDetails from '@components/content/ContactDetails.astro';
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import ContactForm from '@components/islands/ContactForm';
+import ProjectMap from '@components/islands/ProjectMap';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import { SITE } from '@constants';
+import { getContactFormCopy } from '@lib/forms/copy';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const contactPath = getLocalizedPath('/contact', lang);
+const privacyHref = `${contactPath}#privacy-notice`;
+const faqPath = getLocalizedPath('/faq', lang);
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'contact.hero.title'),
+      item: new URL(contactPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'contact.hero.title')}
+  description={t(lang, 'contact.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'contact.hero.title')}
+    description={t(lang, 'contact.hero.description')}
+    lang={lang}
+    canonical={contactPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'contact.hero.title')}
+    description={t(lang, 'contact.hero.description')}
+  />
+
+  <section aria-labelledby="contact-form-title">
+    <div class="grid gap-14 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div>
+        <p class="type-eyebrow text-muted">{t(lang, 'contact.intro.eyebrow')}</p>
+        <h2 id="contact-form-title" class="type-h2 mt-5 text-balance text-ink">
+          {t(lang, 'contact.intro.title')}
+        </h2>
+        <p class="mt-5 max-w-prose text-base leading-8 text-text-body">
+          {t(lang, 'contact.intro.body')}
+        </p>
+        <div class="mt-10">
+          <ContactForm
+            client:visible
+            lang={lang}
+            turnstileSiteKey={turnstileSiteKey}
+            privacyHref={privacyHref}
+            copy={getContactFormCopy(lang)}
+          />
+        </div>
+      </div>
+      <ContactDetails lang={lang} />
+    </div>
+  </section>
+
+  <section
+    id="privacy-notice"
+    class="mt-14 border-t border-border pt-14"
+    aria-labelledby="privacy-notice-title"
+  >
+    <h2 id="privacy-notice-title" class="type-h3 text-balance text-ink">
+      {t(lang, 'contact.privacy.title')}
+    </h2>
+    <p class="mt-5 max-w-prose text-base leading-8 text-text-body">
+      {t(lang, 'contact.privacy.body')}
+    </p>
+  </section>
+
+  <Fragment slot="full-width">
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="contact-map-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <p class="type-eyebrow text-muted">{t(lang, 'contact.map.eyebrow')}</p>
+        <h2 id="contact-map-title" class="type-h2 mt-5 text-balance text-ink">
+          {t(lang, 'contact.map.title')}
+        </h2>
+        <div class="mt-12 aspect-video overflow-hidden border border-border lg:mt-16">
+          <ProjectMap
+            client:visible
+            featuresUrl="/map/contact.geojson"
+            center={[-9.6, 30.42]}
+            zoom={10}
+            lang={lang}
+            ariaLabel={t(lang, 'contact.map.title')}
+            fallbackText={t(lang, 'contact.map.fallback')}
+          />
+        </div>
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border"
+      eyebrow={t(lang, 'contact.faq.eyebrow')}
+      title={t(lang, 'contact.faq.title')}
+      primaryCta={{ label: t(lang, 'contact.faq.action'), href: faqPath }}
+    />
+  </Fragment>
+</PageLayout>

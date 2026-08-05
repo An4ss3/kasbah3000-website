@@ -17,3 +17,8 @@ bucket_name = "kasbah3000-media"  # Update with actual bucket name
 
 # Environment variables are configured in Cloudflare Pages dashboard
 # See .env.example for required variables
+# Production form rate limiting requires a KV namespace binding named RATE_LIMIT_KV.
+# This non-atomic KV counter is defense-in-depth only. Independently configure Cloudflare
+# edge WAF/rate-limit rules to enforce exactly 5 contact requests/hour/IP and exactly
+# 3 newsletter requests/hour/IP in production. Configure the real KV namespace in the
+# Cloudflare dashboard; do not commit placeholder namespace identifiers.

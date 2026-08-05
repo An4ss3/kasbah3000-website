@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.5981, 30.4278]
+      },
+      "properties": {
+        "name": {
+          "fr": "Zone d’étude Kasbah3000",
+          "en": "Kasbah3000 study area"
+        },
+        "type": "community",
+        "description": {
+          "fr": "Le projet étudie un site pilote dans la région d’Agadir ; l’emplacement définitif sera communiqué après les études territoriales.",
+          "en": "The project is studying a pilot site in the Agadir region; the final location will be shared after territorial studies."
+        }
+      }
+    }
+  ]
+}
