@@ -1,0 +1,20 @@
+# Security headers for prerendered static responses (§10.5 of PROJECT_RULES.md).
+# Cloudflare Workers serves static assets ahead of the Worker script, so src/middleware.ts
+# does not run for these routes. This file is the only header source for them.
+#
+# IMPORTANT: this policy is mirrored verbatim in src/middleware.ts (which covers SSR
+# responses). Any change here must be applied there too.
+#
+# worker-src/child-src blob: are required by MapLibre GL JS, which creates its render
+# worker from a blob URL. Removing them breaks ProjectMap on /project and /contact.
+#
+# fonts.googleapis.com / fonts.gstatic.com are required while src/styles/typography.css
+# loads Cormorant Garamond and Manrope remotely. Remove both once fonts are self-hosted.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://*.maptiler.com https://*.cloudflare.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.maptiler.com https://*.supabase.co https://challenges.cloudflare.com; worker-src 'self' blob:; child-src 'self' blob:; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests

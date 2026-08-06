@@ -1,0 +1,79 @@
+---
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import { SITE } from '@constants';
+import { getLocalizedPath, t, type TranslationKey } from '@lib/utils/i18n';
+import '@styles/typography.css';
+import type { Language } from '@types';
+
+interface Props {
+  lang: Language;
+  title: string;
+  slug: string;
+  lastUpdated: Date;
+}
+
+/**
+ * Explicit slug → description key map. `satisfies` makes a missing or misspelled
+ * translation key a compile error, and the `title` fallback keeps the description
+ * meaningful if a new legal document is added before its copy exists.
+ */
+const DESCRIPTION_KEYS = {
+  privacy: 'legal.privacy.description',
+  terms: 'legal.terms.description',
+  cookies: 'legal.cookies.description',
+} as const satisfies Record<string, TranslationKey>;
+
+const { lang, title, slug, lastUpdated } = Astro.props;
+const legalPath = getLocalizedPath(`/legal/${slug}`, lang);
+const descriptionKey = DESCRIPTION_KEYS[slug as keyof typeof DESCRIPTION_KEYS];
+const description = descriptionKey ? t(lang, descriptionKey) : title;
+
+// `lastUpdated` is parsed by Zod as a UTC date. Formatting must also be pinned to UTC,
+// otherwise a build machine in a negative offset renders the previous calendar day and
+// disagrees with the machine-readable datetime attribute.
+const isoDate = lastUpdated.toISOString().slice(0, 10);
+const formattedDate = lastUpdated.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: title,
+      item: new URL(legalPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout lang={lang} title={title} description={description}>
+  <Seo slot="seo" title={title} description={description} lang={lang} canonical={legalPath} />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero slot="hero" title={title} />
+
+  <article>
+    <p class="type-caption text-muted">
+      {t(lang, 'legal.lastUpdated')}{' '}
+      <time datetime={isoDate}>{formattedDate}</time>
+    </p>
+    <Prose class="mt-8">
+      <slot />
+    </Prose>
+  </article>
+</PageLayout>

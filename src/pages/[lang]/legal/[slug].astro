@@ -1,0 +1,44 @@
+---
+import LegalPage from '@components/pages/LegalPage.astro';
+import { SITE } from '@constants';
+import { isLanguage } from '@lib/utils/i18n';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const paths: {
+    params: { lang: string; slug: string };
+    props: { entry: CollectionEntry<'legal'> };
+  }[] = [];
+
+  for (const language of SITE.languages) {
+    if (language === SITE.defaultLanguage) continue;
+    const entries = await getCollection('legal', ({ data }) => data.lang === language);
+    for (const entry of entries) {
+      paths.push({
+        params: { lang: language, slug: entry.data.slug },
+        props: { entry },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { lang: langParam } = Astro.params;
+if (!isLanguage(langParam)) throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+const lang = langParam;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<LegalPage
+  lang={lang}
+  title={entry.data.title}
+  slug={entry.data.slug}
+  lastUpdated={entry.data.lastUpdated}
+>
+  <Content />
+</LegalPage>

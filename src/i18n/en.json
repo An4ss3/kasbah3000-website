@@ -305,5 +305,15 @@
   "newsletter.form.consentLink": "privacy policy",
   "newsletter.form.consentSuffix": ".",
   "newsletter.form.submit": "Subscribe",
-  "newsletter.form.success": "Check your inbox to confirm your subscription."
+  "newsletter.form.success": "Check your inbox to confirm your subscription.",
+  "legal.lastUpdated": "Last updated:",
+  "legal.privacy.description": "How Kasbah3000 collects, uses and protects your personal data.",
+  "legal.terms.description": "Terms and conditions for using the kasbah3000.com website.",
+  "legal.cookies.description": "Cookie policy and browsing preferences on the Kasbah3000 website.",
+  "notFound.title": "Page not found",
+  "notFound.eyebrow": "Error 404",
+  "notFound.heading": "This page does not exist",
+  "notFound.description": "The requested address does not match any page on this site. The page may have been moved or removed.",
+  "notFound.homeLink": "Back to home",
+  "notFound.contactLink": "Contact us"
 }
