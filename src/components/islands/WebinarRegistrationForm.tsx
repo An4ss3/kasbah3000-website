@@ -340,7 +340,9 @@ export default function WebinarRegistrationForm({
       */}
       <div
         ref={turnstileContainerRef}
-        class={turnstileUnavailable ? undefined : 'mt-6 min-h-[65px]'}
+        class={
+          turnstileUnavailable ? undefined : 'mt-6 h-[65px] w-[300px] max-w-full overflow-hidden'
+        }
         tabIndex={turnstileUnavailable ? 0 : -1}
       />
 

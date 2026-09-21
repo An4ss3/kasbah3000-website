@@ -364,7 +364,7 @@ export default function ContactForm({ lang, turnstileSiteKey, privacyHref, copy 
 
       <div
         ref={turnstileContainerRef}
-        class="mt-6 min-h-[65px]"
+        class="mt-6 h-[65px] w-[300px] max-w-full overflow-hidden"
         tabIndex={turnstileUnavailable ? 0 : -1}
       />
       {turnstileUnavailable && <p class="mt-2 text-sm text-error">{copy.turnstileUnavailable}</p>}

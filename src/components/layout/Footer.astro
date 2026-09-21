@@ -25,8 +25,18 @@ const socialLinks: readonly { label: string; href: string; network: SocialNetwor
   class="border-t border-border-dark bg-background-dark text-text-body-dark"
   aria-label={t(lang, 'footer.label')}
 >
-  <div class="mx-auto max-w-content px-5 py-14 md:px-8 md:py-20 lg:px-12 lg:py-30">
-    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+  {
+    /*
+    Compacted footer.
+
+    Vertical padding was 56/80/120px and the newsletter sat in a 259px column, which forced the
+    Turnstile widget into its 150×140 compact form — the tallest element on the page. A five-column
+    grid lets the newsletter span two columns (~448px at lg), so the widget renders at 300×65 and
+    the whole footer loses roughly 200px of height on desktop without dropping any content.
+  */
+  }
+  <div class="mx-auto max-w-content px-5 py-12 md:px-8 md:py-14 lg:px-12 lg:py-16">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5 lg:gap-10">
       <div>
         <a
           href={getLocalizedPath('/', lang)}
@@ -35,7 +45,7 @@ const socialLinks: readonly { label: string; href: string; network: SocialNetwor
         >
           <span class="font-serif text-3xl font-medium text-ink-inverse">{SITE.name}</span>
         </a>
-        <p class="mt-5 max-w-xs text-sm leading-7 text-text-body-dark">
+        <p class="mt-4 max-w-xs text-sm leading-7 text-text-body-dark">
           {SITE.title.replace(`${SITE.name} — `, '')}
         </p>
       </div>
@@ -44,7 +54,7 @@ const socialLinks: readonly { label: string; href: string; network: SocialNetwor
         <h2 id="footer-discover" class="font-sans text-eyebrow uppercase text-accent-on-dark">
           {t(lang, 'footer.discover')}
         </h2>
-        <ul class="mt-5 space-y-1">
+        <ul class="mt-4">
           {
             FOOTER_NAV.discover.map((item) => (
               <li>
@@ -64,7 +74,7 @@ const socialLinks: readonly { label: string; href: string; network: SocialNetwor
         <h2 id="footer-resources" class="font-sans text-eyebrow uppercase text-accent-on-dark">
           {t(lang, 'footer.resources')}
         </h2>
-        <ul class="mt-5 space-y-1">
+        <ul class="mt-4">
           {
             FOOTER_NAV.resources.map((item) => (
               <li>
@@ -80,14 +90,14 @@ const socialLinks: readonly { label: string; href: string; network: SocialNetwor
         </ul>
       </nav>
 
-      <div>
+      <div class="lg:col-span-2">
         <h2 class="font-sans text-eyebrow uppercase text-accent-on-dark">
           {t(lang, 'footer.newsletter')}
         </h2>
-        <p class="mt-5 text-sm leading-7 text-text-body-dark">
+        <p class="mt-4 max-w-prose text-sm leading-7 text-text-body-dark">
           {t(lang, 'footer.newsletterDescription')}
         </p>
-        <div class="mt-6">
+        <div class="mt-5">
           <NewsletterForm
             client:visible
             lang={lang}

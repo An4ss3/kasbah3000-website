@@ -90,7 +90,7 @@ export default function NewsletterForm({
     action: 'newsletter_subscribe',
     language: lang,
     theme: isDark ? 'dark' : 'light',
-    size: placement === 'footer' ? 'compact' : 'normal',
+    size: 'normal',
     requiredMessage: copy.turnstileRequired,
     unavailableMessage: copy.turnstileUnavailable,
     setStatus: setTurnstileStatus,
@@ -320,9 +320,18 @@ export default function NewsletterForm({
         </p>
       )}
 
+      {/*
+        Fixed-size verification box.
+
+        The container used to be `w-full` with only a `min-h`, so it reserved the whole column
+        width for a widget that renders at a fixed 300×65 (or 150×140 in compact mode). That left
+        a large empty area and let the box change size between states. Matching the widget's exact
+        dimensions reserves the space precisely, removes the excess and prevents layout shift;
+        `max-w-full` keeps it inside very narrow columns.
+      */}
       <div
         ref={turnstileContainerRef}
-        class={`mt-4 w-full max-w-full ${placement === 'footer' ? 'min-h-[140px]' : 'min-h-[65px]'}`}
+        class="mt-4 h-[65px] w-[300px] max-w-full overflow-hidden"
         tabIndex={turnstileUnavailable ? 0 : -1}
       />
 
