@@ -1,5 +1,5 @@
 ---
-import { SEO_DEFAULTS, SITE } from '@constants';
+import { LOCALE_CODES, SEO_DEFAULTS, SITE } from '@constants';
 import { getLocalizedPath } from '@lib/utils/i18n';
 import type { Language } from '@types';
 
@@ -26,19 +26,29 @@ const pageTitle = title.includes(SITE.name) ? title : `${title} — ${SITE.name}
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, SITE.url);
 const canonicalPath = canonicalUrl.pathname;
 const imageUrl = new URL(ogImage, SITE.url);
-const frenchUrl = new URL(getLocalizedPath(canonicalPath, 'fr'), SITE.url);
-const englishUrl = new URL(getLocalizedPath(canonicalPath, 'en'), SITE.url);
-const locale = lang === 'fr' ? 'fr_FR' : 'en_US';
-const alternateLocale = lang === 'fr' ? 'en_US' : 'fr_FR';
+
+// One alternate per configured locale, plus x-default pointing at the default language.
+const alternates = SITE.languages.map((language) => ({
+  hreflang: language,
+  href: new URL(getLocalizedPath(canonicalPath, language), SITE.url),
+}));
+const defaultUrl = new URL(getLocalizedPath(canonicalPath, SITE.defaultLanguage), SITE.url);
+const locale = LOCALE_CODES[lang];
+const alternateLocales = SITE.languages
+  .filter((language) => language !== lang)
+  .map((language) => LOCALE_CODES[language]);
 ---
 
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonicalUrl} />
-<link rel="alternate" hreflang="fr" href={frenchUrl} />
-<link rel="alternate" hreflang="en" href={englishUrl} />
-<link rel="alternate" hreflang="x-default" href={frenchUrl} />
+{
+  alternates.map((alternate) => (
+    <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
+  ))
+}
+<link rel="alternate" hreflang="x-default" href={defaultUrl} />
 
 <meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:site_name" content={SITE.name} />
@@ -50,7 +60,7 @@ const alternateLocale = lang === 'fr' ? 'en_US' : 'fr_FR';
 <meta property="og:image:height" content={String(SEO_DEFAULTS.openGraph.images.height)} />
 <meta property="og:image:alt" content={pageTitle} />
 <meta property="og:locale" content={locale} />
-<meta property="og:locale:alternate" content={alternateLocale} />
+{alternateLocales.map((alternate) => <meta property="og:locale:alternate" content={alternate} />)}
 
 <meta name="twitter:card" content={SEO_DEFAULTS.twitter.card} />
 <meta name="twitter:site" content={SEO_DEFAULTS.twitter.site} />

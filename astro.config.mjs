@@ -12,7 +12,7 @@ export default defineConfig({
 
   i18n: {
     defaultLocale: 'fr',
-    locales: ['fr', 'en'], // ar, es, zgh added in Phase 7
+    locales: ['fr', 'en', 'ar', 'de'],
     routing: {
       prefixDefaultLocale: false,
     },
@@ -31,6 +31,8 @@ export default defineConfig({
         locales: {
           fr: 'fr-FR',
           en: 'en-US',
+          ar: 'ar-MA',
+          de: 'de-DE',
         },
       },
     }),

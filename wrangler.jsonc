@@ -8,6 +8,16 @@
     "directory": "./dist",
     "binding": "ASSETS",
   },
+  // Fixed-window counter backing the public form rate limits (PROJECT_RULES §10.6).
+  // `consumeRateLimit` fails closed in production when this binding is absent, so the contact,
+  // newsletter and event-registration endpoints all return 503 without it.
+  // The adapter appends its own SESSION namespace to this list at build time.
+  "kv_namespaces": [
+    {
+      "binding": "RATE_LIMIT_KV",
+      "id": "e7eac4f7d7504ee3b32f4bed06fdc16e",
+    },
+  ],
   "observability": {
     "enabled": true,
   },

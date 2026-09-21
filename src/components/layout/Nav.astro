@@ -1,6 +1,6 @@
 ---
 import type { NavItem } from '@constants';
-import { getLocalizedPath, isPathActive } from '@lib/utils/i18n';
+import { getLocalizedPath, isPathActive, localize } from '@lib/utils/i18n';
 import type { Language } from '@types';
 
 interface Props {
@@ -14,7 +14,14 @@ const { lang, currentPath, items, ariaLabel } = Astro.props;
 ---
 
 <nav aria-label={ariaLabel}>
-  <ul class="flex items-center gap-6 xl:gap-8">
+  {
+    /*
+    `whitespace-nowrap` is required, not cosmetic: German "Über uns" and "Veranstaltungen"
+    previously wrapped mid-item and collided with neighbouring elements. Type size and
+    tracking are frozen by the design rules, so breathing room comes from the gap.
+  */
+  }
+  <ul class="flex items-center gap-7 xl:gap-10">
     {
       items.map((item) => {
         const href = item.external ? item.href : getLocalizedPath(item.href, lang);
@@ -28,11 +35,11 @@ const { lang, currentPath, items, ariaLabel } = Astro.props;
               rel={item.external ? 'noreferrer' : undefined}
               aria-current={isActive ? 'page' : undefined}
               class:list={[
-                'flex min-h-11 items-center border-b border-transparent font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link',
+                'flex min-h-11 items-center whitespace-nowrap border-b border-transparent font-sans text-nav uppercase tracking-label text-ink transition-colors duration-fast hover:text-link',
                 isActive && 'border-link text-link',
               ]}
             >
-              {item.label[lang]}
+              {localize(item.label, lang)}
             </a>
           </li>
         );

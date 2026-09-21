@@ -1,3 +1,4 @@
+import { env as workerEnv } from 'cloudflare:workers';
 import type { FormApiResponse, FormResponseCode } from '@lib/forms/schemas';
 import type { RateLimitKV } from '@lib/utils/rate-limit';
 
@@ -38,9 +39,18 @@ function rateLimitBinding(value: unknown): RateLimitKV | undefined {
     : undefined;
 }
 
-export function getFormEnvironment(locals: unknown): FormEnvironment {
-  const runtime = recordOf(recordOf(locals).runtime);
-  const runtimeEnv = recordOf(runtime.env);
+/**
+ * Resolve server-only configuration from the Worker bindings.
+ *
+ * This previously read `Astro.locals.runtime.env`, which Astro v6 removed: the property is now a
+ * getter that *throws*, so every form endpoint answered an empty HTTP 500 before validation, rate
+ * limiting or Turnstile ever ran. The Cloudflare adapter's own request handler reads bindings via
+ * `cloudflare:workers`, so this uses the same documented entry point.
+ *
+ * `import.meta.env` is kept as the fallback for `astro dev`, where Worker bindings are absent.
+ */
+export function getFormEnvironment(): FormEnvironment {
+  const runtimeEnv = recordOf(workerEnv);
 
   return {
     PUBLIC_SITE_URL: stringValue(runtimeEnv, 'PUBLIC_SITE_URL') ?? import.meta.env.PUBLIC_SITE_URL,

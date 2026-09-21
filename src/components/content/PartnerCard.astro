@@ -1,5 +1,6 @@
 ---
 import '@styles/typography.css';
+import { localize } from '@lib/utils/i18n';
 import type { Language, Partner } from '@types';
 
 interface Props {
@@ -19,7 +20,7 @@ const {
   headingLevel = 'h3',
   class: className,
 } = Astro.props;
-const description = partner.description[lang];
+const description = localize(partner.description, lang);
 const Heading = headingLevel;
 ---
 

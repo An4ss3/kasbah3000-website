@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useId, useRef, useState } from 'preact/hooks';
 import type { NewsletterFormCopy } from '@lib/forms/copy';
 import { isFormResponse, newsletterClientSchema } from '@lib/forms/schemas';
 import { useTurnstile } from '@lib/forms/use-turnstile';
@@ -23,6 +23,21 @@ interface NewsletterValues {
 
 const EMPTY_VALUES: NewsletterValues = { email: '', consent: false, website: '' };
 
+/*
+  Submission feedback is a discriminated value rather than a bare string. The previous version
+  kept only the message text, which forced the UI to render the Turnstile failure twice: once in
+  a hard-coded red paragraph and once in the live region, producing the duplicated error. Tracking
+  the tone alongside the message lets a single live region express loading, success and error.
+*/
+type FeedbackTone = 'idle' | 'pending' | 'success' | 'error';
+
+interface Feedback {
+  tone: FeedbackTone;
+  message: string;
+}
+
+const IDLE_FEEDBACK: Feedback = { tone: 'idle', message: '' };
+
 export default function NewsletterForm({
   lang,
   turnstileSiteKey,
@@ -37,9 +52,23 @@ export default function NewsletterForm({
   const mountedRef = useRef(true);
   const [values, setValues] = useState<NewsletterValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<NewsletterErrors>({});
-  const [status, setStatus] = useState('');
+  const [feedback, setFeedback] = useState<Feedback>(IDLE_FEEDBACK);
   const [submitting, setSubmitting] = useState(false);
   const isDark = placement === 'home' || placement === 'footer';
+
+  /*
+    Bridge for the shared `useTurnstile` hook, which speaks in plain strings and is also used by
+    the contact and webinar forms. Every message it emits reports a blocked verification, so it
+    always maps to the error tone; clearing it (empty string) returns the region to idle. The
+    hook's updater form is preserved so its "only clear if still mine" logic keeps working.
+  */
+  const setTurnstileStatus = useCallback((value: string | ((current: string) => string)) => {
+    setFeedback((current) => {
+      const next = typeof value === 'function' ? value(current.message) : value;
+      if (next === current.message) return current;
+      return next ? { tone: 'error', message: next } : IDLE_FEEDBACK;
+    });
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -64,7 +93,7 @@ export default function NewsletterForm({
     size: placement === 'footer' ? 'compact' : 'normal',
     requiredMessage: copy.turnstileRequired,
     unavailableMessage: copy.turnstileUnavailable,
-    setStatus,
+    setStatus: setTurnstileStatus,
   });
   const id = (field: string) => `${placement}-newsletter-${field}-${instanceId}`;
 
@@ -118,7 +147,7 @@ export default function NewsletterForm({
     abortControllerRef.current = controller;
     inFlightRef.current = true;
     setSubmitting(true);
-    setStatus(copy.submitting);
+    setFeedback({ tone: 'pending', message: copy.submitting });
 
     try {
       const response = await fetch('/api/newsletter/subscribe', {
@@ -139,17 +168,24 @@ export default function NewsletterForm({
       if (response.ok && isFormResponse(payload) && payload.success) {
         setValues(EMPTY_VALUES);
         setErrors({});
-        setStatus(copy.success);
+        setFeedback({ tone: 'success', message: copy.success });
         resetTurnstile();
         return;
       }
 
       if (isFormResponse(payload) && payload.code === 'RATE_LIMITED') {
-        setStatus(copy.rateLimited);
+        setFeedback({ tone: 'error', message: copy.rateLimited });
       } else if (isFormResponse(payload) && payload.code === 'TURNSTILE_FAILED') {
         announceTurnstileRequired();
+      } else if (isFormResponse(payload) && payload.code === 'SERVICE_UNAVAILABLE') {
+        /*
+          503 means a server-side dependency is unavailable (Brevo, or a binding that is not
+          provisioned). It is deliberately *not* mapped to the Turnstile copy: verification runs
+          before this point, so blaming it would point operators at the wrong subsystem.
+        */
+        setFeedback({ tone: 'error', message: copy.serviceUnavailable });
       } else {
-        setStatus(copy.genericError);
+        setFeedback({ tone: 'error', message: copy.genericError });
       }
       resetTurnstile();
     } catch (error) {
@@ -160,7 +196,7 @@ export default function NewsletterForm({
           'name' in error &&
           error.name === 'AbortError');
       if (!isAbortError && mountedRef.current) {
-        setStatus(copy.genericError);
+        setFeedback({ tone: 'error', message: copy.genericError });
         resetTurnstile();
       }
     } finally {
@@ -180,6 +216,19 @@ export default function NewsletterForm({
   const buttonClass = isDark
     ? 'bg-background text-ink hover:bg-surface'
     : 'bg-ink text-ink-inverse hover:bg-link';
+
+  /*
+    Tone colours stay inside the frozen palette. On the dark band the accessible pairings are
+    clay-200 (9.6:1) for errors and cedar-200 for success; on light surfaces the semantic
+    `error`/`success` tokens already validate.
+  */
+  const feedbackToneClass: Record<FeedbackTone, string> = {
+    idle: bodyClass,
+    pending: bodyClass,
+    success: isDark ? 'text-cedar-200' : 'text-success',
+    error: isDark ? 'font-medium text-clay-200' : 'font-medium text-error',
+  };
+  const feedbackClass = feedbackToneClass[feedback.tone];
 
   return (
     <form
@@ -276,10 +325,20 @@ export default function NewsletterForm({
         class={`mt-4 w-full max-w-full ${placement === 'footer' ? 'min-h-[140px]' : 'min-h-[65px]'}`}
         tabIndex={turnstileUnavailable ? 0 : -1}
       />
-      {turnstileUnavailable && <p class="mt-2 text-sm text-error">{copy.turnstileUnavailable}</p>}
 
-      <p class={`mt-3 min-h-6 text-sm ${bodyClass}`} role="status" aria-live="polite">
-        {status}
+      {/*
+        Single source of submission feedback. The hard-coded `turnstileUnavailable` paragraph that
+        used to sit here duplicated the identical message already announced in this live region.
+        Error and success tones use light values because both placements render on the dark band:
+        `text-error` (#B23B2E) on sand-900 measures 2.6:1 and would fail WCAG AA.
+      */}
+      <p
+        class={`mt-3 min-h-6 text-sm ${feedbackClass}`}
+        role="status"
+        aria-live="polite"
+        data-feedback-tone={feedback.tone}
+      >
+        {feedback.message}
       </p>
     </form>
   );

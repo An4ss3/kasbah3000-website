@@ -3,7 +3,7 @@
  * Default meta tags and Open Graph settings
  */
 
-import { SITE } from './site';
+import { SITE, SOCIAL_LINKS } from './site';
 
 export const SEO_DEFAULTS = {
   title: SITE.title,
@@ -36,12 +36,8 @@ export const STRUCTURED_DATA = {
     '@type': 'Organization',
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/brand/logo.jpeg`,
-    sameAs: [
-      'https://linkedin.com/company/kasbah3000',
-      'https://youtube.com/@kasbah3000',
-      'https://instagram.com/kasbah3000',
-    ],
+    logo: `${SITE.url}/brand/logo.png`,
+    sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.youtube, SOCIAL_LINKS.instagram],
   },
 
   website: {

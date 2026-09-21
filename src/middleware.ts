@@ -20,9 +20,11 @@ const CONTENT_SECURITY_POLICY = [
   // Google Fonts. Remove both Google origins once the fonts are self-hosted in
   // /public/fonts (see the TODO in typography.css).
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://*.maptiler.com https://*.cloudflare.com",
+  // *.tile.openstreetmap.org backs the keyless ProjectMap basemap used when
+  // PUBLIC_MAPTILER_KEY is absent. MapTiler remains the styled basemap once a key is set.
+  "img-src 'self' data: blob: https://*.maptiler.com https://*.cloudflare.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org",
   "font-src 'self' https://fonts.gstatic.com",
-  "connect-src 'self' https://*.maptiler.com https://*.supabase.co https://challenges.cloudflare.com",
+  "connect-src 'self' https://*.maptiler.com https://*.supabase.co https://challenges.cloudflare.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org",
   // MapLibre GL JS (ESM build) instantiates its render worker from a blob URL.
   // Without these directives the worker is refused and ProjectMap degrades to its fallback.
   "worker-src 'self' blob:",

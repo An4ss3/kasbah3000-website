@@ -9,7 +9,7 @@ import PageLayout from '@components/layout/PageLayout.astro';
 import JsonLd from '@components/seo/JsonLd.astro';
 import Seo from '@components/seo/Seo.astro';
 import { SITE } from '@constants';
-import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
 import { isVideoAsset, resolveMediaUrl, resolvePosterUrl } from '@lib/utils/media';
 import type { Language, MediaAsset } from '@types';
 
@@ -34,7 +34,7 @@ const currentTitle = activeAlbum ? (albumLabels[activeAlbum] ?? activeAlbum) : u
 const lightboxItems = assets.map((asset) => ({
   src: resolveMediaUrl(asset),
   poster: resolvePosterUrl(asset),
-  title: asset.title[lang],
+  title: localize(asset.title, lang),
   isVideo: isVideoAsset(asset),
 }));
 const breadcrumbData = {
@@ -83,7 +83,7 @@ const breadcrumbData = {
     slot="hero"
     title={t(lang, 'gallery.hero.title')}
     description={t(lang, 'gallery.hero.description')}
-    imageSrc="/images/placeholders/principles-header.svg"
+    imageSrc="/media/site/oasis-village-sunset.jpg"
     imageAlt={t(lang, 'gallery.hero.imageAlt')}
   />
 

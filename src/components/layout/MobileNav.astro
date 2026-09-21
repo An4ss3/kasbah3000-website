@@ -1,7 +1,8 @@
 ---
 import { PRIMARY_NAV } from '@constants';
-import { getLocalizedPath, isPathActive, t } from '@lib/utils/i18n';
+import { getLocalizedPath, isPathActive, localize, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
+import NavCta from './NavCta.astro';
 
 interface Props {
   lang: Language;
@@ -24,7 +25,7 @@ const { lang, currentPath } = Astro.props;
   </summary>
 
   <div
-    class="fixed inset-x-0 bottom-0 top-16 overflow-y-auto border-t border-border bg-background px-5 py-8 md:top-18 md:px-8"
+    class="fixed inset-x-0 bottom-0 top-16 overflow-y-auto border-t border-border bg-background px-5 py-10 md:top-18 md:px-8"
   >
     <nav aria-label={t(lang, 'navigation.mobileLabel')}>
       <ul class="divide-y divide-border border-y border-border">
@@ -38,12 +39,15 @@ const { lang, currentPath } = Astro.props;
                   href={getLocalizedPath(item.href, lang)}
                   aria-current={isActive ? 'page' : undefined}
                   class:list={[
-                    'flex min-h-14 items-center justify-between font-serif text-2xl font-medium text-ink transition-colors duration-fast hover:text-link',
+                    'flex min-h-16 items-center justify-between gap-4 py-1 font-serif text-2xl font-medium text-ink transition-colors duration-fast hover:text-link',
                     isActive && 'text-link',
                   ]}
                 >
-                  {item.label[lang]}
-                  <span class="font-sans text-sm text-muted" aria-hidden="true">
+                  {localize(item.label, lang)}
+                  <span
+                    class="shrink-0 font-sans text-sm text-muted rtl:-scale-x-100"
+                    aria-hidden="true"
+                  >
                     →
                   </span>
                 </a>
@@ -53,6 +57,11 @@ const { lang, currentPath } = Astro.props;
         }
       </ul>
     </nav>
+
+    {/* The CTA sits apart from the primary list so it reads as a distinct secondary action. */}
+    <div class="mt-10">
+      <NavCta lang={lang} currentPath={currentPath} variant="block" />
+    </div>
   </div>
 </details>
 

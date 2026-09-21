@@ -1,0 +1,261 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Alert from '@components/ui/Alert.astro';
+import Badge from '@components/ui/Badge.astro';
+import Button from '@components/ui/Button.astro';
+import WebinarRegistrationForm from '@components/islands/WebinarRegistrationForm';
+import { SITE } from '@constants';
+import { getWebinarRegistrationFormCopy } from '@lib/forms/copy';
+import {
+  eventDateTimeAttribute,
+  formatEventDate,
+  formatEventDuration,
+  formatEventLocation,
+  formatEventTime,
+  getEventTypeLabel,
+  getRegistrationStatusLabel,
+} from '@lib/utils/events';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
+import type { EventItem, Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  lang: Language;
+  event: EventItem;
+}
+
+const { lang, event } = Astro.props;
+
+const eventsPath = getLocalizedPath('/events', lang);
+const eventPath = getLocalizedPath(`/events/${event.slug}`, lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const projectPath = getLocalizedPath('/project', lang);
+const privacyHref = `${contactPath}#privacy-notice`;
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
+
+const title = localize(event.title, lang);
+const summary = localize(event.summary, lang);
+const typeLabel = getEventTypeLabel(event.type, lang);
+const statusLabel = getRegistrationStatusLabel(event.registrationStatus, lang);
+const dateLabel = formatEventDate(event, lang);
+const timeLabel = formatEventTime(event, lang);
+const durationLabel = formatEventDuration(event, lang);
+const locationLabel = formatEventLocation(event, lang);
+const dateTime = eventDateTimeAttribute(event);
+
+// The interest form stays available while a date is being confirmed ("announced"), so
+// people can be notified. It is withdrawn once registration closes or the room is full.
+const acceptsRegistration =
+  event.registrationStatus === 'open' || event.registrationStatus === 'announced';
+const registrationTitle =
+  event.registrationStatus === 'open'
+    ? t(lang, 'events.registration.titleOpen')
+    : t(lang, 'events.registration.titleAnnounced');
+const closedNote =
+  event.registrationStatus === 'full'
+    ? t(lang, 'events.registration.noteFull')
+    : t(lang, 'events.registration.noteClosed');
+
+const practicalRows = [
+  { label: t(lang, 'events.type.label'), value: typeLabel },
+  { label: t(lang, 'events.date.label'), value: dateLabel, dateTime },
+  { label: t(lang, 'events.time.label'), value: timeLabel },
+  ...(durationLabel ? [{ label: t(lang, 'events.duration.label'), value: durationLabel }] : []),
+  ...(locationLabel ? [{ label: t(lang, 'events.location.label'), value: locationLabel }] : []),
+  { label: t(lang, 'events.status.label'), value: statusLabel },
+];
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'events.hero.title'),
+      item: new URL(eventsPath, SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: new URL(eventPath, SITE.url).href,
+    },
+  ],
+};
+
+/*
+ * Event JSON-LD is emitted only once a real start instant exists. Publishing schema.org
+ * Event data without a date would advertise an unscheduled event to search engines.
+ */
+const eventStructuredData = event.startsAt
+  ? {
+      name: title,
+      description: summary,
+      startDate: event.startsAt,
+      eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      url: new URL(eventPath, SITE.url).href,
+      inLanguage: lang,
+      organizer: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+    }
+  : undefined;
+---
+
+<PageLayout lang={lang} title={title} description={summary}>
+  <Seo slot="seo" title={title} description={summary} lang={lang} canonical={eventPath} />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+  {eventStructuredData && <JsonLd slot="head" type="Event" data={eventStructuredData} />}
+
+  <PageHero
+    slot="hero"
+    title={title}
+    description={summary}
+    imageSrc="/media/site/irrigation-gardens.jpg"
+    imageAlt={t(lang, 'events.hero.imageAlt')}
+  />
+
+  <nav aria-label={t(lang, 'events.detail.backLabel')}>
+    <a
+      href={eventsPath}
+      class="inline-flex min-h-11 items-center font-sans text-nav uppercase tracking-label text-link transition-colors duration-fast hover:text-link-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+    >
+      <span class="me-2 rtl:-scale-x-100" aria-hidden="true">←</span>
+      {t(lang, 'events.detail.back')}
+    </a>
+  </nav>
+
+  <div class="mt-10 flex flex-wrap items-center gap-3">
+    <Badge color="cedar">{typeLabel}</Badge>
+    <span class="type-caption text-muted">{statusLabel}</span>
+  </div>
+
+  {
+    event.isPlaceholder && (
+      <Alert type="warning" class="mt-8">
+        {t(lang, 'events.placeholder.notice')}
+      </Alert>
+    )
+  }
+
+  {
+    /*
+    An aligned specification list. The previous two-column grid gave every cell its own bottom
+    rule, so with an odd number of rows the final rule spanned just one column and the hairlines
+    read as broken — most visibly in Arabic. One row per line keeps every rule full width and
+    mirrors cleanly, with the label at the inline start and the value at the inline end.
+  */
+  }
+  <section class="mt-14" aria-labelledby="event-practical-title">
+    <div class="grid gap-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+      <h2 id="event-practical-title" class="type-h3 text-ink">
+        {t(lang, 'events.detail.practicalTitle')}
+      </h2>
+
+      <dl class="border-t border-border">
+        {
+          practicalRows.map((row) => (
+            <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-b border-border py-4">
+              <dt class="type-caption text-muted">{row.label}</dt>
+              <dd class="text-base text-ink">
+                {row.dateTime ? <time datetime={row.dateTime}>{row.value}</time> : row.value}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="mt-14" aria-labelledby="event-summary-title">
+    <SectionTitle id="event-summary-title" title={t(lang, 'events.detail.summaryTitle')} />
+    <Prose class="mt-6">
+      <p>{summary}</p>
+    </Prose>
+  </section>
+
+  <Fragment slot="full-width">
+    <section
+      id="registration"
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="event-registration-title"
+    >
+      {
+        /*
+        The form previously sat alone in a `max-w-2xl` block, leaving the right side of the
+        section empty and reading as an element dropped into the page. It now uses the same
+        1fr/1.5fr editorial split as the rest of the site: framing copy at the inline start,
+        the form itself in the wider column.
+      */
+      }
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+          <div>
+            <SectionTitle
+              id="event-registration-title"
+              eyebrow={t(lang, 'events.registration.eyebrow')}
+              title={registrationTitle}
+            />
+
+            {
+              acceptsRegistration && event.registrationStatus === 'announced' && (
+                <p class="mt-6 max-w-prose text-base leading-7 text-text-body">
+                  {t(lang, 'events.registration.noteAnnounced')}
+                </p>
+              )
+            }
+            {
+              !acceptsRegistration && (
+                <p class="mt-6 max-w-prose text-base leading-7 text-text-body">{closedNote}</p>
+              )
+            }
+          </div>
+
+          <div>
+            {
+              acceptsRegistration ? (
+                event.registrationUrl ? (
+                  <Button variant="primary-dark" href={event.registrationUrl} external>
+                    {t(lang, 'events.registration.externalCta')}
+                  </Button>
+                ) : (
+                  <WebinarRegistrationForm
+                    client:visible
+                    lang={lang}
+                    eventSlug={event.slug}
+                    turnstileSiteKey={turnstileSiteKey}
+                    privacyHref={privacyHref}
+                    copy={getWebinarRegistrationFormCopy(lang)}
+                  />
+                )
+              ) : (
+                <Button variant="outline" href={contactPath}>
+                  {t(lang, 'events.cta.primary')}
+                </Button>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'events.cta.eyebrow')}
+      title={t(lang, 'events.cta.title')}
+      primaryCta={{ label: t(lang, 'events.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'events.cta.secondary'), href: projectPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

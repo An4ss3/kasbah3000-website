@@ -1,8 +1,8 @@
 import seedData from '@content/seed/articles.json';
-import type { Article } from '@types';
+import type { Article, Language } from '@types';
 
-/** Return published articles, newest first. Each record contains both translations. */
-export async function getArticles(lang?: 'fr' | 'en'): Promise<Article[]> {
+/** Return published articles, newest first. Each record contains every translation. */
+export async function getArticles(lang?: Language): Promise<Article[]> {
   // Stage B: replace seedData with supabase.from('articles').select('*').eq('status', 'published').
   void lang;
   const articles = seedData as unknown as Article[];

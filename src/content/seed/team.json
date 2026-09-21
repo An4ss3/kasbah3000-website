@@ -34,23 +34,6 @@
     "isPublished": true
   },
   {
-    "id": "d4000003-3000-4d03-8003-000000000003",
-    "fullName": "Ahmed",
-    "role": {
-      "fr": "Opérations et développement",
-      "en": "Operations and Development"
-    },
-    "bio": {
-      "fr": "Ahmed transforme la feuille de route en opérations concrètes et accompagne le développement progressif du site pilote.",
-      "en": "Ahmed turns the roadmap into practical operations and supports the step-by-step development of the pilot site."
-    },
-    "photoPath": "/placeholder/team/ahmed.jpg",
-    "linkedinUrl": "https://www.linkedin.com/in/placeholder-ahmed",
-    "skills": ["Operations", "Project Development", "Delivery"],
-    "sortOrder": 3,
-    "isPublished": true
-  },
-  {
     "id": "d4000004-3000-4d04-8004-000000000004",
     "fullName": "Fatim Zahra",
     "role": {
@@ -64,7 +47,7 @@
     "photoPath": "/placeholder/team/fatim-zahra.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-fatim-zahra",
     "skills": ["Communications", "Marketing", "Community Engagement"],
-    "sortOrder": 4,
+    "sortOrder": 3,
     "isPublished": true
   },
   {
@@ -81,7 +64,7 @@
     "photoPath": "/placeholder/team/imane.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-imane",
     "skills": ["Finance", "Financial Modelling", "Impact"],
-    "sortOrder": 5,
+    "sortOrder": 4,
     "isPublished": true
   },
   {
@@ -98,7 +81,7 @@
     "photoPath": "/placeholder/team/anasse.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-anasse",
     "skills": ["Web Development", "Artificial Intelligence", "Product Design"],
-    "sortOrder": 6,
+    "sortOrder": 5,
     "isPublished": true
   }
 ]

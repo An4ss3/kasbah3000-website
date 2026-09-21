@@ -3,12 +3,46 @@ import './ProjectMap.css';
 
 import { h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import type { Map as MapLibreMap, Marker as MapLibreMarker, Popup } from 'maplibre-gl';
+import type {
+  Map as MapLibreMap,
+  Marker as MapLibreMarker,
+  Popup,
+  StyleSpecification,
+} from 'maplibre-gl';
 import type { ProjectMapProps } from '../../types/components';
 
 const DEFAULT_CENTER: [number, number] = [-9.6, 30.4];
 const DEFAULT_ZOOM = 12;
 const MAP_LOAD_TIMEOUT = 15_000;
+
+/**
+ * Keyless basemap used when PUBLIC_MAPTILER_KEY is not configured.
+ *
+ * MapTiler's vector styles need a credential, which is supplied per environment. Without
+ * this fallback the island degraded to its "temporarily unavailable" panel on every
+ * machine that has no `.env`, which hid the Agadir site entirely. A plain OpenStreetMap
+ * raster source keeps the same MapLibre instance, GeoJSON markers, popups and a11y
+ * behaviour working, and is transparently replaced by MapTiler once a key is present.
+ */
+const RASTER_FALLBACK_STYLE: StyleSpecification = {
+  version: 8,
+  sources: {
+    osm: {
+      type: 'raster',
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution: '© OpenStreetMap contributors',
+    },
+  },
+  layers: [
+    {
+      id: 'osm-basemap',
+      type: 'raster',
+      source: 'osm',
+    },
+  ],
+};
 
 const interfaceCopy = {
   fr: {
@@ -21,7 +55,32 @@ const interfaceCopy = {
     fallback: 'The interactive map is temporarily unavailable.',
     loading: 'Loading map…',
   },
+  ar: {
+    ariaLabel: 'خريطة تفاعلية لمرافق مشروع كصبة 3000',
+    fallback: 'الخريطة التفاعلية غير متوفرة حالياً.',
+    loading: 'جارٍ تحميل الخريطة…',
+  },
+  de: {
+    ariaLabel: 'Interaktive Karte der Anlagen des Projekts Kasbah3000',
+    fallback: 'Die interaktive Karte ist derzeit nicht verfügbar.',
+    loading: 'Karte wird geladen …',
+  },
 } as const;
+
+/**
+ * Resolve a localized GeoJSON property.
+ *
+ * `features.geojson` currently ships French and English only, so Arabic and German fall
+ * back the same way `localize()` does in the Astro layer. The resolver is duplicated here
+ * on purpose — importing the shared helper would pull every translation table into the
+ * client bundle for this island.
+ */
+function pickLocalized(
+  value: { fr: string; en: string; ar?: string; de?: string },
+  lang: ProjectMapProps['lang']
+): string {
+  return value[lang] ?? value.en ?? value.fr;
+}
 
 type PrincipleType = 'architecture' | 'energy' | 'water' | 'food' | 'community' | 'mobility';
 
@@ -34,9 +93,9 @@ interface ProjectFeature {
     coordinates: [number, number];
   };
   properties: {
-    name: { fr: string; en: string };
+    name: { fr: string; en: string; ar?: string; de?: string };
     type: PrincipleType;
-    description: { fr: string; en: string };
+    description: { fr: string; en: string; ar?: string; de?: string };
   };
 }
 
@@ -85,11 +144,11 @@ function createPopupContent(feature: ProjectFeature, lang: ProjectMapProps['lang
 
   const title = document.createElement('h3');
   title.className = 'project-map__popup-title';
-  title.textContent = feature.properties.name[lang];
+  title.textContent = pickLocalized(feature.properties.name, lang);
 
   const description = document.createElement('p');
   description.className = 'project-map__popup-description';
-  description.textContent = feature.properties.description[lang];
+  description.textContent = pickLocalized(feature.properties.description, lang);
 
   content.append(title, description);
   return content;
@@ -131,10 +190,9 @@ export default function ProjectMap({
 
     const initializeMap = async () => {
       const mapTilerKey = import.meta.env.PUBLIC_MAPTILER_KEY?.trim();
-      if (!mapTilerKey) {
-        showFallback();
-        return;
-      }
+      const style: StyleSpecification | string = mapTilerKey
+        ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${encodeURIComponent(mapTilerKey)}`
+        : RASTER_FALLBACK_STYLE;
 
       try {
         const maplibregl = await import('maplibre-gl');
@@ -150,7 +208,7 @@ export default function ProjectMap({
 
         map = new maplibregl.Map({
           container,
-          style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${encodeURIComponent(mapTilerKey)}`,
+          style,
           center,
           zoom,
           interactive: !reducedMotion,
@@ -189,7 +247,7 @@ export default function ProjectMap({
               const markerButton = document.createElement('button');
               markerButton.type = 'button';
               markerButton.className = `project-map__marker project-map__marker--${feature.properties.type}`;
-              markerButton.setAttribute('aria-label', feature.properties.name[lang]);
+              markerButton.setAttribute('aria-label', pickLocalized(feature.properties.name, lang));
 
               const marker = new maplibregl.Marker({ element: markerButton, anchor: 'center' })
                 .setLngLat(feature.geometry.coordinates)

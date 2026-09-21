@@ -1,0 +1,174 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Badge from '@components/ui/Badge.astro';
+import Button from '@components/ui/Button.astro';
+import { SITE } from '@constants';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const fundingPath = getLocalizedPath('/funding', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const projectPath = getLocalizedPath('/project', lang);
+
+const tracks = [
+  {
+    title: t(lang, 'funding.tracks.item1.title'),
+    body: t(lang, 'funding.tracks.item1.body'),
+  },
+  {
+    title: t(lang, 'funding.tracks.item2.title'),
+    body: t(lang, 'funding.tracks.item2.body'),
+  },
+  {
+    title: t(lang, 'funding.tracks.item3.title'),
+    body: t(lang, 'funding.tracks.item3.body'),
+  },
+  {
+    title: t(lang, 'funding.tracks.item4.title'),
+    body: t(lang, 'funding.tracks.item4.body'),
+  },
+];
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'funding.hero.title'),
+      item: new URL(fundingPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'funding.hero.title')}
+  description={t(lang, 'funding.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'funding.hero.title')}
+    description={t(lang, 'funding.hero.description')}
+    lang={lang}
+    canonical={fundingPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'funding.hero.title')}
+    description={t(lang, 'funding.hero.description')}
+    imageSrc="/media/site/village-aerial-overview.jpg"
+    imageAlt={t(lang, 'funding.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="funding-intro-title">
+    <div class="grid items-start gap-8 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-20">
+      <SectionTitle
+        id="funding-intro-title"
+        eyebrow={t(lang, 'funding.intro.eyebrow')}
+        title={t(lang, 'funding.intro.title')}
+      />
+      <div>
+        <Prose>
+          <p>{t(lang, 'funding.intro.body')}</p>
+        </Prose>
+        <Button variant="primary-dark" href={contactPath} class="mt-8">
+          {t(lang, 'funding.cta.primary')}
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="funding-tracks-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <div class="grid gap-8 lg:grid-cols-[1fr_1.25fr] lg:gap-20">
+          <SectionTitle
+            id="funding-tracks-title"
+            eyebrow={t(lang, 'funding.tracks.eyebrow')}
+            title={t(lang, 'funding.tracks.title')}
+          />
+          <p class="max-w-prose text-base leading-8 text-text-body">
+            {t(lang, 'funding.intro.body')}
+          </p>
+        </div>
+
+        <ol class="mt-12 border-y border-border lg:mt-16">
+          {
+            tracks.map((track, index) => (
+              <li class="grid gap-4 border-b border-border py-8 last:border-b-0 md:grid-cols-[5rem_0.8fr_1.2fr] md:items-start md:gap-8 lg:py-10">
+                <span class="type-caption text-text-body" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 class="type-h4 text-balance text-ink">{track.title}</h3>
+                <p class="max-w-prose text-sm leading-7 text-text-body">{track.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section
+      class="grid border-t border-border bg-background lg:grid-cols-2"
+      aria-labelledby="funding-status-title"
+    >
+      <div class="min-h-[360px] overflow-hidden lg:min-h-[620px]">
+        <img
+          src="/media/principles/education.webp"
+          alt=""
+          width="1600"
+          height="900"
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
+      </div>
+      <div class="flex items-center px-5 py-14 md:px-12 md:py-20 lg:px-20 lg:py-24">
+        <div class="max-w-prose">
+          <p class="type-eyebrow text-text-body">{t(lang, 'funding.status.eyebrow')}</p>
+          <h2 id="funding-status-title" class="type-h2 mt-5 text-balance text-ink">
+            {t(lang, 'funding.status.title')}
+          </h2>
+          <Badge color="sun" class="mt-6">{t(lang, 'funding.status.badge')}</Badge>
+          <p class="mt-6 text-base leading-8 text-text-body">{t(lang, 'funding.status.body')}</p>
+          <Button variant="outline" href={contactPath} class="mt-8">
+            {t(lang, 'funding.cta.primary')}
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'funding.cta.eyebrow')}
+      title={t(lang, 'funding.cta.title')}
+      primaryCta={{ label: t(lang, 'funding.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'funding.cta.secondary'), href: projectPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

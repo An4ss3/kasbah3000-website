@@ -8,7 +8,7 @@
     },
     "album": "territoire",
     "storage": "supabase",
-    "path": "/placeholder/gallery/site-landscape.jpg",
+    "path": "/media/site/oasis-village-sunset.jpg",
     "sortOrder": 1,
     "isPublished": true,
     "createdAt": "2026-03-14T07:20:00.000Z"
@@ -22,7 +22,7 @@
     },
     "album": "conception",
     "storage": "supabase",
-    "path": "/placeholder/gallery/village-centre-render.jpg",
+    "path": "/media/site/earthen-home-entrance.jpg",
     "sortOrder": 2,
     "isPublished": true,
     "createdAt": "2026-04-22T13:00:00.000Z"
@@ -36,8 +36,8 @@
     },
     "album": "territoire",
     "storage": "supabase",
-    "path": "/placeholder/gallery/study-area-drone.mp4",
-    "posterPath": "/placeholder/gallery/study-area-drone-poster.jpg",
+    "path": "/media/video/kasbah3000-site-flyover.mp4",
+    "posterPath": "/media/site/oasis-village-sunset.jpg",
     "sortOrder": 3,
     "isPublished": true,
     "createdAt": "2026-05-09T15:45:00.000Z"
@@ -51,7 +51,7 @@
     },
     "album": "conception",
     "storage": "supabase",
-    "path": "/placeholder/gallery/concept-master-plan.jpg",
+    "path": "/media/site/village-aerial-overview.jpg",
     "sortOrder": 4,
     "isPublished": true,
     "createdAt": "2026-06-03T10:30:00.000Z"

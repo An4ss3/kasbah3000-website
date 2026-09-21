@@ -1,4 +1,5 @@
 ---
+import { localize } from '@lib/utils/i18n';
 import { isVideoAsset, resolveMediaUrl, resolvePosterUrl } from '@lib/utils/media';
 import type { Language, MediaAsset } from '@types';
 
@@ -16,7 +17,7 @@ const { assets, lang, openLabel, videoLabel, class: className } = Astro.props;
 <ul class:list={['grid gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-12', className]}>
   {
     assets.map((asset, index) => {
-      const title = asset.title[lang];
+      const title = localize(asset.title, lang);
       const isVideo = isVideoAsset(asset);
       const imageSrc = isVideo ? resolvePosterUrl(asset) : resolveMediaUrl(asset);
 

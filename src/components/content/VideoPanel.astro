@@ -1,0 +1,66 @@
+---
+/**
+ * Video panel for a YouTube film.
+ *
+ * Two states, one layout: when `youtubeId` is set the panel holds a real 16:9
+ * youtube-nocookie embed; when it is empty the same frame shows the project still with a short
+ * caption, so the section reads as a deliberate part of the page rather than a broken embed.
+ * The aspect ratio is reserved in both states, so swapping one for the other shifts nothing.
+ */
+interface Props {
+  youtubeId?: string;
+  posterSrc: string;
+  posterAlt: string;
+  /** Accessible name for the iframe, required by WCAG for embedded frames. */
+  iframeTitle: string;
+  /** Shown in place of the player while no film is published. */
+  pendingLabel: string;
+  class?: string;
+}
+
+const {
+  youtubeId,
+  posterSrc,
+  posterAlt,
+  iframeTitle,
+  pendingLabel,
+  class: className,
+} = Astro.props;
+
+const id = youtubeId?.trim();
+const embedSrc = id
+  ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1`
+  : undefined;
+---
+
+<div class:list={['relative aspect-video w-full overflow-hidden bg-background-dark', className]}>
+  {
+    embedSrc ? (
+      <iframe
+        src={embedSrc}
+        title={iframeTitle}
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        class="absolute inset-0 h-full w-full border-0"
+      />
+    ) : (
+      <>
+        <img
+          src={posterSrc}
+          alt={posterAlt}
+          width="2048"
+          height="1152"
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+        <div class="absolute inset-0 bg-background-dark/55" />
+        <p class="type-eyebrow absolute bottom-0 start-0 p-6 text-accent-on-dark md:p-8">
+          {pendingLabel}
+        </p>
+      </>
+    )
+  }
+</div>

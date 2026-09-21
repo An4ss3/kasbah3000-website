@@ -1,0 +1,9 @@
+---
+import FundingPage from '@components/pages/FundingPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<FundingPage lang={lang} />

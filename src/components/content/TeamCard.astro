@@ -1,6 +1,7 @@
 ---
 import '@styles/typography.css';
 import MediaFigure from '@components/content/MediaFigure.astro';
+import { localize } from '@lib/utils/i18n';
 import type { Language, TeamMember } from '@types';
 
 interface Props {
@@ -13,8 +14,8 @@ interface Props {
 }
 
 const { member, lang, bioLabel, linkedinLabel, skillsLabel, class: className } = Astro.props;
-const role = member.role[lang];
-const bio = member.bio[lang];
+const role = localize(member.role, lang);
+const bio = localize(member.bio, lang);
 ---
 
 <li class:list={['border-t border-border pt-6', className]}>

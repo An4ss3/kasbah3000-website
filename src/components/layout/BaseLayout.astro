@@ -2,6 +2,7 @@
 import Seo from '@components/seo/Seo.astro';
 import { SITE } from '@constants';
 import '@styles/global.css';
+import { getDirection } from '@lib/utils/i18n';
 import type { BaseLayoutProps } from '@types';
 import Footer from './Footer.astro';
 import Header from './Header.astro';
@@ -12,10 +13,11 @@ interface Props extends BaseLayoutProps {}
 const { lang, title, description = SITE.description } = Astro.props;
 const currentPath = Astro.url.pathname;
 const hasCustomSeo = Astro.slots.has('seo');
+const dir = getDirection(lang);
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} dir={dir}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />

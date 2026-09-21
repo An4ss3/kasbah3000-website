@@ -5,6 +5,7 @@ import type { Language } from '@types';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import MobileNav from './MobileNav.astro';
 import Nav from './Nav.astro';
+import NavCta from './NavCta.astro';
 
 interface Props {
   lang: Language;
@@ -12,51 +13,78 @@ interface Props {
 }
 
 const { lang, currentPath } = Astro.props;
-const midpoint = Math.ceil(PRIMARY_NAV.length / 2);
-const leftNavigation = PRIMARY_NAV.slice(0, midpoint);
-const rightNavigation = PRIMARY_NAV.slice(midpoint);
 ---
 
-<header class="sticky top-0 z-nav h-16 border-b border-border bg-background/94 md:h-18 lg:h-[84px]">
-  <div
-    class="mx-auto grid h-full max-w-wide grid-cols-[1fr_auto] items-center px-5 md:px-8 lg:grid-cols-[1fr_auto_1fr] lg:px-12"
-  >
+{
+  /*
+  Two-tier masthead.
+
+  The previous single row split PRIMARY_NAV around a centred logo. With eight items plus the
+  CTA and the language switcher that row had no slack: the logo was wedged between two nav
+  groups, German "Über uns" wrapped onto a second line and collided with it, and Arabic left a
+  wide gap between the logo and the right-hand group. Splitting identity/utility (row one)
+  from primary navigation (row two) gives the logo deliberate clear space, lets the nav use the
+  full container width, and separates the CTA from the primary links. Both rows are
+  direction-agnostic: `justify-between` and logical spacing mirror for Arabic automatically.
+*/
+}
+<header class="sticky top-0 z-nav border-b border-border bg-background/94">
+  <div class="mx-auto max-w-wide px-5 md:px-8 lg:px-12">
+    {/* Compact viewports keep the single row: logo, language switcher, drawer trigger. */}
+    <div class="flex h-16 items-center justify-between gap-4 md:h-18 lg:hidden">
+      <a
+        href={getLocalizedPath('/', lang)}
+        class="inline-flex min-h-11 min-w-11 items-center"
+        aria-label={`${t(lang, 'navigation.home')} — Kasbah3000`}
+      >
+        <img
+          src="/brand/logo.png"
+          width="907"
+          height="768"
+          alt="Kasbah3000"
+          class="h-11 w-auto object-contain md:h-12"
+        />
+      </a>
+
+      <div class="flex items-center gap-4">
+        <LanguageSwitcher lang={lang} currentPath={currentPath} compact />
+        <MobileNav lang={lang} currentPath={currentPath} />
+      </div>
+    </div>
+
     <div class="hidden lg:block">
-      <Nav
-        lang={lang}
-        currentPath={currentPath}
-        items={leftNavigation}
-        ariaLabel={t(lang, 'navigation.primaryLabel')}
-      />
-    </div>
+      {/* Row one — identity and utilities. */}
+      <div class="flex h-16 items-center justify-between gap-12">
+        <a
+          href={getLocalizedPath('/', lang)}
+          class="inline-flex min-h-11 items-center"
+          aria-label={`${t(lang, 'navigation.home')} — Kasbah3000`}
+        >
+          <img
+            src="/brand/logo.png"
+            width="907"
+            height="768"
+            alt="Kasbah3000"
+            class="h-12 w-auto object-contain"
+          />
+        </a>
 
-    <a
-      href={getLocalizedPath('/', lang)}
-      class="inline-flex h-full min-w-11 items-center justify-self-start py-2 lg:justify-self-center"
-      aria-label={`${t(lang, 'navigation.home')} — Kasbah3000`}
-    >
-      <img
-        src="/brand/logo.jpeg"
-        width="907"
-        height="768"
-        alt="Kasbah3000"
-        class="h-12 w-auto object-contain md:h-14 lg:h-16"
-      />
-    </a>
+        <div class="flex items-center gap-6">
+          <NavCta lang={lang} currentPath={currentPath} />
+          <span class="h-5 w-px bg-border" aria-hidden="true"></span>
+          <LanguageSwitcher lang={lang} currentPath={currentPath} compact />
+        </div>
+      </div>
 
-    <div class="hidden items-center justify-end gap-6 lg:flex">
-      <Nav
-        lang={lang}
-        currentPath={currentPath}
-        items={rightNavigation}
-        ariaLabel={t(lang, 'navigation.primaryLabel')}
-      />
-      <LanguageSwitcher lang={lang} currentPath={currentPath} compact />
-    </div>
-
-    <div class="flex items-center justify-end gap-4 lg:hidden">
-      <LanguageSwitcher lang={lang} currentPath={currentPath} compact />
-      <MobileNav lang={lang} currentPath={currentPath} />
+      {/* Row two — primary navigation with the full container width to breathe. */}
+      <div class="flex h-12 items-center border-t border-border">
+        <Nav
+          lang={lang}
+          currentPath={currentPath}
+          items={PRIMARY_NAV}
+          ariaLabel={t(lang, 'navigation.primaryLabel')}
+        />
+      </div>
     </div>
   </div>
 </header>

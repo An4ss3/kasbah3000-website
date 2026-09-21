@@ -4,7 +4,15 @@ import eslintPluginAstro from 'eslint-plugin-astro';
 
 export default [
   {
-    ignores: ['.astro/**', 'dist/**', 'node_modules/**', 'worker-configuration.d.ts'],
+    // `.wrangler/**` holds deploy-time scratch bundles (`.wrangler/tmp/deploy-*/entry.mjs`) that
+    // wrangler leaves behind; they are generated output, not sources, and must not fail the lint.
+    ignores: [
+      '.astro/**',
+      '.wrangler/**',
+      'dist/**',
+      'node_modules/**',
+      'worker-configuration.d.ts',
+    ],
   },
   ...eslintPluginAstro.configs.recommended,
   {

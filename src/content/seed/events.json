@@ -1,0 +1,33 @@
+[
+  {
+    "id": "evt-webinar-template",
+    "slug": "kasbah3000-introductory-webinar",
+    "type": "webinar",
+    "title": {
+      "fr": "Webinaire de présentation Kasbah3000",
+      "en": "Kasbah3000 introductory webinar",
+      "ar": "ندوة تعريفية عبر الإنترنت حول كصبة 3000",
+      "de": "Einführungs-Webinar zu Kasbah3000"
+    },
+    "summary": {
+      "fr": "Une présentation en ligne du projet : la démarche, les douze principes et l'avancement des études. La date, l'horaire et le lien de connexion seront publiés dès qu'ils seront confirmés.",
+      "en": "An online introduction to the project: the approach, the twelve principles and the progress of the studies. The date, time and joining link will be published once confirmed.",
+      "ar": "تقديم إلكتروني للمشروع: المنهج، والمبادئ الاثنا عشر، وتقدم الدراسات. سيُنشر التاريخ والوقت ورابط الانضمام بمجرد تأكيدها.",
+      "de": "Eine Online-Einführung in das Projekt: der Ansatz, die zwölf Prinzipien und der Stand der Studien. Datum, Uhrzeit und Zugangslink werden veröffentlicht, sobald sie bestätigt sind."
+    },
+    "startsAt": null,
+    "durationMinutes": null,
+    "timezone": null,
+    "location": {
+      "fr": "En ligne",
+      "en": "Online",
+      "ar": "عبر الإنترنت",
+      "de": "Online"
+    },
+    "registrationStatus": "announced",
+    "registrationUrl": "",
+    "isPlaceholder": true,
+    "isPublished": true,
+    "sortOrder": 1
+  }
+]

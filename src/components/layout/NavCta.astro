@@ -1,0 +1,48 @@
+---
+import { NAV_CTA } from '@constants';
+import { getLocalizedPath, isPathActive, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+import type { TranslationKey } from '@lib/utils/i18n';
+
+interface Props {
+  lang: Language;
+  currentPath: string;
+  /** `compact` suits the header bar; `block` fills the mobile drawer width. */
+  variant?: 'compact' | 'block';
+  class?: string;
+}
+
+const { lang, currentPath, variant = 'compact', class: className } = Astro.props;
+
+const href = getLocalizedPath(NAV_CTA.href, lang);
+const isActive = isPathActive(currentPath, NAV_CTA.href, lang);
+const label = t(lang, NAV_CTA.labelKey as TranslationKey);
+const ariaLabel = t(lang, NAV_CTA.ariaLabelKey as TranslationKey);
+---
+
+{
+  /*
+  This is a call to action, not a navigation entry — it is deliberately kept out of
+  `PRIMARY_NAV` and out of the navigation row.
+
+  Desktop: clay hairline border, clay text and a trailing arrow, inverting on hover. Mobile: a
+  filled clay block at the foot of the drawer so it reads as the primary action beside the serif
+  navigation list. Square corners, flat colour, no gradient or shadow, per the frozen rules.
+*/
+}
+<a
+  href={href}
+  aria-label={ariaLabel}
+  aria-current={isActive ? 'page' : undefined}
+  class:list={[
+    'group inline-flex min-h-11 items-center justify-center gap-2.5 border font-sans text-nav uppercase tracking-label transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600',
+    variant === 'compact'
+      ? 'whitespace-nowrap border-clay-600 px-4 py-2 text-clay-600 hover:bg-clay-600 hover:text-ink-inverse'
+      : 'w-full border-clay-600 bg-clay-600 px-5 py-3.5 text-ink-inverse hover:bg-clay-700 hover:border-clay-700',
+    variant === 'compact' && isActive && 'bg-clay-600 text-ink-inverse',
+    className,
+  ]}
+>
+  {label}
+  <span class="text-[0.9em] leading-none rtl:-scale-x-100" aria-hidden="true">→</span>
+</a>

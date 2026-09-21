@@ -3,11 +3,23 @@
  * Shared TypeScript interfaces used across the application
  */
 
-export type Language = 'fr' | 'en'; // ar, es, zgh in Phase 7
+export type Language = 'fr' | 'en' | 'ar' | 'de';
 
+/** Writing direction. Arabic renders right-to-left; every other locale is left-to-right. */
+export type Direction = 'ltr' | 'rtl';
+
+/**
+ * A translated string.
+ *
+ * `fr` and `en` are authored for every record and act as the fallback chain. `ar` and `de`
+ * are optional so that seed/GeoJSON content can be localised incrementally — resolve values
+ * through `localize()` rather than indexing directly.
+ */
 export interface LocalizedString {
   fr: string;
   en: string;
+  ar?: string;
+  de?: string;
 }
 
 export interface SEOMetadata {

@@ -7,7 +7,7 @@ import { consumeRateLimit } from '@lib/utils/rate-limit';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   const body = await readJsonRequest(request);
   if (!body.ok) return jsonFormResponse(body.status, body.code);
 
@@ -16,7 +16,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   if (parsed.data.website.trim()) return jsonFormResponse(200, 'NEWSLETTER_PENDING', true);
 
-  const environment = getFormEnvironment(locals);
+  const environment = getFormEnvironment();
   let expectedHostname: string;
   try {
     const siteUrl = environment.PUBLIC_SITE_URL?.trim();

@@ -1,4 +1,6 @@
 ---
+import { resolvePrincipleMedia } from '@lib/content/principles';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
 import '@styles/typography.css';
 
@@ -6,6 +8,8 @@ interface Principle {
   slug: string;
   title: string;
   icon?: string;
+  image?: string;
+  imageAlt?: string;
   excerpt: string;
   order: number;
 }
@@ -13,31 +17,46 @@ interface Principle {
 interface Props {
   principle: Principle;
   lang: Language;
+  headingLevel?: 'h2' | 'h3' | 'h4';
 }
 
-const { principle, lang } = Astro.props;
-const localePrefix = lang === 'fr' ? '' : `/${lang}`;
-const href = `${localePrefix}/principles/${principle.slug}`;
+const { principle, lang, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const href = getLocalizedPath(`/principles/${principle.slug}`, lang);
 const order = String(principle.order).padStart(2, '0');
+const media = resolvePrincipleMedia(principle);
 ---
 
 <a
   href={href}
-  class="group block border-t border-border pt-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+  class="group flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+  aria-label={principle.title}
 >
-  <div class="flex items-center justify-between gap-5">
-    <span class="type-caption text-muted" aria-hidden="true">{order}</span>
-    <span
-      class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-[1.5px] border-border-strong px-1 text-center font-sans text-[0.5rem] leading-none text-muted"
-      aria-hidden="true"
+  <div class="overflow-hidden bg-background-alt">
+    <img
+      src={media.src}
+      alt=""
+      width="1600"
+      height="900"
+      loading="lazy"
+      decoding="async"
+      class="aspect-[4/3] w-full object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.03]"
+    />
+  </div>
+
+  <div class="flex flex-1 flex-col border-b border-border py-6">
+    <span class="type-caption text-text-body" aria-hidden="true">{order}</span>
+    <Heading
+      class="type-h4 mt-4 text-balance text-ink transition-colors duration-[200ms] ease-out group-hover:text-clay-600"
     >
-      {principle.icon}
+      {principle.title}
+    </Heading>
+    <p class="mt-3 text-sm leading-7 text-text-body">{principle.excerpt}</p>
+    <span
+      class="mt-auto inline-flex min-h-11 items-center pt-6 font-sans text-nav uppercase tracking-label text-link"
+    >
+      {t(lang, 'principles.card.explore')}
+      <span class="ms-2 rtl:-scale-x-100" aria-hidden="true">→</span>
     </span>
   </div>
-  <h3
-    class="type-h4 mt-8 text-ink transition-colors duration-[400ms] ease-out group-hover:text-clay-600"
-  >
-    {principle.title}
-  </h3>
-  <p class="mt-4 text-sm leading-6 text-text-body">{principle.excerpt}</p>
 </a>

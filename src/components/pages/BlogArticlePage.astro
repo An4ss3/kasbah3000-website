@@ -6,9 +6,9 @@ import PageLayout from '@components/layout/PageLayout.astro';
 import JsonLd from '@components/seo/JsonLd.astro';
 import Seo from '@components/seo/Seo.astro';
 import Badge from '@components/ui/Badge.astro';
-import { SITE } from '@constants';
+import { LOCALE_CODES, SITE } from '@constants';
 import { getArticleCategoryLabel } from '@lib/utils/blog-categories';
-import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
 import { renderArticleBody } from '@lib/utils/markdown';
 import type { Article, Language } from '@types';
 
@@ -20,11 +20,11 @@ interface Props {
 }
 
 const { lang, article, previous, next } = Astro.props;
-const title = article.title[lang];
-const excerpt = article.excerpt[lang];
-const bodyHtml = renderArticleBody(article.body[lang]);
+const title = localize(article.title, lang);
+const excerpt = localize(article.excerpt, lang);
+const bodyHtml = renderArticleBody(localize(article.body, lang));
 const date = new Date(article.publishedAt ?? article.createdAt);
-const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+const formattedDate = new Intl.DateTimeFormat(LOCALE_CODES[lang].replace('_', '-'), {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
@@ -131,7 +131,7 @@ const breadcrumbData = {
             >
               <span class="type-eyebrow text-muted">{t(lang, 'blog.detail.previous')}</span>
               <span class="mt-2 block font-serif text-xl text-ink transition-colors duration-fast group-hover:text-clay-600">
-                {previous.title[lang]}
+                {localize(previous.title, lang)}
               </span>
             </a>
           )
@@ -146,7 +146,7 @@ const breadcrumbData = {
             >
               <span class="type-eyebrow text-muted">{t(lang, 'blog.detail.next')}</span>
               <span class="mt-2 block font-serif text-xl text-ink transition-colors duration-fast group-hover:text-clay-600">
-                {next.title[lang]}
+                {localize(next.title, lang)}
               </span>
             </a>
           )

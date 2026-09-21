@@ -10,9 +10,10 @@ interface Figure {
 interface Props {
   figures: Figure[];
   class?: string;
+  onDark?: boolean;
 }
 
-const { figures, class: className } = Astro.props;
+const { figures, class: className, onDark = false } = Astro.props;
 ---
 
 <dl class:list={['grid grid-cols-2 lg:flex', className]}>
@@ -20,16 +21,33 @@ const { figures, class: className } = Astro.props;
     figures.map((figure, index) => (
       <div
         class:list={[
-          'flex min-w-0 flex-col border-t border-border py-7 lg:flex-1 lg:border-t-0 lg:py-0',
+          'flex min-w-0 flex-col border-t py-7 lg:flex-1 lg:border-t-0 lg:py-0',
+          onDark ? 'border-border-dark' : 'border-border',
           index % 2 === 1 && 'border-s ps-5 md:ps-8',
           index > 0 && 'lg:border-s lg:ps-8',
           index === 0 && 'lg:border-s-0 lg:ps-0',
         ]}
       >
-        <dt class="type-caption order-2 mt-2 max-w-[12rem] uppercase text-muted">{figure.label}</dt>
-        <dd class="order-1 font-serif text-5xl font-medium leading-none text-ink [font-variant-numeric:lining-nums] md:text-6xl lg:text-7xl">
+        <dt
+          class:list={[
+            'type-caption order-2 mt-2 max-w-[12rem] uppercase',
+            onDark ? 'text-text-body-dark' : 'text-text-body',
+          ]}
+        >
+          {figure.label}
+        </dt>
+        <dd
+          class:list={[
+            'order-1 font-serif text-5xl font-medium leading-none [font-variant-numeric:lining-nums] md:text-6xl lg:text-7xl',
+            onDark ? 'text-ink-inverse' : 'text-ink',
+          ]}
+        >
           {figure.value}
-          {figure.suffix && <span class="text-[0.55em] text-clay-600">{figure.suffix}</span>}
+          {figure.suffix && (
+            <span class:list={['text-[0.55em]', onDark ? 'text-accent-on-dark' : 'text-clay-600']}>
+              {figure.suffix}
+            </span>
+          )}
         </dd>
       </div>
     ))

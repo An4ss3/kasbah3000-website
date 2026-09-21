@@ -1,8 +1,9 @@
 ---
 import NewsletterForm from '@components/islands/NewsletterForm';
+import SocialIcon, { type SocialNetwork } from '@components/ui/SocialIcon.astro';
 import { FOOTER_NAV, SITE, SOCIAL_LINKS } from '@constants';
 import { getNewsletterFormCopy } from '@lib/forms/copy';
-import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
 
 interface Props {
@@ -13,11 +14,11 @@ const { lang } = Astro.props;
 const year = new Date().getFullYear();
 const privacyHref = `${getLocalizedPath('/contact', lang)}#privacy-notice`;
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
-const socialLinks = [
-  { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin },
-  { label: 'YouTube', href: SOCIAL_LINKS.youtube },
-  { label: 'Instagram', href: SOCIAL_LINKS.instagram },
-] as const;
+const socialLinks: readonly { label: string; href: string; network: SocialNetwork }[] = [
+  { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin, network: 'linkedin' },
+  { label: 'YouTube', href: SOCIAL_LINKS.youtube, network: 'youtube' },
+  { label: 'Instagram', href: SOCIAL_LINKS.instagram, network: 'instagram' },
+];
 ---
 
 <footer
@@ -51,7 +52,7 @@ const socialLinks = [
                   href={getLocalizedPath(item.href, lang)}
                   class="inline-flex min-h-11 items-center text-sm text-text-body-dark transition-colors duration-fast hover:text-ink-inverse"
                 >
-                  {item.label[lang]}
+                  {localize(item.label, lang)}
                 </a>
               </li>
             ))
@@ -71,7 +72,7 @@ const socialLinks = [
                   href={getLocalizedPath(item.href, lang)}
                   class="inline-flex min-h-11 items-center text-sm text-text-body-dark transition-colors duration-fast hover:text-ink-inverse"
                 >
-                  {item.label[lang]}
+                  {localize(item.label, lang)}
                 </a>
               </li>
             ))
@@ -116,7 +117,7 @@ const socialLinks = [
                     href={getLocalizedPath(item.href, lang)}
                     class="inline-flex min-h-11 items-center transition-colors duration-fast hover:text-ink-inverse"
                   >
-                    {item.label[lang]}
+                    {localize(item.label, lang)}
                   </a>
                 </li>
               ))
@@ -125,7 +126,7 @@ const socialLinks = [
         </nav>
 
         <nav aria-label={t(lang, 'footer.follow')}>
-          <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <ul class="flex flex-wrap items-center gap-x-4 gap-y-2">
             {
               socialLinks.map((item) => (
                 <li>
@@ -133,9 +134,11 @@ const socialLinks = [
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    class="inline-flex min-h-11 items-center transition-colors duration-fast hover:text-ink-inverse"
+                    aria-label={item.label}
+                    title={item.label}
+                    class="inline-flex min-h-11 min-w-11 items-center justify-center transition-colors duration-fast hover:text-ink-inverse"
                   >
-                    {item.label}
+                    <SocialIcon network={item.network} />
                   </a>
                 </li>
               ))

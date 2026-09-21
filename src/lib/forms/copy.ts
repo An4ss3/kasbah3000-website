@@ -10,6 +10,7 @@ export interface SharedFormCopy {
   submitting: string;
   genericError: string;
   rateLimited: string;
+  serviceUnavailable: string;
   turnstileUnavailable: string;
   turnstileRequired: string;
   validation: {
@@ -49,6 +50,20 @@ export interface NewsletterFormCopy extends SharedFormCopy {
   success: string;
 }
 
+export interface WebinarRegistrationFormCopy extends SharedFormCopy {
+  formLabel: string;
+  nameLabel: string;
+  emailLabel: string;
+  organizationLabel: string;
+  questionsLabel: string;
+  consentPrefix: string;
+  consentLink: string;
+  consentSuffix: string;
+  submit: string;
+  success: string;
+  questionsError: string;
+}
+
 function getSharedFormCopy(lang: Language): SharedFormCopy {
   return {
     required: t(lang, 'forms.required'),
@@ -58,6 +73,7 @@ function getSharedFormCopy(lang: Language): SharedFormCopy {
     submitting: t(lang, 'forms.status.submitting'),
     genericError: t(lang, 'forms.status.error'),
     rateLimited: t(lang, 'forms.status.rateLimited'),
+    serviceUnavailable: t(lang, 'forms.status.serviceUnavailable'),
     turnstileUnavailable: t(lang, 'forms.status.turnstileUnavailable'),
     turnstileRequired: t(lang, 'forms.status.turnstileRequired'),
     validation: {
@@ -107,5 +123,22 @@ export function getNewsletterFormCopy(lang: Language): NewsletterFormCopy {
     consentSuffix: t(lang, 'newsletter.form.consentSuffix'),
     submit: t(lang, 'newsletter.form.submit'),
     success: t(lang, 'newsletter.form.success'),
+  };
+}
+
+export function getWebinarRegistrationFormCopy(lang: Language): WebinarRegistrationFormCopy {
+  return {
+    ...getSharedFormCopy(lang),
+    formLabel: t(lang, 'registration.form.label'),
+    nameLabel: t(lang, 'registration.form.name'),
+    emailLabel: t(lang, 'registration.form.email'),
+    organizationLabel: t(lang, 'registration.form.organization'),
+    questionsLabel: t(lang, 'registration.form.questions'),
+    consentPrefix: t(lang, 'registration.form.consentPrefix'),
+    consentLink: t(lang, 'registration.form.consentLink'),
+    consentSuffix: t(lang, 'registration.form.consentSuffix'),
+    submit: t(lang, 'registration.form.submit'),
+    success: t(lang, 'registration.form.success'),
+    questionsError: t(lang, 'registration.validation.questions'),
   };
 }

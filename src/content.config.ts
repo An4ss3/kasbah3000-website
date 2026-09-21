@@ -14,7 +14,7 @@ const pagesCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    lang: z.enum(['fr', 'en']),
+    lang: z.enum(['fr', 'en', 'ar', 'de']),
   }),
 });
 
@@ -28,7 +28,7 @@ const projectCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    lang: z.enum(['fr', 'en']),
+    lang: z.enum(['fr', 'en', 'ar', 'de']),
   }),
 });
 
@@ -42,10 +42,18 @@ const principlesCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
+    /** Lucide icon name from the frozen design system icon set (§8 of the design handoff). */
     icon: z.string().optional(),
+    /**
+     * Supporting photograph for the card and detail page. Optional on purpose: the design
+     * handoff lists "principle illustrations ×6" as an asset still to be produced (§21), so
+     * entries without a real photograph render without one rather than showing a substitute.
+     */
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
     excerpt: z.string(),
     order: z.number(),
-    lang: z.enum(['fr', 'en']),
+    lang: z.enum(['fr', 'en', 'ar', 'de']),
   }),
 });
 
@@ -59,7 +67,7 @@ const aboutCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    lang: z.enum(['fr', 'en']),
+    lang: z.enum(['fr', 'en', 'ar', 'de']),
   }),
 });
 
@@ -74,7 +82,7 @@ const legalCollection = defineCollection({
     title: z.string(),
     slug: z.string(),
     lastUpdated: z.date(),
-    lang: z.enum(['fr', 'en']),
+    lang: z.enum(['fr', 'en', 'ar', 'de']),
   }),
 });
 

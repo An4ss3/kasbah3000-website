@@ -79,3 +79,44 @@ export interface Principle {
   content: string; // Markdown content
   order: number;
 }
+
+export type EventType = 'webinar' | 'workshop' | 'visit' | 'conference';
+
+/**
+ * Registration state for an event.
+ *
+ * `announced` means the event exists but joining details are not published yet — the
+ * interest form is still shown so people can be notified. Nothing here implies a
+ * confirmed date; use `startsAt === null` for "date to be announced".
+ */
+export type RegistrationStatus = 'announced' | 'open' | 'closed' | 'full';
+
+// Events and webinars
+export interface EventItem {
+  id: string;
+  slug: string;
+  type: EventType;
+  title: LocalizedString;
+  summary: LocalizedString;
+  /** ISO 8601 start instant, or null when no date has been announced. */
+  startsAt: string | null;
+  /** Scheduled length in minutes, or null when not announced. */
+  durationMinutes: number | null;
+  /** IANA timezone used to present `startsAt`, or null when not announced. */
+  timezone: string | null;
+  /** Where the event happens (e.g. "Online"), or null when not announced. */
+  location: LocalizedString | null;
+  registrationStatus: RegistrationStatus;
+  /**
+   * External registration or joining URL. Empty string until the organisers publish one —
+   * never fabricate a meeting link.
+   */
+  registrationUrl: string;
+  /**
+   * True for structural template entries that carry no confirmed factual detail. The UI
+   * labels these explicitly so they are never mistaken for a scheduled event.
+   */
+  isPlaceholder: boolean;
+  isPublished: boolean;
+  sortOrder: number;
+}

@@ -1,0 +1,26 @@
+---
+import EventsPage from '@components/pages/EventsPage.astro';
+import { SITE } from '@constants';
+import { getPastEvents, getUpcomingEvents } from '@lib/content/events';
+import { isLanguage } from '@lib/utils/i18n';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return SITE.languages
+    .filter((language) => language !== SITE.defaultLanguage)
+    .map((language) => ({ params: { lang: language } }));
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+const upcoming = await getUpcomingEvents();
+const past = await getPastEvents();
+---
+
+<EventsPage lang={lang} upcoming={upcoming} past={past} />

@@ -31,6 +31,8 @@ const { videoSrc, videoSrcWebm, posterSrc, posterSrcMobile, alt = '' } = Astro.p
     autoplay
     loop
     playsinline
+    webkit-playsinline="true"
+    disablepictureinpicture
     tabindex="-1"
     aria-hidden="true"
   >
@@ -54,17 +56,53 @@ const { videoSrc, videoSrcWebm, posterSrc, posterSrcMobile, alt = '' } = Astro.p
       return;
     }
 
+    /*
+      iOS/Android only honour inline autoplay when the element is muted *in the DOM* before the
+      first play() call, so the attribute is reasserted here rather than trusted from markup.
+    */
     video.defaultMuted = true;
     video.muted = true;
     video.volume = 0;
-    video.addEventListener(
-      'canplaythrough',
-      () => {
-        video.classList.remove('opacity-0');
-        video.classList.add('opacity-100');
-      },
-      { once: true }
-    );
+    video.setAttribute('muted', '');
+
+    const reveal = () => {
+      video.classList.remove('opacity-0');
+      video.classList.add('opacity-100');
+    };
+
+    /*
+      The previous implementation revealed the video on `canplaythrough`. With `preload="none"`
+      that event is never guaranteed to fire on mobile Safari, so the video played underneath a
+      permanently opaque poster. Revealing on `loadeddata`/`playing` — and short-circuiting when
+      frames are already buffered — makes the fade deterministic. HAVE_CURRENT_DATA === 2.
+    */
+    if (video.readyState >= 2) reveal();
+    video.addEventListener('loadeddata', reveal, { once: true });
+    video.addEventListener('playing', reveal, { once: true });
+
+    // `preload="none"` is kept for the performance budget, so loading is triggered explicitly.
+    const attemptPlay = () => {
+      const played = video.play();
+      if (played && typeof played.catch === 'function') played.catch(() => undefined);
+    };
+
+    video.load();
+    attemptPlay();
+
+    /*
+      Some mobile browsers still refuse the programmatic play until the page has been touched
+      (low power mode, data saver heuristics). One retry on the first interaction recovers it
+      without ever blocking the poster-first experience.
+    */
+    if (video.paused) {
+      const retry = () => {
+        attemptPlay();
+        window.removeEventListener('touchstart', retry);
+        window.removeEventListener('pointerdown', retry);
+      };
+      window.addEventListener('touchstart', retry, { once: true, passive: true });
+      window.addEventListener('pointerdown', retry, { once: true });
+    }
   });
 </script>
 

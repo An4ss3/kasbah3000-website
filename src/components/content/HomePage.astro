@@ -1,20 +1,21 @@
 ---
-import { getCollection } from 'astro:content';
 import ArticleCard from '@components/content/ArticleCard.astro';
 import CtaBand from '@components/content/CtaBand.astro';
 import Hero from '@components/content/Hero.astro';
 import HeroVideo from '@components/content/HeroVideo.astro';
 import KeyFigures from '@components/content/KeyFigures.astro';
+import PrincipleCard from '@components/content/PrincipleCard.astro';
 import SectionTitle from '@components/content/SectionTitle.astro';
+import NewsletterForm from '@components/islands/NewsletterForm';
+import ProjectMap from '@components/islands/ProjectMap';
 import BaseLayout from '@components/layout/BaseLayout.astro';
 import JsonLd from '@components/seo/JsonLd.astro';
 import Seo from '@components/seo/Seo.astro';
 import Button from '@components/ui/Button.astro';
-import Card from '@components/ui/Card.astro';
-import NewsletterForm from '@components/islands/NewsletterForm';
 import { STRUCTURED_DATA } from '@constants';
-import { getNewsletterFormCopy } from '@lib/forms/copy';
 import { getArticles } from '@lib/content/articles';
+import { getPrinciples } from '@lib/content/principles';
+import { getNewsletterFormCopy } from '@lib/forms/copy';
 import { getLocalizedPath, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
 import '@styles/typography.css';
@@ -24,9 +25,8 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const principles = (await getCollection('principles', ({ data }) => data.lang === lang))
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
+const principles = (await getPrinciples(lang)).slice(0, 6);
+const technologyPrinciples = principles.slice(0, 4);
 const articles = (await getArticles(lang)).slice(0, 3);
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
 
@@ -34,6 +34,7 @@ const projectPath = getLocalizedPath('/project', lang);
 const contactPath = getLocalizedPath('/contact', lang);
 const principlesPath = getLocalizedPath('/principles', lang);
 const blogPath = getLocalizedPath('/blog', lang);
+const fundingPath = getLocalizedPath('/funding', lang);
 
 const figures = [
   { value: t(lang, 'home.figures.one.value'), label: t(lang, 'home.figures.one.label') },
@@ -41,6 +42,7 @@ const figures = [
   { value: t(lang, 'home.figures.three.value'), label: t(lang, 'home.figures.three.label') },
   { value: t(lang, 'home.figures.four.value'), label: t(lang, 'home.figures.four.label') },
 ];
+
 const editorialSections = [
   {
     eyebrow: t(lang, 'home.vision.eyebrow'),
@@ -58,6 +60,7 @@ const editorialSections = [
     body: t(lang, 'home.values.body'),
   },
 ];
+
 const {
   '@context': _organizationContext,
   '@type': _organizationType,
@@ -98,49 +101,93 @@ const websiteData = {
   >
     <HeroVideo
       slot="media"
-      videoSrc="/placeholder/home/kasbah3000-hero.mp4"
-      videoSrcWebm="/placeholder/home/kasbah3000-hero.webm"
-      posterSrc="/placeholder/home/kasbah3000-hero-poster.jpg"
-      posterSrcMobile="/placeholder/home/kasbah3000-hero-poster-mobile.jpg"
+      videoSrc="/media/video/kasbah3000-eco-village-solar.mp4"
+      posterSrc="/media/home/hero-poster.jpg"
+      posterSrcMobile="/media/home/hero-poster-mobile.jpg"
       alt={t(lang, 'home.hero.mediaAlt')}
     />
   </Hero>
 
-  <section class="border-b border-border bg-background" aria-label={t(lang, 'home.story.label')}>
-    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
-      {
-        editorialSections.map((section, index) => (
-          <article
-            class:list={[
-              'grid gap-8 py-14 md:py-20 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:py-30',
-              index < editorialSections.length - 1 && 'border-b border-border',
-            ]}
-          >
-            <div>
-              <p class="type-eyebrow text-muted">{section.eyebrow}</p>
-              <h2 class="type-h2 mt-5 text-balance text-ink">{section.title}</h2>
-            </div>
-            <p class="max-w-prose text-base leading-8 text-text-body md:text-[1.0625rem]">
-              {section.body}
-            </p>
-          </article>
-        ))
-      }
+  <aside class="border-b border-border bg-background-alt" aria-label={t(lang, 'home.notice.label')}>
+    <div class="mx-auto max-w-content px-5 py-7 md:px-8 md:py-8 lg:px-12">
+      <div class="flex flex-col gap-3 md:flex-row md:items-baseline md:gap-10">
+        <div class="flex items-center gap-4 md:shrink-0">
+          <span class="h-px w-10 shrink-0 bg-warning" aria-hidden="true"></span>
+          <p class="type-eyebrow text-text-body">{t(lang, 'home.notice.eyebrow')}</p>
+        </div>
+        <p class="max-w-prose text-[0.9375rem] leading-7 text-text-body">
+          {t(lang, 'home.notice.body')}
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <section
+    class="border-b border-border bg-background py-14 md:py-20 lg:py-30"
+    aria-labelledby="approach-title"
+  >
+    <div
+      class="mx-auto grid max-w-content gap-12 px-5 md:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start lg:gap-20 lg:px-12"
+    >
+      <figure class="lg:sticky lg:top-32">
+        <div class="overflow-hidden rounded-t-[560px] bg-background-alt">
+          <img
+            src="/media/principles/governance.webp"
+            alt={t(lang, 'home.approach.imageAlt')}
+            width="1600"
+            height="900"
+            loading="lazy"
+            decoding="async"
+            class="aspect-[4/5] w-full object-cover"
+          />
+        </div>
+        <figcaption class="mt-4 max-w-sm text-xs leading-6 text-text-body">
+          {t(lang, 'home.approach.caption')}
+        </figcaption>
+      </figure>
+
+      <div>
+        <p class="type-eyebrow text-text-body">{t(lang, 'home.approach.eyebrow')}</p>
+        <h2 id="approach-title" class="type-h2 mt-5 max-w-headline text-balance text-ink">
+          {t(lang, 'home.approach.title')}
+        </h2>
+        <p class="mt-6 max-w-prose text-base leading-8 text-text-body md:text-[1.0625rem]">
+          {t(lang, 'home.approach.body')}
+        </p>
+
+        <div class="mt-12 border-t border-border lg:mt-16">
+          {
+            editorialSections.map((section) => (
+              <article class="grid gap-4 border-b border-border py-8 md:grid-cols-[8rem_1fr] md:gap-8">
+                <p class="type-eyebrow pt-1 text-text-body">{section.eyebrow}</p>
+                <div>
+                  <h3 class="type-h4 text-balance text-ink">{section.title}</h3>
+                  <p class="mt-3 text-sm leading-7 text-text-body">{section.body}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
     </div>
   </section>
 
   <section
-    class="border-b border-border bg-background-alt py-14 md:py-20 lg:py-30"
+    class="border-b border-border-dark bg-background-dark py-14 md:py-20 lg:py-24"
     aria-labelledby="figures-title"
   >
     <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
-      <div id="figures-title">
-        <SectionTitle
-          eyebrow={t(lang, 'home.figures.eyebrow')}
-          title={t(lang, 'home.figures.title')}
-        />
+      <div class="max-w-2xl">
+        <p class="type-eyebrow text-accent-on-dark">{t(lang, 'home.figures.eyebrow')}</p>
+        <h2 id="figures-title" class="type-h2 mt-5 text-balance text-ink-inverse">
+          {t(lang, 'home.figures.title')}
+        </h2>
       </div>
-      <KeyFigures figures={figures} class="mt-12 lg:mt-16" />
+      <KeyFigures
+        figures={figures}
+        class="mt-12 border-t border-border-dark pt-10 lg:mt-16"
+        onDark
+      />
     </div>
   </section>
 
@@ -160,28 +207,100 @@ const websiteData = {
         >
       </div>
 
-      <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-14">
-        {
-          principles.map((principle) => (
-            <Card
-              href={getLocalizedPath(`/principles/${principle.data.slug}`, lang)}
-              ariaLabel={principle.data.title}
-              class="h-full"
-            >
-              <p class="type-eyebrow text-clay-600">
-                {String(principle.data.order).padStart(2, '0')}
-              </p>
-              <h3 class="type-h4 mt-5 text-balance text-ink">{principle.data.title}</h3>
-              <p class="mt-4 text-sm leading-7 text-text-body">{principle.data.excerpt}</p>
-            </Card>
-          ))
-        }
+      <div
+        class="mt-12 grid gap-x-8 gap-y-14 md:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-16"
+      >
+        {principles.map(({ data }) => <PrincipleCard principle={data} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="border-b border-border-dark bg-background-dark py-14 md:py-20 lg:py-30"
+    aria-labelledby="technology-title"
+  >
+    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+      <div class="grid gap-8 lg:grid-cols-[1fr_1.25fr] lg:gap-20">
+        <div>
+          <p class="type-eyebrow text-accent-on-dark">{t(lang, 'home.technology.eyebrow')}</p>
+          <h2 id="technology-title" class="type-h2 mt-5 text-balance text-ink-inverse">
+            {t(lang, 'home.technology.title')}
+          </h2>
+        </div>
+        <p class="max-w-prose text-base leading-8 text-text-body-dark">
+          {t(lang, 'home.technology.body')}
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+        <div class="overflow-hidden">
+          <img
+            src="/media/principles/water.webp"
+            alt=""
+            width="1600"
+            height="900"
+            loading="lazy"
+            decoding="async"
+            class="aspect-[4/3] h-full w-full object-cover"
+          />
+        </div>
+        <ol class="border-t border-border-dark">
+          {
+            technologyPrinciples.map(({ data }) => (
+              <li class="grid grid-cols-[3rem_1fr] gap-4 border-b border-border-dark py-6 md:grid-cols-[4rem_1fr] md:py-7">
+                <span class="type-caption text-accent-on-dark">
+                  {String(data.order).padStart(2, '0')}
+                </span>
+                <div>
+                  <h3 class="font-serif text-2xl font-medium text-ink-inverse">{data.title}</h3>
+                  <p class="mt-2 text-sm leading-6 text-text-body-dark">{data.excerpt}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
       </div>
     </div>
   </section>
 
   <section
     class="border-b border-border bg-background-alt py-14 md:py-20 lg:py-30"
+    aria-labelledby="home-map-title"
+  >
+    <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+      <div class="grid gap-8 lg:grid-cols-[1fr_1.25fr] lg:items-end lg:gap-20">
+        <div>
+          <p class="type-eyebrow text-text-body">{t(lang, 'home.map.eyebrow')}</p>
+          <h2 id="home-map-title" class="type-h2 mt-5 text-balance text-ink">
+            {t(lang, 'home.map.title')}
+          </h2>
+        </div>
+        <div>
+          <p class="max-w-prose text-base leading-8 text-text-body">{t(lang, 'home.map.body')}</p>
+          <Button variant="outline" href={projectPath} class="mt-7"
+            >{t(lang, 'home.map.cta')}</Button
+          >
+        </div>
+      </div>
+
+      <div
+        class="mt-12 h-[420px] overflow-hidden border border-border md:h-[520px] lg:mt-16 lg:h-[620px]"
+      >
+        <ProjectMap
+          client:visible
+          featuresUrl="/map/features.geojson"
+          center={[-9.6, 30.4]}
+          zoom={12}
+          lang={lang}
+          ariaLabel={t(lang, 'home.map.title')}
+          fallbackText={t(lang, 'project.map.fallback')}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="border-b border-border bg-background py-14 md:py-20 lg:py-30"
     aria-labelledby="articles-title"
   >
     <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
@@ -200,9 +319,35 @@ const websiteData = {
     </div>
   </section>
 
+  <section class="grid bg-background-dark lg:grid-cols-2" aria-labelledby="home-funding-title">
+    <div class="min-h-[360px] overflow-hidden lg:min-h-[620px]">
+      <img
+        src="/media/site/village-aerial-overview.jpg"
+        alt=""
+        width="2048"
+        height="1152"
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover"
+      />
+    </div>
+    <div class="flex items-center px-5 py-14 md:px-12 md:py-20 lg:px-20 lg:py-24">
+      <div class="max-w-prose">
+        <p class="type-eyebrow text-accent-on-dark">{t(lang, 'home.funding.eyebrow')}</p>
+        <h2 id="home-funding-title" class="type-h2 mt-5 text-balance text-ink-inverse">
+          {t(lang, 'home.funding.title')}
+        </h2>
+        <p class="mt-6 text-base leading-8 text-text-body-dark">{t(lang, 'home.funding.body')}</p>
+        <Button variant="primary-light" href={fundingPath} class="mt-8">
+          {t(lang, 'home.funding.cta')}
+        </Button>
+      </div>
+    </div>
+  </section>
+
   <section
     id="newsletter"
-    class="bg-background-dark py-14 text-ink-inverse md:py-20 lg:py-30"
+    class="border-t border-border-dark bg-background-dark py-14 text-ink-inverse md:py-20 lg:py-30"
     aria-labelledby="newsletter-title"
   >
     <div

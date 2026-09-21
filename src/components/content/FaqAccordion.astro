@@ -1,4 +1,5 @@
 ---
+import { localize } from '@lib/utils/i18n';
 import type { FAQ, Language } from '@types';
 
 interface Props {
@@ -16,12 +17,12 @@ const { faqs, lang, label } = Astro.props;
       <details class="group border-b border-border last:border-b-0">
         <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-6 py-6 text-ink marker:content-none">
           <span class="font-serif text-2xl font-medium leading-tight md:text-[1.75rem]">
-            {faq.question[lang]}
+            {localize(faq.question, lang)}
           </span>
           <span class="faq-icon relative h-6 w-6 shrink-0 text-link" aria-hidden="true" />
         </summary>
         <div class="max-w-prose pb-7 pe-10 text-base leading-8 text-text-body">
-          <p>{faq.answer[lang]}</p>
+          <p>{localize(faq.answer, lang)}</p>
         </div>
       </details>
     ))

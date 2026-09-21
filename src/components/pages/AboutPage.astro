@@ -1,13 +1,16 @@
 ---
-import { getCollection, render } from 'astro:content';
-import CtaBand from '@components/content/CtaBand.astro';
+import { render } from 'astro:content';
 import PageHero from '@components/content/PageHero.astro';
 import Prose from '@components/content/Prose.astro';
 import SectionTitle from '@components/content/SectionTitle.astro';
+import VideoPanel from '@components/content/VideoPanel.astro';
 import PageLayout from '@components/layout/PageLayout.astro';
 import JsonLd from '@components/seo/JsonLd.astro';
 import Seo from '@components/seo/Seo.astro';
-import { SITE } from '@constants';
+import Button from '@components/ui/Button.astro';
+import SocialIcon, { type SocialNetwork } from '@components/ui/SocialIcon.astro';
+import { ABOUT_VIDEO, SITE, SOCIAL_LINKS } from '@constants';
+import { getAboutEntry } from '@lib/content/about';
 import { getLocalizedPath, t } from '@lib/utils/i18n';
 import type { Language } from '@types';
 
@@ -20,8 +23,9 @@ const aboutPath = getLocalizedPath('/about', lang);
 const contactPath = getLocalizedPath('/contact', lang);
 const teamPath = getLocalizedPath('/team', lang);
 
-const [entry] = await getCollection('about', ({ data }) => data.lang === lang);
-const { Content } = await render(entry);
+const entry = await getAboutEntry(lang);
+const rendered = entry ? await render(entry) : undefined;
+const Content = rendered?.Content;
 
 const values = [
   {
@@ -36,6 +40,12 @@ const values = [
     title: t(lang, 'about.values.item3.title'),
     body: t(lang, 'about.values.item3.body'),
   },
+];
+
+const socialLinks: readonly { label: string; href: string; network: SocialNetwork }[] = [
+  { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin, network: 'linkedin' },
+  { label: 'YouTube', href: SOCIAL_LINKS.youtube, network: 'youtube' },
+  { label: 'Instagram', href: SOCIAL_LINKS.instagram, network: 'instagram' },
 ];
 
 const breadcrumbData = {
@@ -74,14 +84,14 @@ const breadcrumbData = {
     slot="hero"
     title={t(lang, 'about.hero.title')}
     description={t(lang, 'about.hero.description')}
-    imageSrc="/images/placeholders/principles-header.svg"
+    imageSrc="/media/site/oasis-village-sunset.jpg"
     imageAlt={t(lang, 'about.hero.imageAlt')}
   />
 
   <section aria-labelledby="about-vision-title">
-    <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+    <div class="grid items-start gap-8 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-20">
       <div>
-        <p class="type-eyebrow mb-5 text-muted">{t(lang, 'about.vision.eyebrow')}</p>
+        <p class="type-eyebrow mb-5 text-text-body">{t(lang, 'about.vision.eyebrow')}</p>
         <h2 id="about-vision-title" class="type-h2 text-balance text-ink">
           {t(lang, 'about.vision.title')}
         </h2>
@@ -98,16 +108,31 @@ const breadcrumbData = {
       aria-labelledby="about-story-title"
     >
       <div
-        class="mx-auto grid max-w-content gap-10 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20 lg:px-12"
+        class="mx-auto grid max-w-content gap-12 px-5 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-20 lg:px-12"
       >
-        <SectionTitle
-          id="about-story-title"
-          eyebrow={t(lang, 'about.story.eyebrow')}
-          title={t(lang, 'about.story.title')}
-        />
-        <Prose>
-          <Content />
-        </Prose>
+        <div>
+          <SectionTitle
+            id="about-story-title"
+            eyebrow={t(lang, 'about.story.eyebrow')}
+            title={t(lang, 'about.story.title')}
+          />
+          <div class="mt-10 overflow-hidden rounded-t-[560px]">
+            <img
+              src="/media/principles/architecture.webp"
+              alt=""
+              width="1600"
+              height="900"
+              loading="lazy"
+              decoding="async"
+              class="aspect-[4/5] w-full object-cover"
+            />
+          </div>
+        </div>
+        <div class="border-t border-border pt-8 lg:mt-20">
+          <Prose>
+            {Content ? <Content /> : <p>{t(lang, 'about.vision.body')}</p>}
+          </Prose>
+        </div>
       </div>
     </section>
 
@@ -120,20 +145,17 @@ const breadcrumbData = {
           id="about-values-title"
           eyebrow={t(lang, 'about.values.eyebrow')}
           title={t(lang, 'about.values.title')}
-          centered
         />
 
-        <ul
-          class="mt-12 grid gap-10 border-t border-border pt-10 md:grid-cols-3 md:gap-12 lg:mt-16"
-        >
+        <ul class="mt-12 grid border-y border-border md:grid-cols-3 lg:mt-16">
           {
             values.map((value, index) => (
-              <li class="border-t border-border pt-6 first:border-t-0 first:pt-0 md:border-t-0 md:pt-0">
-                <span class="type-caption text-muted" aria-hidden="true">
+              <li class="border-b border-border py-8 last:border-b-0 md:border-b-0 md:border-e md:px-8 md:first:ps-0 md:last:border-e-0 md:last:pe-0 lg:py-10">
+                <span class="type-caption text-text-body" aria-hidden="true">
                   {String(index + 1).padStart(2, '0')}
                 </span>
-                <h3 class="type-h4 mt-4 text-balance text-ink">{value.title}</h3>
-                <p class="mt-4 text-sm leading-6 text-text-body">{value.body}</p>
+                <h3 class="type-h4 mt-5 text-balance text-ink">{value.title}</h3>
+                <p class="mt-4 text-sm leading-7 text-text-body">{value.body}</p>
               </li>
             ))
           }
@@ -141,13 +163,80 @@ const breadcrumbData = {
       </div>
     </section>
 
-    <CtaBand
-      class="border-t border-border-dark"
-      eyebrow={t(lang, 'about.cta.eyebrow')}
-      title={t(lang, 'about.cta.title')}
-      primaryCta={{ label: t(lang, 'about.cta.primary'), href: teamPath }}
-      secondaryCta={{ label: t(lang, 'about.cta.secondary'), href: contactPath }}
-      variant="dark"
-    />
+    <section
+      class="border-t border-border-dark bg-background-dark py-14 md:py-20 lg:py-30"
+      aria-labelledby="about-video-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <div class="grid gap-8 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+          <div>
+            <p class="type-eyebrow mb-5 text-accent-on-dark">{t(lang, 'about.video.eyebrow')}</p>
+            <h2 id="about-video-title" class="type-h2 text-balance text-ink-inverse">
+              {t(lang, 'about.video.title')}
+            </h2>
+          </div>
+          <p class="max-w-prose text-base leading-8 text-text-body-dark">
+            {t(lang, 'about.video.body')}
+          </p>
+        </div>
+
+        <div class="mt-12 border border-border-dark p-3 md:p-5 lg:mt-16">
+          <VideoPanel
+            youtubeId={ABOUT_VIDEO.youtubeId}
+            posterSrc={ABOUT_VIDEO.posterSrc}
+            posterAlt={t(lang, 'about.hero.imageAlt')}
+            iframeTitle={t(lang, 'about.video.iframeTitle')}
+            pendingLabel={t(lang, 'about.video.pending')}
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="grid bg-background-alt lg:grid-cols-2" aria-labelledby="about-team-title">
+      <div class="min-h-[360px] overflow-hidden lg:min-h-[620px]">
+        <img
+          src="/media/principles/governance.webp"
+          alt=""
+          width="1600"
+          height="900"
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
+      </div>
+      <div class="flex items-center px-5 py-14 md:px-12 md:py-20 lg:px-20 lg:py-24">
+        <div class="max-w-prose">
+          <p class="type-eyebrow text-text-body">{t(lang, 'about.cta.eyebrow')}</p>
+          <h2 id="about-team-title" class="type-h2 mt-5 text-balance text-ink">
+            {t(lang, 'about.cta.title')}
+          </h2>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button variant="primary-dark" href={teamPath}>{t(lang, 'about.cta.primary')}</Button>
+            <Button variant="outline" href={contactPath}>{t(lang, 'about.cta.secondary')}</Button>
+          </div>
+
+          <nav class="mt-10 border-t border-border pt-6" aria-label={t(lang, 'footer.follow')}>
+            <p class="type-eyebrow text-text-body">{t(lang, 'footer.follow')}</p>
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {
+                socialLinks.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={item.label}
+                      class="inline-flex min-h-11 min-w-11 items-center justify-center border border-border text-link transition-colors duration-fast hover:border-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-600"
+                    >
+                      <SocialIcon network={item.network} />
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
   </Fragment>
 </PageLayout>

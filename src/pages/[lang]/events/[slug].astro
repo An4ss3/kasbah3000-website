@@ -1,0 +1,36 @@
+---
+import EventDetailPage from '@components/pages/EventDetailPage.astro';
+import { SITE } from '@constants';
+import { getEvents } from '@lib/content/events';
+import { isLanguage } from '@lib/utils/i18n';
+import type { EventItem } from '@types';
+
+export const prerender = true;
+
+interface Props {
+  event: EventItem;
+}
+
+export async function getStaticPaths() {
+  const languages = SITE.languages.filter((language) => language !== SITE.defaultLanguage);
+  const events = await getEvents();
+
+  return languages.flatMap((language) =>
+    events.map((event) => ({
+      params: { lang: language, slug: event.slug },
+      props: { event },
+    }))
+  );
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+const { event } = Astro.props;
+---
+
+<EventDetailPage lang={lang} event={event} />

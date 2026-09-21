@@ -1,5 +1,11 @@
 ---
-type SchemaType = 'Organization' | 'WebSite' | 'Article' | 'FAQPage' | 'BreadcrumbList';
+type SchemaType =
+  | 'Organization'
+  | 'WebSite'
+  | 'Article'
+  | 'FAQPage'
+  | 'BreadcrumbList'
+  | 'Event';
 
 interface Props {
   type: SchemaType;

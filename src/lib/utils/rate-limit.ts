@@ -3,6 +3,9 @@ export interface RateLimitKV {
   put(key: string, value: string, options: { expirationTtl: number }): Promise<void>;
 }
 
+/** Independent rate-limit buckets, one per public write endpoint. */
+export type RateLimitScope = 'contact' | 'newsletter' | 'event-registration';
+
 export type RateLimitResult =
   | {
       available: true;
@@ -26,6 +29,15 @@ interface StoredCounter {
 }
 
 const WINDOW_SECONDS = 60 * 60;
+
+/*
+  Cloudflare KV rejects `expirationTtl` below 60 seconds. The TTL used to be the raw time left in
+  the fixed window, so during the final minute of every hour `kv.put` threw, the catch below
+  reported `storage-error`, and every public form endpoint answered 503 — a reproducible one-minute
+  outage per hour. Clamping is safe: the key embeds `windowStart`, so an entry surviving a few
+  seconds into the next window is never read again.
+*/
+const KV_MIN_EXPIRATION_TTL_SECONDS = 60;
 const memoryCounters = new Map<string, StoredCounter>();
 
 async function hashIdentifier(value: string): Promise<string> {
@@ -71,7 +83,7 @@ function resultFor(count: number, limit: number, retryAfter: number): RateLimitR
  * KV is missing or errors; process-memory fallback is development-only.
  */
 export async function consumeRateLimit(
-  scope: 'contact' | 'newsletter',
+  scope: RateLimitScope,
   ip: string,
   limit: number,
   { kv, development }: RateLimitOptions
@@ -87,7 +99,9 @@ export async function consumeRateLimit(
     try {
       const counter = parseCounter(await kv.get(key), expiresAt);
       counter.count += 1;
-      await kv.put(key, JSON.stringify(counter), { expirationTtl: retryAfter });
+      await kv.put(key, JSON.stringify(counter), {
+        expirationTtl: Math.max(KV_MIN_EXPIRATION_TTL_SECONDS, retryAfter),
+      });
       return resultFor(counter.count, limit, retryAfter);
     } catch {
       if (!development) return { available: false, reason: 'storage-error' };

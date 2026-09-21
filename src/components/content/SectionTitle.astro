@@ -12,7 +12,14 @@ interface Props {
 const { id, eyebrow, title, centered = false, class: className } = Astro.props;
 ---
 
+{
+  /*
+  Eyebrows use `text-body` (#5A4A38, 7.1:1 on cream) rather than `muted` (#766349, 4.6:1). At the
+  12px uppercase eyebrow size the old value only just cleared WCAG AA, and read as washed out on
+  the cream ground; this keeps the editorial hierarchy while lifting legibility.
+*/
+}
 <div class:list={['max-w-headline', centered && 'mx-auto text-center', className]}>
-  {eyebrow && <p class="type-eyebrow mb-5 text-muted">{eyebrow}</p>}
+  {eyebrow && <p class="type-eyebrow mb-5 text-text-body">{eyebrow}</p>}
   <h2 id={id} class="type-h2 text-balance text-ink">{title}</h2>
 </div>

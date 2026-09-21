@@ -1,6 +1,7 @@
 ---
 import Badge from '@components/ui/Badge.astro';
-import { getLocalizedPath, t } from '@lib/utils/i18n';
+import { LOCALE_CODES } from '@constants';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
 import type { Article, Language } from '@types';
 import '@styles/typography.css';
 
@@ -10,10 +11,10 @@ interface Props {
 }
 
 const { article, lang } = Astro.props;
-const title = article.title[lang];
-const excerpt = article.excerpt[lang];
+const title = localize(article.title, lang);
+const excerpt = localize(article.excerpt, lang);
 const date = new Date(article.publishedAt ?? article.createdAt);
-const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+const formattedDate = new Intl.DateTimeFormat(LOCALE_CODES[lang].replace('_', '-'), {
   day: 'numeric',
   month: 'long',
   year: 'numeric',

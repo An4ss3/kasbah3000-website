@@ -1,0 +1,223 @@
+---
+import CtaBand from '@components/content/CtaBand.astro';
+import EventCard from '@components/content/EventCard.astro';
+import PageHero from '@components/content/PageHero.astro';
+import Prose from '@components/content/Prose.astro';
+import SectionTitle from '@components/content/SectionTitle.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
+import Seo from '@components/seo/Seo.astro';
+import Badge from '@components/ui/Badge.astro';
+import Button from '@components/ui/Button.astro';
+import { SITE } from '@constants';
+import {
+  eventDateTimeAttribute,
+  formatEventDate,
+  formatEventLocation,
+  formatEventTime,
+  getEventTypeLabel,
+  getRegistrationStatusLabel,
+} from '@lib/utils/events';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
+import type { EventItem, Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  lang: Language;
+  upcoming: EventItem[];
+  past: EventItem[];
+}
+
+const { lang, upcoming, past } = Astro.props;
+const eventsPath = getLocalizedPath('/events', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+const projectPath = getLocalizedPath('/project', lang);
+const featured = upcoming[0];
+const remainingUpcoming = upcoming.slice(1);
+
+function listClass(count: number): string {
+  return count > 1 ? 'md:grid-cols-2' : 'md:max-w-3xl';
+}
+
+const breadcrumbData = {
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(lang, 'navigation.home'),
+      item: new URL(getLocalizedPath('/', lang), SITE.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(lang, 'events.hero.title'),
+      item: new URL(eventsPath, SITE.url).href,
+    },
+  ],
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'events.hero.title')}
+  description={t(lang, 'events.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'events.hero.title')}
+    description={t(lang, 'events.hero.description')}
+    lang={lang}
+    canonical={eventsPath}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" data={breadcrumbData} />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'events.hero.title')}
+    description={t(lang, 'events.hero.description')}
+    imageSrc="/media/principles/governance.webp"
+    imageAlt={t(lang, 'events.hero.imageAlt')}
+  />
+
+  <section aria-labelledby="events-intro-title">
+    <div class="grid items-start gap-8 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-20">
+      <SectionTitle
+        id="events-intro-title"
+        eyebrow={t(lang, 'events.intro.eyebrow')}
+        title={t(lang, 'events.intro.title')}
+      />
+      <Prose>
+        <p>{t(lang, 'events.intro.body')}</p>
+      </Prose>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <section
+      class="border-t border-border bg-background-alt py-14 md:py-20 lg:py-30"
+      aria-labelledby="events-upcoming-title"
+    >
+      <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <p class="type-eyebrow text-text-body">{t(lang, 'events.intro.eyebrow')}</p>
+        <h2 id="events-upcoming-title" class="type-h2 mt-5 text-balance text-ink">
+          {t(lang, 'events.upcoming.title')}
+        </h2>
+
+        {
+          featured ? (
+            <article class="mt-10 grid overflow-hidden border border-border bg-surface lg:mt-14 lg:grid-cols-[1.15fr_0.85fr]">
+              <div class="min-h-[300px] overflow-hidden lg:min-h-[580px]">
+                <img
+                  src="/media/principles/governance.webp"
+                  alt=""
+                  width="1600"
+                  height="900"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover transition-transform duration-[400ms] ease-out hover:scale-[1.02]"
+                />
+              </div>
+
+              <div class="flex flex-col p-6 md:p-10 lg:p-12">
+                <div class="flex flex-wrap items-center gap-3">
+                  <Badge color="cedar">{getEventTypeLabel(featured.type, lang)}</Badge>
+                  <span class="type-caption text-text-body">
+                    {getRegistrationStatusLabel(featured.registrationStatus, lang)}
+                  </span>
+                </div>
+
+                <h3 class="type-h2 mt-8 text-balance text-ink">{localize(featured.title, lang)}</h3>
+                <p class="mt-6 text-base leading-8 text-text-body">
+                  {localize(featured.summary, lang)}
+                </p>
+
+                <dl class="mt-8 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
+                  <div>
+                    <dt class="type-caption text-text-body">{t(lang, 'events.date.label')}</dt>
+                    <dd class="mt-2 text-sm leading-6 text-ink">
+                      {eventDateTimeAttribute(featured) ? (
+                        <time datetime={eventDateTimeAttribute(featured)}>
+                          {formatEventDate(featured, lang)}
+                        </time>
+                      ) : (
+                        formatEventDate(featured, lang)
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="type-caption text-text-body">{t(lang, 'events.time.label')}</dt>
+                    <dd class="mt-2 text-sm leading-6 text-ink">
+                      {formatEventTime(featured, lang)}
+                    </dd>
+                  </div>
+                  {formatEventLocation(featured, lang) && (
+                    <div>
+                      <dt class="type-caption text-text-body">
+                        {t(lang, 'events.location.label')}
+                      </dt>
+                      <dd class="mt-2 text-sm leading-6 text-ink">
+                        {formatEventLocation(featured, lang)}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+
+                <Button
+                  variant="primary-dark"
+                  href={getLocalizedPath(`/events/${featured.slug}`, lang)}
+                  class="mt-auto pt-4"
+                >
+                  {t(lang, 'events.card.details')}
+                </Button>
+              </div>
+            </article>
+          ) : (
+            <p class="mt-8 max-w-prose text-base leading-7 text-text-body">
+              {t(lang, 'events.empty')}
+            </p>
+          )
+        }
+
+        {
+          remainingUpcoming.length > 0 && (
+            <ul class:list={['mt-10 grid gap-8 md:gap-10', listClass(remainingUpcoming.length)]}>
+              {remainingUpcoming.map((event) => (
+                <EventCard event={event} lang={lang} />
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </section>
+
+    {
+      past.length > 0 && (
+        <section
+          class="border-t border-border bg-background py-14 md:py-20 lg:py-30"
+          aria-labelledby="events-past-title"
+        >
+          <div class="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+            <p class="type-eyebrow text-text-body">{t(lang, 'events.past.title')}</p>
+            <h2 id="events-past-title" class="type-h3 mt-5 text-ink">
+              {t(lang, 'events.past.title')}
+            </h2>
+            <ul class:list={['mt-10 grid gap-8 md:gap-10', listClass(past.length)]}>
+              {past.map((event) => (
+                <EventCard event={event} lang={lang} />
+              ))}
+            </ul>
+          </div>
+        </section>
+      )
+    }
+
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'events.cta.eyebrow')}
+      title={t(lang, 'events.cta.title')}
+      primaryCta={{ label: t(lang, 'events.cta.primary'), href: contactPath }}
+      secondaryCta={{ label: t(lang, 'events.cta.secondary'), href: projectPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

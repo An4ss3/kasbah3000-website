@@ -1,0 +1,94 @@
+---
+import Badge from '@components/ui/Badge.astro';
+import {
+  eventDateTimeAttribute,
+  formatEventDate,
+  formatEventLocation,
+  formatEventTime,
+  getEventTypeLabel,
+  getRegistrationStatusLabel,
+} from '@lib/utils/events';
+import { getLocalizedPath, localize, t } from '@lib/utils/i18n';
+import type { EventItem, Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  event: EventItem;
+  lang: Language;
+  headingLevel?: 'h3' | 'h4';
+  class?: string;
+}
+
+const { event, lang, headingLevel = 'h3', class: className } = Astro.props;
+const Heading = headingLevel;
+
+const href = getLocalizedPath(`/events/${event.slug}`, lang);
+const title = localize(event.title, lang);
+const summary = localize(event.summary, lang);
+const typeLabel = getEventTypeLabel(event.type, lang);
+const dateLabel = formatEventDate(event, lang);
+const timeLabel = formatEventTime(event, lang);
+const locationLabel = formatEventLocation(event, lang);
+const statusLabel = getRegistrationStatusLabel(event.registrationStatus, lang);
+const dateTime = eventDateTimeAttribute(event);
+---
+
+{
+  /*
+  The card is an enclosed object: hairline border plus internal padding, square corners per the
+  frozen radius rule. Previously this was a bare list item whose top rule spanned only its grid
+  column, so the text sat flush against the column edge and read as loose copy on the page.
+
+  Metadata stacks its label above the value. The earlier `flex gap-2` put the caption and the
+  value on one line, where "Date" and "Date to be announced" ran together into a single string.
+*/
+}
+<li class:list={['flex h-full flex-col border border-border bg-surface p-6 md:p-8', className]}>
+  <div class="flex flex-wrap items-center gap-3">
+    <Badge color="cedar">{typeLabel}</Badge>
+    <span class="type-caption text-muted">{statusLabel}</span>
+  </div>
+
+  <Heading class="type-h4 mt-6 text-balance text-ink">
+    <a
+      href={href}
+      class="transition-colors duration-fast hover:text-link focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+    >
+      {title}
+    </a>
+  </Heading>
+
+  <dl class="mt-6 grid gap-x-8 gap-y-5 border-t border-border pt-6 sm:grid-cols-2">
+    <div>
+      <dt class="type-caption text-muted">{t(lang, 'events.date.label')}</dt>
+      <dd class="mt-2 text-sm leading-6 text-ink">
+        {dateTime ? <time datetime={dateTime}>{dateLabel}</time> : dateLabel}
+      </dd>
+    </div>
+    <div>
+      <dt class="type-caption text-muted">{t(lang, 'events.time.label')}</dt>
+      <dd class="mt-2 text-sm leading-6 text-ink">{timeLabel}</dd>
+    </div>
+    {
+      locationLabel && (
+        <div>
+          <dt class="type-caption text-muted">{t(lang, 'events.location.label')}</dt>
+          <dd class="mt-2 text-sm leading-6 text-ink">{locationLabel}</dd>
+        </div>
+      )
+    }
+  </dl>
+
+  <p class="mt-6 text-sm leading-6 text-text-body">{summary}</p>
+
+  {/* `mt-auto` pins the CTA to the card foot so it aligns across cards of unequal height. */}
+  <p class="mt-auto pt-8">
+    <a
+      href={href}
+      class="inline-flex min-h-11 items-center font-sans text-nav uppercase tracking-label text-link transition-colors duration-fast hover:text-link-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-600"
+    >
+      {t(lang, 'events.card.details')}
+      <span class="ms-2 rtl:-scale-x-100" aria-hidden="true">→</span>
+    </a>
+  </p>
+</li>

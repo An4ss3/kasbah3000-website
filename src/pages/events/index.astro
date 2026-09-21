@@ -1,0 +1,12 @@
+---
+import EventsPage from '@components/pages/EventsPage.astro';
+import { getPastEvents, getUpcomingEvents } from '@lib/content/events';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+const upcoming = await getUpcomingEvents();
+const past = await getPastEvents();
+---
+
+<EventsPage lang={lang} upcoming={upcoming} past={past} />

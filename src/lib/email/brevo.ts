@@ -1,5 +1,9 @@
 import type { FormEnvironment } from '@lib/api/forms';
-import type { ContactInput, NewsletterInput } from '@lib/forms/schemas';
+import type {
+  ContactInput,
+  NewsletterInput,
+  WebinarRegistrationInput,
+} from '@lib/forms/schemas';
 
 const BREVO_API_BASE = 'https://api.brevo.com/v3';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -92,8 +96,51 @@ export async function sendContactEmail(
   });
 }
 
-export async function subscribeNewsletterDoubleOptIn(
-  input: NewsletterInput,
+/**
+ * Notify the project inbox of a webinar / event registration request.
+ *
+ * Reuses the same transactional Brevo endpoint and environment variables as the contact
+ * form, so no additional credentials are required beyond those already documented.
+ */
+export async function sendWebinarRegistrationEmail(
+  input: WebinarRegistrationInput,
+  eventTitle: string,
+  environment: FormEnvironment
+): Promise<void> {
+  const apiKey = requiredString(environment.BREVO_API_KEY, 'BREVO_API_KEY');
+  const senderEmail = requiredEmail(environment.BREVO_SENDER_EMAIL, 'BREVO_SENDER_EMAIL');
+  const recipientEmail = requiredEmail(
+    environment.CONTACT_RECIPIENT_EMAIL,
+    'CONTACT_RECIPIENT_EMAIL'
+  );
+
+  const name = escapeHtml(input.name);
+  const email = escapeHtml(input.email);
+  const organization = escapeHtml(input.organization ?? '');
+  const questions = escapeHtml(input.questions ?? '').replace(/\r?\n/g, '<br>');
+  const language = escapeHtml(input.lang);
+  const slug = escapeHtml(input.eventSlug);
+  const title = escapeHtml(eventTitle);
+
+  const htmlContent = [
+    `<p><strong>Event:</strong> ${title} (${slug})</p>`,
+    `<p><strong>Name:</strong> ${name}</p>`,
+    `<p><strong>Email:</strong> ${email}</p>`,
+    organization ? `<p><strong>Organization:</strong> ${organization}</p>` : '',
+    `<p><strong>Language:</strong> ${language}</p>`,
+    questions ? `<p><strong>Questions:</strong><br>${questions}</p>` : '',
+  ].join('');
+
+  await postBrevo('/smtp/email', apiKey, {
+    sender: { name: 'Kasbah3000', email: senderEmail },
+    to: [{ email: recipientEmail }],
+    replyTo: { name: input.name, email: input.email },
+    subject: `[Kasbah3000] Registration — ${eventTitle}`,
+    htmlContent,
+  });
+}
+
+export async function subscribeNewsletterDoubleOptIn(  input: NewsletterInput,
   environment: FormEnvironment
 ): Promise<void> {
   const apiKey = requiredString(environment.BREVO_API_KEY, 'BREVO_API_KEY');
