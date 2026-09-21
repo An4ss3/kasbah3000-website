@@ -1,0 +1,13 @@
+# Kasbah3000 — https://kasbah3000.com
+# Required by PROJECT_RULES.md §8.4 and acceptance criterion 7.
+
+User-agent: *
+Allow: /
+
+# Component preview route: already noindex and excluded from the sitemap.
+Disallow: /dev/
+
+# Server-rendered form endpoints: nothing crawlable behind them.
+Disallow: /api/
+
+Sitemap: https://kasbah3000.com/sitemap-index.xml

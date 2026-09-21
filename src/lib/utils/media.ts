@@ -32,3 +32,27 @@ export function getAlbums(assets: MediaAsset[]): string[] {
 
   return [...albums];
 }
+
+/*
+ * Seed data carries reserved paths and profile URLs for assets that have not been supplied yet:
+ * `/placeholder/team/othman.jpg`, `https://www.linkedin.com/in/placeholder-othman`. Nothing exists
+ * behind them, so rendering them produced broken images and dead outbound links on the Team and
+ * Partners pages. Treating them as absent lets the components fall back to their typographic
+ * treatment instead, and makes real assets a drop-in replacement with no code change.
+ */
+const PLACEHOLDER_ASSET_PREFIX = '/placeholder/';
+const PLACEHOLDER_URL_MARKER = 'placeholder-';
+
+/** Returns the path only when it points at a real, shipped asset. */
+export function publishedAssetPath(path?: string): string | undefined {
+  const value = path?.trim();
+  if (!value || value.startsWith(PLACEHOLDER_ASSET_PREFIX)) return undefined;
+  return value;
+}
+
+/** Returns the URL only when it is a real destination rather than a reserved stand-in. */
+export function publishedExternalUrl(url?: string): string | undefined {
+  const value = url?.trim();
+  if (!value || value.includes(PLACEHOLDER_URL_MARKER)) return undefined;
+  return value;
+}
