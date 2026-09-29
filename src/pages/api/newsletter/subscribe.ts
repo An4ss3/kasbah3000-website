@@ -57,7 +57,10 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     await subscribeNewsletterDoubleOptIn(parsed.data, environment);
     return jsonFormResponse(200, 'NEWSLETTER_PENDING', true, rateHeaders);
-  } catch {
+  } catch (error) {
+    console.error(
+      `Newsletter notification failed: ${error instanceof Error ? error.message : 'unknown'}`
+    );
     return jsonFormResponse(503, 'SERVICE_UNAVAILABLE', false, rateHeaders);
   }
 };

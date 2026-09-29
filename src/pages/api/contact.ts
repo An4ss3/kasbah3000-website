@@ -59,7 +59,10 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     await sendContactEmail(parsed.data, environment);
-  } catch {
+  } catch (error) {
+    console.error(
+      `Contact notification failed: ${error instanceof Error ? error.message : 'unknown'}`
+    );
     return jsonFormResponse(503, 'SERVICE_UNAVAILABLE', false, rateHeaders);
   }
 
@@ -83,8 +86,10 @@ export const POST: APIRoute = async ({ request }) => {
   if (acknowledgementLimit.available && acknowledgementLimit.allowed) {
     try {
       await sendContactAcknowledgement(parsed.data, environment);
-    } catch {
-      console.error('Contact acknowledgement could not be delivered');
+    } catch (error) {
+      console.error(
+        `Contact acknowledgement could not be delivered: ${error instanceof Error ? error.message : 'unknown'}`
+      );
     }
   }
 

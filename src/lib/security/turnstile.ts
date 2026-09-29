@@ -45,14 +45,27 @@ export async function verifyTurnstile(
     if (!response.ok) return false;
 
     const payload: unknown = await response.json();
-    return (
+    const verified =
       isVerificationResponse(payload) &&
       payload.success &&
       payload.action === expectedAction &&
       typeof payload.hostname === 'string' &&
-      normalizeHostname(payload.hostname) === normalizedExpectedHostname
-    );
+      normalizeHostname(payload.hostname) === normalizedExpectedHostname;
+
+    // Without this, a rejected token was indistinguishable from any other failure in the logs.
+    // Only Turnstile's own error codes and the action/hostname match are logged — no token, no IP.
+    if (!verified && isVerificationResponse(payload)) {
+      console.warn(
+        `Turnstile rejected: success=${payload.success} errors=${(payload['error-codes'] ?? []).join(',') || 'none'} ` +
+          `actionMatch=${payload.action === expectedAction} hostnameMatch=${
+            typeof payload.hostname === 'string' &&
+            normalizeHostname(payload.hostname) === normalizedExpectedHostname
+          }`
+      );
+    }
+    return verified;
   } catch {
+    console.warn('Turnstile verification request failed');
     return false;
   }
 }

@@ -62,7 +62,20 @@ async function postBrevo(
     signal: AbortSignal.timeout(BREVO_TIMEOUT_MS),
   });
 
-  if (!response.ok) throw new Error(`Brevo request failed with status ${response.status}`);
+  if (!response.ok) {
+    // Brevo's error `code` (e.g. `unauthorized`, `permission_denied`) is what makes a failure
+    // diagnosable from the Worker logs. Only the code is kept: the message can echo addresses.
+    let code = 'unknown';
+    try {
+      const payload: unknown = await response.json();
+      if (typeof payload === 'object' && payload !== null && 'code' in payload) {
+        code = String(payload.code).slice(0, 60);
+      }
+    } catch {
+      // Non-JSON error body: the status alone is reported.
+    }
+    throw new Error(`Brevo ${path} failed: status=${response.status} code=${code}`);
+  }
 }
 
 export async function sendContactEmail(

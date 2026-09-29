@@ -79,7 +79,10 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     await sendWebinarRegistrationEmail(parsed.data, eventTitle, environment);
-  } catch {
+  } catch (error) {
+    console.error(
+      `Registration notification failed: ${error instanceof Error ? error.message : 'unknown'}`
+    );
     return jsonFormResponse(503, 'SERVICE_UNAVAILABLE', false, rateHeaders);
   }
 
@@ -101,8 +104,10 @@ export const POST: APIRoute = async ({ request }) => {
   if (acknowledgementLimit.available && acknowledgementLimit.allowed) {
     try {
       await sendWebinarRegistrationAcknowledgement(parsed.data, eventTitle, environment);
-    } catch {
-      console.error('Registration acknowledgement could not be delivered');
+    } catch (error) {
+      console.error(
+        `Registration acknowledgement could not be delivered: ${error instanceof Error ? error.message : 'unknown'}`
+      );
     }
   }
 
