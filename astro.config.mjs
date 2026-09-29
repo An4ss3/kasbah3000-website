@@ -25,7 +25,12 @@ export default defineConfig({
   integrations: [
     preact(),
     sitemap({
-      filter: (page) => !page.includes('/dev/'),
+      /*
+        `/dev/` is the component preview route and `/inscription-confirmee` is the double opt-in
+        landing page: both are `noindex`, so listing them in the sitemap would send search engines
+        contradictory signals.
+      */
+      filter: (page) => !page.includes('/dev/') && !page.includes('/inscription-confirmee'),
       i18n: {
         defaultLocale: 'fr',
         locales: {

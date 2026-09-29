@@ -1,0 +1,28 @@
+---
+import NewsletterConfirmedPage from '@components/pages/NewsletterConfirmedPage.astro';
+import { SITE } from '@constants';
+import { isLanguage } from '@lib/utils/i18n';
+
+export const prerender = true;
+
+/*
+  The slug stays French across locales, matching the existing `legal/[slug]` convention and the
+  single fixed `BREVO_DOI_REDIRECT_URL`. These routes exist so the header language switcher — which
+  derives its targets from the current path — never lands on a 404 from this page.
+*/
+export function getStaticPaths() {
+  return SITE.languages
+    .filter((language) => language !== SITE.defaultLanguage)
+    .map((language) => ({ params: { lang: language } }));
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!isLanguage(langParam)) {
+  throw new Error(`Unsupported language: ${langParam ?? 'undefined'}`);
+}
+
+const lang = langParam;
+---
+
+<NewsletterConfirmedPage lang={lang} />

@@ -1,0 +1,88 @@
+---
+/**
+ * Newsletter double opt-in confirmation page.
+ *
+ * This is the destination of `BREVO_DOI_REDIRECT_URL`: the page a subscriber lands on after
+ * clicking the confirmation link in the double opt-in email. It is a terminal, reassuring page —
+ * no form, nothing to submit — so it stays deliberately short and offers onward routes instead of
+ * leaving the visitor at a dead end.
+ *
+ * `noindex` is set because the URL only has meaning inside the opt-in flow and carries no value
+ * in search results.
+ */
+import CtaBand from '@components/content/CtaBand.astro';
+import PageHero from '@components/content/PageHero.astro';
+import PageLayout from '@components/layout/PageLayout.astro';
+import Seo from '@components/seo/Seo.astro';
+import Button from '@components/ui/Button.astro';
+import { getLocalizedPath, t } from '@lib/utils/i18n';
+import type { Language } from '@types';
+import '@styles/typography.css';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const confirmedPath = getLocalizedPath('/inscription-confirmee', lang);
+const principlesPath = getLocalizedPath('/principles', lang);
+const projectPath = getLocalizedPath('/project', lang);
+const contactPath = getLocalizedPath('/contact', lang);
+---
+
+<PageLayout
+  lang={lang}
+  title={t(lang, 'newsletterConfirmed.hero.title')}
+  description={t(lang, 'newsletterConfirmed.hero.description')}
+>
+  <Seo
+    slot="seo"
+    title={t(lang, 'newsletterConfirmed.hero.title')}
+    description={t(lang, 'newsletterConfirmed.hero.description')}
+    lang={lang}
+    canonical={confirmedPath}
+    noindex
+  />
+
+  <PageHero
+    slot="hero"
+    title={t(lang, 'newsletterConfirmed.hero.title')}
+    description={t(lang, 'newsletterConfirmed.hero.description')}
+    imageSrc="/media/principles/water.webp"
+    imageAlt=""
+  />
+
+  <section aria-labelledby="newsletter-confirmed-title">
+    <div class="grid items-start gap-8 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-20">
+      <div>
+        <p class="type-eyebrow mb-5 text-text-body">{t(lang, 'newsletterConfirmed.eyebrow')}</p>
+        <h2 id="newsletter-confirmed-title" class="type-h2 text-balance text-ink">
+          {t(lang, 'newsletterConfirmed.title')}
+        </h2>
+      </div>
+      <div>
+        <p class="max-w-prose text-base leading-8 text-text-body">
+          {t(lang, 'newsletterConfirmed.body')}
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Button variant="primary-dark" href={principlesPath}>
+            {t(lang, 'newsletterConfirmed.primary')}
+          </Button>
+          <Button variant="outline" href={projectPath}>
+            {t(lang, 'newsletterConfirmed.secondary')}
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="full-width">
+    <CtaBand
+      class="border-t border-border-dark"
+      eyebrow={t(lang, 'newsletterConfirmed.cta.eyebrow')}
+      title={t(lang, 'newsletterConfirmed.cta.title')}
+      primaryCta={{ label: t(lang, 'newsletterConfirmed.cta.primary'), href: contactPath }}
+      variant="dark"
+    />
+  </Fragment>
+</PageLayout>

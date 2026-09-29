@@ -1,9 +1,6 @@
 import type { FormEnvironment } from '@lib/api/forms';
-import type {
-  ContactInput,
-  NewsletterInput,
-  WebinarRegistrationInput,
-} from '@lib/forms/schemas';
+import { t } from '@lib/utils/i18n';
+import type { ContactInput, NewsletterInput, WebinarRegistrationInput } from '@lib/forms/schemas';
 
 const BREVO_API_BASE = 'https://api.brevo.com/v3';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -140,7 +137,8 @@ export async function sendWebinarRegistrationEmail(
   });
 }
 
-export async function subscribeNewsletterDoubleOptIn(  input: NewsletterInput,
+export async function subscribeNewsletterDoubleOptIn(
+  input: NewsletterInput,
   environment: FormEnvironment
 ): Promise<void> {
   const apiKey = requiredString(environment.BREVO_API_KEY, 'BREVO_API_KEY');
@@ -161,5 +159,88 @@ export async function subscribeNewsletterDoubleOptIn(  input: NewsletterInput,
     templateId,
     redirectionUrl,
     attributes: { LANGUAGE: input.lang },
+  });
+}
+
+/*
+ * Acknowledgement emails sent to the person who submitted the form.
+ *
+ * These are secondary to the internal notification: the team must be told about a lead even if the
+ * courtesy reply fails, so the API routes send the notification first and treat the acknowledgement
+ * as best-effort. Copy is localized through the shared `t()` helper, so all four locales are
+ * covered by the same translation tables the UI uses.
+ *
+ * `replyTo` points at the project inbox so a reply from the visitor reaches the team rather than a
+ * no-reply address.
+ */
+function acknowledgementLayout(paragraphs: readonly string[], signature: string): string {
+  return [
+    ...paragraphs.map((paragraph) => `<p>${paragraph}</p>`),
+    `<p style="margin-top:24px">${signature}</p>`,
+  ].join('');
+}
+
+export async function sendContactAcknowledgement(
+  input: ContactInput,
+  environment: FormEnvironment
+): Promise<void> {
+  const apiKey = requiredString(environment.BREVO_API_KEY, 'BREVO_API_KEY');
+  const senderEmail = requiredEmail(environment.BREVO_SENDER_EMAIL, 'BREVO_SENDER_EMAIL');
+  const recipientEmail = requiredEmail(
+    environment.CONTACT_RECIPIENT_EMAIL,
+    'CONTACT_RECIPIENT_EMAIL'
+  );
+  const lang = input.lang;
+
+  const htmlContent = acknowledgementLayout(
+    [
+      `${escapeHtml(t(lang, 'email.contact.ack.greeting'))} ${escapeHtml(input.name)},`,
+      escapeHtml(t(lang, 'email.contact.ack.body')),
+      `<strong>${escapeHtml(t(lang, 'email.contact.ack.recap'))}</strong><br>${escapeHtml(
+        input.message
+      ).replace(/\r?\n/g, '<br>')}`,
+    ],
+    escapeHtml(t(lang, 'email.contact.ack.signature'))
+  );
+
+  await postBrevo('/smtp/email', apiKey, {
+    sender: { name: 'Kasbah3000', email: senderEmail },
+    to: [{ email: input.email, name: input.name }],
+    replyTo: { name: 'Kasbah3000', email: recipientEmail },
+    subject: t(lang, 'email.contact.ack.subject'),
+    htmlContent,
+  });
+}
+
+export async function sendWebinarRegistrationAcknowledgement(
+  input: WebinarRegistrationInput,
+  eventTitle: string,
+  environment: FormEnvironment
+): Promise<void> {
+  const apiKey = requiredString(environment.BREVO_API_KEY, 'BREVO_API_KEY');
+  const senderEmail = requiredEmail(environment.BREVO_SENDER_EMAIL, 'BREVO_SENDER_EMAIL');
+  const recipientEmail = requiredEmail(
+    environment.CONTACT_RECIPIENT_EMAIL,
+    'CONTACT_RECIPIENT_EMAIL'
+  );
+  const lang = input.lang;
+
+  const htmlContent = acknowledgementLayout(
+    [
+      `${escapeHtml(t(lang, 'email.registration.ack.greeting'))} ${escapeHtml(input.name)},`,
+      escapeHtml(t(lang, 'email.registration.ack.body')),
+      `<strong>${escapeHtml(t(lang, 'email.registration.ack.recap'))}</strong><br>${escapeHtml(
+        t(lang, 'email.registration.ack.eventLabel')
+      )}: ${escapeHtml(eventTitle)}`,
+    ],
+    escapeHtml(t(lang, 'email.registration.ack.signature'))
+  );
+
+  await postBrevo('/smtp/email', apiKey, {
+    sender: { name: 'Kasbah3000', email: senderEmail },
+    to: [{ email: input.email, name: input.name }],
+    replyTo: { name: 'Kasbah3000', email: recipientEmail },
+    subject: t(lang, 'email.registration.ack.subject'),
+    htmlContent,
   });
 }

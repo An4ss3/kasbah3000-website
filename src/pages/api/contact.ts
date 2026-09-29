@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getClientIp, getFormEnvironment, jsonFormResponse, readJsonRequest } from '@lib/api/forms';
-import { sendContactEmail } from '@lib/email/brevo';
+import { sendContactAcknowledgement, sendContactEmail } from '@lib/email/brevo';
 import { contactSchema } from '@lib/forms/schemas';
 import { verifyTurnstile } from '@lib/security/turnstile';
 import { consumeRateLimit } from '@lib/utils/rate-limit';
@@ -56,10 +56,22 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     await sendContactEmail(parsed.data, environment);
-    return jsonFormResponse(200, 'CONTACT_SENT', true, rateHeaders);
   } catch {
     return jsonFormResponse(503, 'SERVICE_UNAVAILABLE', false, rateHeaders);
   }
+
+  /*
+    Courtesy acknowledgement to the sender. Deliberately after the team notification and outside the
+    response path: the lead is already captured, so a failure here must not turn a successful
+    submission into an error for the visitor.
+  */
+  try {
+    await sendContactAcknowledgement(parsed.data, environment);
+  } catch {
+    console.error('Contact acknowledgement could not be delivered');
+  }
+
+  return jsonFormResponse(200, 'CONTACT_SENT', true, rateHeaders);
 };
 
 export const ALL: APIRoute = () =>

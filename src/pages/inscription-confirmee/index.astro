@@ -1,0 +1,9 @@
+---
+import NewsletterConfirmedPage from '@components/pages/NewsletterConfirmedPage.astro';
+
+export const prerender = true;
+
+const lang = 'fr' as const;
+---
+
+<NewsletterConfirmedPage lang={lang} />

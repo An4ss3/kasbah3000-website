@@ -1,7 +1,10 @@
 import type { APIRoute } from 'astro';
 import { getClientIp, getFormEnvironment, jsonFormResponse, readJsonRequest } from '@lib/api/forms';
 import { getEventBySlug } from '@lib/content/events';
-import { sendWebinarRegistrationEmail } from '@lib/email/brevo';
+import {
+  sendWebinarRegistrationAcknowledgement,
+  sendWebinarRegistrationEmail,
+} from '@lib/email/brevo';
 import { webinarRegistrationSchema } from '@lib/forms/schemas';
 import { verifyTurnstile } from '@lib/security/turnstile';
 import { localize } from '@lib/utils/i18n';
@@ -69,16 +72,26 @@ export const POST: APIRoute = async ({ request }) => {
   );
   if (!verified) return jsonFormResponse(400, 'TURNSTILE_FAILED', false, rateHeaders);
 
+  const eventTitle = localize(event.title, parsed.data.lang);
+
   try {
-    await sendWebinarRegistrationEmail(
-      parsed.data,
-      localize(event.title, parsed.data.lang),
-      environment
-    );
-    return jsonFormResponse(200, 'REGISTRATION_RECEIVED', true, rateHeaders);
+    await sendWebinarRegistrationEmail(parsed.data, eventTitle, environment);
   } catch {
     return jsonFormResponse(503, 'SERVICE_UNAVAILABLE', false, rateHeaders);
   }
+
+  /*
+    Confirmation to the registrant. Sent after the team notification and kept outside the response
+    path: the registration is already recorded, so a delivery failure here must not report an error
+    to someone who did sign up successfully.
+  */
+  try {
+    await sendWebinarRegistrationAcknowledgement(parsed.data, eventTitle, environment);
+  } catch {
+    console.error('Registration acknowledgement could not be delivered');
+  }
+
+  return jsonFormResponse(200, 'REGISTRATION_RECEIVED', true, rateHeaders);
 };
 
 export const ALL: APIRoute = () =>
