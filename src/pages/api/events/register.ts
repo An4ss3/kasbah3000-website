@@ -12,6 +12,9 @@ import { consumeRateLimit } from '@lib/utils/rate-limit';
 
 export const prerender = false;
 
+/** Maximum courtesy emails a single recipient address can receive per hour. */
+const ACKNOWLEDGEMENT_LIMIT_PER_HOUR = 3;
+
 /**
  * Webinar / event registration endpoint.
  *
@@ -81,14 +84,26 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   /*
-    Confirmation to the registrant. Sent after the team notification and kept outside the response
-    path: the registration is already recorded, so a delivery failure here must not report an error
-    to someone who did sign up successfully.
+    Confirmation to the registrant, sent after the team notification. Awaited but failure-tolerant:
+    the registration is already recorded, so a delivery failure must not report an error to someone
+    who did sign up. The Brevo timeout caps the added latency.
+
+    Rate limited per recipient address, shared with the contact acknowledgement, so one inbox
+    cannot be flooded through either form. Hitting the limit only skips the courtesy email.
   */
-  try {
-    await sendWebinarRegistrationAcknowledgement(parsed.data, eventTitle, environment);
-  } catch {
-    console.error('Registration acknowledgement could not be delivered');
+  const acknowledgementLimit = await consumeRateLimit(
+    'acknowledgement',
+    parsed.data.email.trim().toLowerCase(),
+    ACKNOWLEDGEMENT_LIMIT_PER_HOUR,
+    { kv: environment.RATE_LIMIT_KV, development: import.meta.env.DEV }
+  );
+
+  if (acknowledgementLimit.available && acknowledgementLimit.allowed) {
+    try {
+      await sendWebinarRegistrationAcknowledgement(parsed.data, eventTitle, environment);
+    } catch {
+      console.error('Registration acknowledgement could not be delivered');
+    }
   }
 
   return jsonFormResponse(200, 'REGISTRATION_RECEIVED', true, rateHeaders);

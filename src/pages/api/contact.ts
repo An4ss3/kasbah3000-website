@@ -7,6 +7,9 @@ import { consumeRateLimit } from '@lib/utils/rate-limit';
 
 export const prerender = false;
 
+/** Maximum courtesy emails a single recipient address can receive per hour. */
+const ACKNOWLEDGEMENT_LIMIT_PER_HOUR = 3;
+
 export const POST: APIRoute = async ({ request }) => {
   const body = await readJsonRequest(request);
   if (!body.ok) return jsonFormResponse(body.status, body.code);
@@ -61,14 +64,28 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   /*
-    Courtesy acknowledgement to the sender. Deliberately after the team notification and outside the
-    response path: the lead is already captured, so a failure here must not turn a successful
-    submission into an error for the visitor.
+    Courtesy acknowledgement to the sender, sent after the team notification. It is awaited, but a
+    failure is swallowed: the lead is already captured, so it must not turn a successful submission
+    into an error. The Brevo call is bounded by a timeout, which caps the added latency.
+
+    The recipient address is visitor-supplied, so it is rate limited on its own, independently of
+    the IP limit above: a single inbox receives at most a few acknowledgements per hour no matter
+    how many addresses submit it. When that limit is hit or unavailable, only the courtesy email is
+    skipped; the submission itself still succeeds.
   */
-  try {
-    await sendContactAcknowledgement(parsed.data, environment);
-  } catch {
-    console.error('Contact acknowledgement could not be delivered');
+  const acknowledgementLimit = await consumeRateLimit(
+    'acknowledgement',
+    parsed.data.email.trim().toLowerCase(),
+    ACKNOWLEDGEMENT_LIMIT_PER_HOUR,
+    { kv: environment.RATE_LIMIT_KV, development: import.meta.env.DEV }
+  );
+
+  if (acknowledgementLimit.available && acknowledgementLimit.allowed) {
+    try {
+      await sendContactAcknowledgement(parsed.data, environment);
+    } catch {
+      console.error('Contact acknowledgement could not be delivered');
+    }
   }
 
   return jsonFormResponse(200, 'CONTACT_SENT', true, rateHeaders);

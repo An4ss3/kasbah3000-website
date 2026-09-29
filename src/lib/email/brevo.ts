@@ -39,6 +39,13 @@ function escapeHtml(value: string): string {
   );
 }
 
+/*
+  Every Brevo call is bounded. Without a timeout, a slow Brevo response held the request open until
+  the client gave up: the visitor saw a failure after the lead had already been captured, and a
+  retry produced duplicates.
+*/
+const BREVO_TIMEOUT_MS = 8000;
+
 async function postBrevo(
   path: string,
   apiKey: string,
@@ -52,6 +59,7 @@ async function postBrevo(
       'content-type': 'application/json',
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(BREVO_TIMEOUT_MS),
   });
 
   if (!response.ok) throw new Error(`Brevo request failed with status ${response.status}`);
@@ -192,13 +200,15 @@ export async function sendContactAcknowledgement(
   );
   const lang = input.lang;
 
+  /*
+    Fixed content only. The visitor's free-text message is deliberately NOT echoed back: the
+    recipient address is visitor-supplied, so echoing the message would let anyone send arbitrary
+    text from contact@kasbah3000.com to any inbox, turning the form into a spam relay.
+  */
   const htmlContent = acknowledgementLayout(
     [
       `${escapeHtml(t(lang, 'email.contact.ack.greeting'))} ${escapeHtml(input.name)},`,
       escapeHtml(t(lang, 'email.contact.ack.body')),
-      `<strong>${escapeHtml(t(lang, 'email.contact.ack.recap'))}</strong><br>${escapeHtml(
-        input.message
-      ).replace(/\r?\n/g, '<br>')}`,
     ],
     escapeHtml(t(lang, 'email.contact.ack.signature'))
   );

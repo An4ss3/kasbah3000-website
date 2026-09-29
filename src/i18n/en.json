@@ -437,7 +437,6 @@
   "email.contact.ack.subject": "We have received your message",
   "email.contact.ack.greeting": "Hello",
   "email.contact.ack.body": "Thank you for writing to us. Your message has arrived and our team will reply as soon as possible.",
-  "email.contact.ack.recap": "Summary of your message",
   "email.contact.ack.signature": "The Kasbah3000 team",
   "email.registration.ack.subject": "Your registration is recorded",
   "email.registration.ack.greeting": "Hello",

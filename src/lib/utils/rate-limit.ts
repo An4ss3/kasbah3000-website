@@ -3,8 +3,12 @@ export interface RateLimitKV {
   put(key: string, value: string, options: { expirationTtl: number }): Promise<void>;
 }
 
-/** Independent rate-limit buckets, one per public write endpoint. */
-export type RateLimitScope = 'contact' | 'newsletter' | 'event-registration';
+/**
+ * Independent rate-limit buckets. The first three are keyed by client IP, one per public write
+ * endpoint. `acknowledgement` is keyed by the recipient address instead: it caps how many courtesy
+ * emails a single inbox can receive per window, regardless of how many IPs submit it.
+ */
+export type RateLimitScope = 'contact' | 'newsletter' | 'event-registration' | 'acknowledgement';
 
 export type RateLimitResult =
   | {
