@@ -28,7 +28,7 @@ const { assets, lang, openLabel, videoLabel, class: className } = Astro.props;
               type="button"
               data-lightbox-index={index}
               aria-label={`${openLabel} — ${title}`}
-              class="block min-h-11 w-full p-0 text-left"
+              class="block min-h-11 w-full p-0 text-start"
             >
               <span class="relative block aspect-[4/3] overflow-hidden border border-border bg-background-alt">
                 {imageSrc && (
@@ -45,10 +45,10 @@ const { assets, lang, openLabel, videoLabel, class: className } = Astro.props;
                 )}
                 {isVideo && (
                   <span
-                    class="absolute bottom-3 right-3 border border-border-dark bg-background-dark px-3 py-2 text-[0.8125rem] leading-5 text-ink-inverse"
+                    class="absolute bottom-3 end-3 border border-border-dark bg-background-dark px-3 py-2 text-[0.8125rem] leading-5 text-ink-inverse"
                     aria-hidden="true"
                   >
-                    <span class="mr-2 inline-block" aria-hidden="true">
+                    <span class="me-2 inline-block" aria-hidden="true">
                       ▶
                     </span>
                     {videoLabel}
