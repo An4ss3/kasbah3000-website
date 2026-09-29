@@ -21,6 +21,18 @@ function normalizeHostname(hostname: string): string {
   return hostname.trim().toLowerCase().replace(/\.+$/, '');
 }
 
+/*
+  The site is reachable on both the apex (`kasbah3000.com`, PUBLIC_SITE_URL) and `www.`. Turnstile
+  reports the hostname the widget was actually solved on, so accepting only the apex rejected every
+  valid submission made from `www.` — tokens verified with success=true were then refused here, and
+  no email was ever sent. Only the exact apex and its `www.` form are accepted: any other hostname,
+  including other subdomains, is still rejected.
+*/
+function isAllowedHostname(actual: string, expected: string): boolean {
+  const host = normalizeHostname(actual);
+  return host === expected || host === `www.${expected}`;
+}
+
 export async function verifyTurnstile(
   secret: string,
   token: string,
@@ -50,7 +62,7 @@ export async function verifyTurnstile(
       payload.success &&
       payload.action === expectedAction &&
       typeof payload.hostname === 'string' &&
-      normalizeHostname(payload.hostname) === normalizedExpectedHostname;
+      isAllowedHostname(payload.hostname, normalizedExpectedHostname);
 
     // Without this, a rejected token was indistinguishable from any other failure in the logs.
     // Only Turnstile's own error codes and the action/hostname match are logged — no token, no IP.
@@ -59,7 +71,7 @@ export async function verifyTurnstile(
         `Turnstile rejected: success=${payload.success} errors=${(payload['error-codes'] ?? []).join(',') || 'none'} ` +
           `actionMatch=${payload.action === expectedAction} hostnameMatch=${
             typeof payload.hostname === 'string' &&
-            normalizeHostname(payload.hostname) === normalizedExpectedHostname
+            isAllowedHostname(payload.hostname, normalizedExpectedHostname)
           }`
       );
     }
