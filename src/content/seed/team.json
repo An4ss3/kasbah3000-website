@@ -4,11 +4,15 @@
     "fullName": "Othman",
     "role": {
       "fr": "Directeur général",
-      "en": "Chief Executive Officer"
+      "en": "Chief Executive Officer",
+      "ar": "المدير العام",
+      "de": "Geschäftsführer"
     },
     "bio": {
       "fr": "Othman porte la vision de Kasbah3000 et coordonne les alliances nécessaires à la réalisation du village pilote.",
-      "en": "Othman leads Kasbah3000's vision and coordinates the partnerships needed to deliver the pilot settlement."
+      "en": "Othman leads Kasbah3000's vision and coordinates the partnerships needed to deliver the pilot settlement.",
+      "ar": "يقود Othman رؤية كصبة 3000 وينسّق التحالفات اللازمة لإنجاز القرية التجريبية.",
+      "de": "Othman trägt die Vision von Kasbah3000 und koordiniert die Partnerschaften, die für die Verwirklichung des Pilotdorfs erforderlich sind."
     },
     "photoPath": "/placeholder/team/othman.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-othman",
@@ -21,11 +25,15 @@
     "fullName": "Lamia",
     "role": {
       "fr": "Nouvelles technologies, IA et données",
-      "en": "New Technology, AI and Data"
+      "en": "New Technology, AI and Data",
+      "ar": "التكنولوجيات الحديثة والذكاء الاصطناعي والبيانات",
+      "de": "Neue Technologien, KI und Daten"
     },
     "bio": {
       "fr": "Lamia conçoit l'approche numérique et les outils de données qui permettront de mesurer et d'améliorer les systèmes du projet.",
-      "en": "Lamia designs the digital approach and data tools used to measure and improve the project's systems."
+      "en": "Lamia designs the digital approach and data tools used to measure and improve the project's systems.",
+      "ar": "تصمّم Lamia النهج الرقمي وأدوات البيانات التي ستتيح قياس أنظمة المشروع وتحسينها.",
+      "de": "Lamia entwickelt den digitalen Ansatz und die Datenwerkzeuge, mit denen die Systeme des Projekts gemessen und verbessert werden können."
     },
     "photoPath": "/placeholder/team/lamia.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-lamia",
@@ -38,11 +46,15 @@
     "fullName": "Fatim Zahra",
     "role": {
       "fr": "Communication et marketing",
-      "en": "Communications and Marketing"
+      "en": "Communications and Marketing",
+      "ar": "التواصل والتسويق",
+      "de": "Kommunikation und Marketing"
     },
     "bio": {
       "fr": "Fatim Zahra raconte le projet, anime ses communautés et rend ses apprentissages accessibles aux publics marocains et internationaux.",
-      "en": "Fatim Zahra tells the project's story, engages its communities and makes its lessons accessible to Moroccan and international audiences."
+      "en": "Fatim Zahra tells the project's story, engages its communities and makes its lessons accessible to Moroccan and international audiences.",
+      "ar": "تروي Fatim Zahra قصة المشروع وتنشّط مجتمعاته وتجعل الدروس المستخلصة منه متاحة للجمهور المغربي والدولي.",
+      "de": "Fatim Zahra erzählt die Geschichte des Projekts, belebt seine Gemeinschaften und macht seine Erkenntnisse einem marokkanischen und internationalen Publikum zugänglich."
     },
     "photoPath": "/placeholder/team/fatim-zahra.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-fatim-zahra",
@@ -55,11 +67,15 @@
     "fullName": "Imane",
     "role": {
       "fr": "Finance",
-      "en": "Finance"
+      "en": "Finance",
+      "ar": "المالية",
+      "de": "Finanzen"
     },
     "bio": {
       "fr": "Imane structure les modèles financiers et le suivi budgétaire afin de soutenir un développement responsable et durable.",
-      "en": "Imane structures financial models and budget monitoring to support responsible, durable development."
+      "en": "Imane structures financial models and budget monitoring to support responsible, durable development.",
+      "ar": "تضع Imane هيكلة النماذج المالية وتتولى متابعة الميزانية دعمًا لتنمية مسؤولة ومستدامة.",
+      "de": "Imane strukturiert die Finanzmodelle und die Budgetüberwachung, um eine verantwortungsvolle und nachhaltige Entwicklung zu unterstützen."
     },
     "photoPath": "/placeholder/team/imane.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-imane",
@@ -72,11 +88,15 @@
     "fullName": "Anasse",
     "role": {
       "fr": "Web et intelligence artificielle",
-      "en": "Web and Artificial Intelligence"
+      "en": "Web and Artificial Intelligence",
+      "ar": "الويب والذكاء الاصطناعي",
+      "de": "Web und künstliche Intelligenz"
     },
     "bio": {
       "fr": "Anasse développe les expériences web et les usages responsables de l'IA qui facilitent l'information et la participation.",
-      "en": "Anasse develops web experiences and responsible AI applications that support information sharing and participation."
+      "en": "Anasse develops web experiences and responsible AI applications that support information sharing and participation.",
+      "ar": "يطوّر Anasse تجارب الويب والاستخدامات المسؤولة للذكاء الاصطناعي التي تيسّر الوصول إلى المعلومات والمشاركة.",
+      "de": "Anasse entwickelt Weberlebnisse und verantwortungsvolle Anwendungen künstlicher Intelligenz, die den Informationszugang und die Beteiligung erleichtern."
     },
     "photoPath": "/placeholder/team/anasse.jpg",
     "linkedinUrl": "https://www.linkedin.com/in/placeholder-anasse",

@@ -6,7 +6,9 @@
     "logoPath": "/placeholder/partners/aui.svg",
     "description": {
       "fr": "Université partenaire pressentie pour la recherche interdisciplinaire, l'innovation et l'implication des étudiants.",
-      "en": "A prospective university partner for interdisciplinary research, innovation and student engagement."
+      "en": "A prospective university partner for interdisciplinary research, innovation and student engagement.",
+      "ar": "جامعة شريكة محتملة في البحث متعدد التخصصات والابتكار وإشراك الطلبة.",
+      "de": "Eine potenzielle Partneruniversität für interdisziplinäre Forschung, Innovation und die Einbindung von Studierenden."
     },
     "websiteUrl": "https://www.aui.ma",
     "sortOrder": 1,
@@ -19,7 +21,9 @@
     "logoPath": "/placeholder/partners/um6p.svg",
     "description": {
       "fr": "Partenaire académique pressenti pour explorer l'agriculture, les matériaux, l'énergie et les données territoriales.",
-      "en": "A prospective academic partner for work on agriculture, materials, energy and territorial data."
+      "en": "A prospective academic partner for work on agriculture, materials, energy and territorial data.",
+      "ar": "شريك أكاديمي محتمل لاستكشاف الزراعة والمواد والطاقة والبيانات الترابية.",
+      "de": "Ein potenzieller akademischer Partner zur Erforschung von Landwirtschaft, Materialien, Energie und territorialen Daten."
     },
     "websiteUrl": "https://www.um6p.ma",
     "sortOrder": 2,
@@ -32,7 +36,9 @@
     "logoPath": "/placeholder/partners/gosyaha.svg",
     "description": {
       "fr": "Partenaire potentiel pour développer une hospitalité responsable et des expériences liées au territoire.",
-      "en": "A potential partner for responsible hospitality and experiences connected to the local territory."
+      "en": "A potential partner for responsible hospitality and experiences connected to the local territory.",
+      "ar": "شريك محتمل لتطوير ضيافة مسؤولة وتجارب مرتبطة بالمنطقة.",
+      "de": "Ein potenzieller Partner für die Entwicklung verantwortungsvoller Gastfreundschaft und regional verankerter Erlebnisse."
     },
     "websiteUrl": "https://www.gosyaha.ma",
     "sortOrder": 3,
@@ -45,7 +51,9 @@
     "logoPath": "/placeholder/partners/ocp-foundation.svg",
     "description": {
       "fr": "Partenaire potentiel pour les programmes d'éducation, de développement territorial et d'entrepreneuriat local.",
-      "en": "A potential partner for education, territorial development and local entrepreneurship programmes."
+      "en": "A potential partner for education, territorial development and local entrepreneurship programmes.",
+      "ar": "شريك محتمل لبرامج التعليم والتنمية الترابية وريادة الأعمال المحلية.",
+      "de": "Ein potenzieller Partner für Programme in den Bereichen Bildung, territoriale Entwicklung und lokales Unternehmertum."
     },
     "websiteUrl": "https://www.fondationocp.ma",
     "sortOrder": 4,
@@ -58,7 +66,9 @@
     "logoPath": "/placeholder/partners/lafargeholcim.svg",
     "description": {
       "fr": "Partenaire industriel potentiel pour tester des solutions constructives bas carbone adaptées au contexte marocain.",
-      "en": "A potential industrial partner for testing low-carbon construction solutions suited to Morocco."
+      "en": "A potential industrial partner for testing low-carbon construction solutions suited to Morocco.",
+      "ar": "شريك صناعي محتمل لاختبار حلول بناء منخفضة الكربون ومكيّفة مع السياق المغربي.",
+      "de": "Ein potenzieller Industriepartner für die Erprobung CO₂-armer Baulösungen, die an den marokkanischen Kontext angepasst sind."
     },
     "websiteUrl": "https://www.lafargeholcim.ma",
     "sortOrder": 5,

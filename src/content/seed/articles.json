@@ -6,15 +6,21 @@
     "category": "community",
     "title": {
       "fr": "Concevoir un village pour toutes les générations",
-      "en": "Designing a village for every generation"
+      "en": "Designing a village for every generation",
+      "ar": "تصميم قرية لجميع الأجيال",
+      "de": "Ein Dorf für alle Generationen gestalten"
     },
     "excerpt": {
       "fr": "Kasbah3000 explore une nouvelle manière d'associer logements privés, espaces communs et services d'entraide.",
-      "en": "Kasbah3000 explores a new way to combine private homes, shared spaces and mutual-aid services."
+      "en": "Kasbah3000 explores a new way to combine private homes, shared spaces and mutual-aid services.",
+      "ar": "تستكشف كصبة 3000 طريقة جديدة للجمع بين المساكن الخاصة والمساحات المشتركة وخدمات التكافل.",
+      "de": "Kasbah3000 erprobt einen neuen Ansatz, private Wohnungen, Gemeinschaftsräume und gegenseitige Unterstützungsangebote miteinander zu verbinden."
     },
     "body": {
       "fr": "## Habiter et transmettre\n\nUn village multigénérationnel ne se résume pas à réunir plusieurs âges. Son architecture et sa gouvernance doivent faciliter les rencontres tout en respectant l'intimité de chacun.\n\nKasbah3000 teste ces principes avec les futurs habitants et les acteurs du territoire.",
-      "en": "## Living and learning together\n\nA multigenerational village is about more than bringing different ages together. Its architecture and governance must enable connection while respecting everyone's privacy.\n\nKasbah3000 is testing these principles with future residents and local stakeholders."
+      "en": "## Living and learning together\n\nA multigenerational village is about more than bringing different ages together. Its architecture and governance must enable connection while respecting everyone's privacy.\n\nKasbah3000 is testing these principles with future residents and local stakeholders.",
+      "ar": "## السكن ونقل المعارف\n\nلا تقتصر القرية متعددة الأجيال على جمع فئات عمرية مختلفة. يجب أن تسهّل هندستها المعمارية وحوكمتها اللقاءات مع احترام خصوصية كل فرد.\n\nتختبر كصبة 3000 هذه المبادئ مع السكان المستقبليين والجهات الفاعلة في المنطقة.",
+      "de": "## Wohnen und Wissen weitergeben\n\nEin Mehrgenerationendorf beschränkt sich nicht darauf, verschiedene Altersgruppen zusammenzubringen. Seine Architektur und Governance müssen Begegnungen erleichtern und zugleich die Privatsphäre aller respektieren.\n\nKasbah3000 erprobt diese Grundsätze gemeinsam mit den künftigen Bewohnerinnen und Bewohnern sowie den Akteuren der Region."
     },
     "coverPath": "/media/site/earthen-home-entrance.jpg",
     "status": "published",
@@ -29,15 +35,21 @@
     "category": "water",
     "title": {
       "fr": "Lancement des premières études hydriques",
-      "en": "First water studies launched"
+      "en": "First water studies launched",
+      "ar": "إطلاق الدراسات المائية الأولى",
+      "de": "Start der ersten Wasserstudien"
     },
     "excerpt": {
       "fr": "Une campagne de diagnostic préparera une gestion sobre et résiliente de l'eau sur le futur site.",
-      "en": "A diagnostic campaign will prepare efficient and resilient water management for the future site."
+      "en": "A diagnostic campaign will prepare efficient and resilient water management for the future site.",
+      "ar": "ستمهد حملة تشخيصية لإدارة مقتصدة وقادرة على الصمود للمياه في الموقع المستقبلي.",
+      "de": "Eine Diagnosekampagne wird eine sparsame und resiliente Wasserbewirtschaftung am künftigen Standort vorbereiten."
     },
     "body": {
       "fr": "## Comprendre avant d'agir\n\nLes partenaires étudieront les ressources disponibles, les usages prévisionnels et les possibilités de réutilisation. Ces données orienteront les choix paysagers et techniques.\n\nLes résultats seront partagés avec la communauté lors d'un atelier public.",
-      "en": "## Understand before acting\n\nPartners will study available resources, projected uses and opportunities for reuse. The data will guide landscape and technical decisions.\n\nFindings will be shared with the community at a public workshop."
+      "en": "## Understand before acting\n\nPartners will study available resources, projected uses and opportunities for reuse. The data will guide landscape and technical decisions.\n\nFindings will be shared with the community at a public workshop.",
+      "ar": "## الفهم قبل العمل\n\nسيدرس الشركاء الموارد المتاحة والاستخدامات المتوقعة وإمكانات إعادة الاستخدام. وستوجّه هذه البيانات الخيارات المتعلقة بتنسيق المناظر الطبيعية والجوانب التقنية.\n\nستُشارك النتائج مع المجتمع خلال ورشة عمل عامة.",
+      "de": "## Verstehen, bevor wir handeln\n\nDie Partner werden die verfügbaren Ressourcen, den voraussichtlichen Bedarf und die Möglichkeiten der Wiederverwendung untersuchen. Diese Daten werden die landschaftsplanerischen und technischen Entscheidungen leiten.\n\nDie Ergebnisse werden im Rahmen eines öffentlichen Workshops mit der Gemeinschaft geteilt."
     },
     "coverPath": "/media/site/irrigation-gardens.jpg",
     "status": "published",
@@ -52,15 +64,21 @@
     "category": "project",
     "title": {
       "fr": "Kasbah3000 présente sa démarche pilote",
-      "en": "Kasbah3000 presents its pilot approach"
+      "en": "Kasbah3000 presents its pilot approach",
+      "ar": "كصبة 3000 تعرض نهجها التجريبي",
+      "de": "Kasbah3000 stellt seinen Pilotansatz vor"
     },
     "excerpt": {
       "fr": "Le projet dévoile une méthode progressive pour tester, mesurer et partager des solutions d'habitat écologique au Maroc.",
-      "en": "The project unveils a step-by-step method to test, measure and share ecological living solutions in Morocco."
+      "en": "The project unveils a step-by-step method to test, measure and share ecological living solutions in Morocco.",
+      "ar": "يكشف المشروع عن منهجية تدريجية لاختبار حلول السكن البيئي في المغرب وقياسها ومشاركتها.",
+      "de": "Das Projekt stellt eine schrittweise Methode vor, um Lösungen für ökologisches Wohnen in Marokko zu erproben, zu messen und weiterzugeben."
     },
     "body": {
       "fr": "## Un démonstrateur ouvert\n\nKasbah3000 réunira architecture bioclimatique, énergies renouvelables, agroécologie et gouvernance participative sur un même site.\n\nLe prototype documentera ses performances afin de rendre ses enseignements utiles à d'autres territoires marocains.",
-      "en": "## An open demonstrator\n\nKasbah3000 will bring bioclimatic architecture, renewable energy, agroecology and participatory governance together on one site.\n\nThe prototype will document its performance so its lessons can support other Moroccan territories."
+      "en": "## An open demonstrator\n\nKasbah3000 will bring bioclimatic architecture, renewable energy, agroecology and participatory governance together on one site.\n\nThe prototype will document its performance so its lessons can support other Moroccan territories.",
+      "ar": "## نموذج توضيحي مفتوح\n\nستجمع كصبة 3000 في موقع واحد بين العمارة المناخية الحيوية والطاقات المتجددة والزراعة الإيكولوجية والحوكمة التشاركية.\n\nسيوثّق النموذج الأولي أداءه لكي تستفيد مناطق مغربية أخرى من الدروس المستخلصة منه.",
+      "de": "## Ein offenes Demonstrationsprojekt\n\nKasbah3000 wird bioklimatische Architektur, erneuerbare Energien, Agrarökologie und partizipative Governance an einem Standort vereinen.\n\nDer Prototyp wird seine Leistungen dokumentieren, damit andere marokkanische Regionen von seinen Erkenntnissen profitieren können."
     },
     "coverPath": "/media/site/village-aerial-overview.jpg",
     "status": "published",

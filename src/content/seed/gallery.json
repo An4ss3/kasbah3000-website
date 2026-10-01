@@ -4,7 +4,9 @@
     "type": "photo",
     "title": {
       "fr": "Paysage du site à l'aube",
-      "en": "Site landscape at dawn"
+      "en": "Site landscape at dawn",
+      "ar": "منظر الموقع عند الفجر",
+      "de": "Landschaft des Standorts im Morgengrauen"
     },
     "album": "territoire",
     "storage": "supabase",
@@ -18,7 +20,9 @@
     "type": "render",
     "title": {
       "fr": "Vue du cœur piéton du village",
-      "en": "View of the pedestrian village centre"
+      "en": "View of the pedestrian village centre",
+      "ar": "منظر لقلب القرية المخصص للمشاة",
+      "de": "Blick auf das autofreie Dorfzentrum"
     },
     "album": "conception",
     "storage": "supabase",
@@ -32,7 +36,9 @@
     "type": "drone",
     "title": {
       "fr": "Survol du territoire d'étude",
-      "en": "Flight over the study area"
+      "en": "Flight over the study area",
+      "ar": "تحليق فوق منطقة الدراسة",
+      "de": "Überflug des Untersuchungsgebiets"
     },
     "album": "territoire",
     "storage": "supabase",
@@ -47,7 +53,9 @@
     "type": "plan",
     "title": {
       "fr": "Plan directeur conceptuel",
-      "en": "Conceptual master plan"
+      "en": "Conceptual master plan",
+      "ar": "المخطط التوجيهي التصوري",
+      "de": "Konzeptioneller Masterplan"
     },
     "album": "conception",
     "storage": "supabase",
