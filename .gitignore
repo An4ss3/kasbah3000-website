@@ -7,6 +7,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+dev-out.log
+dev-err.log
+
+# local development scripts / diagnostics
+diag_about.cjs
+diag_empty.cjs
+stop_dev.ps1
 
 # environment variables
 .env
